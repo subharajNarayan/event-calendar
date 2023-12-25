@@ -1,0 +1,18 @@
+.data-table{
+  .table-responsive{
+    table{
+      tbody{
+        tr{
+          .action-btn{
+            cursor: pointer;
+             img{
+              &:hover{
+                // color: #ff0000;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

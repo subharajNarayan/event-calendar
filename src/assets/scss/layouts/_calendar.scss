@@ -1,0 +1,129 @@
+.body-calendar {
+  .calendar-view{
+    .toolbar{
+      &-heading{
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      &-weekand{
+        button{
+          border: 1px solid #e3e3e3;
+          padding: 0.3rem 0.8rem;
+          &:hover{
+            background-color: #d3d3d3;
+          }
+        }
+      }
+      // .active{
+      //   background-color: red;
+      // }
+      &-year-date{
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 0.69rem;
+        button{
+          border: 1px solid lightgray;
+          padding: 0.3rem 0.8rem;
+        }
+      }
+      &-view-right{
+        align-items: baseline;
+      }
+      &-calendar-list{
+        button{
+          border: none;
+          padding: 0.3rem 0.8rem;
+        }
+        .active{
+          background-color: lightgray;
+          border: none;
+        }
+      }
+      &-add{
+        // margin: 1rem;
+        button{
+          border: none;
+          padding: 0.3rem 0.8rem;
+        }
+      }
+    }
+  }
+  // .calendar-list {
+  //   position: absolute;
+  //   margin-top: -3.67rem;
+  //   right: 22rem;
+  // }
+
+  // .rbc-calendar {
+  //   .rbc-toolbar {
+  //     .rbc-btn-group {
+  //       margin-top: -7.2rem;
+  //     }
+
+  //     .rbc-btn-group:first-child {
+  //       margin-top: 0;
+
+  //       button {
+  //         &:first-child {
+  //           display: none;
+  //         }
+
+  //         &:nth-child(2) {
+  //           position: absolute;
+  //           margin-top: -18px;
+  //         }
+
+  //         &:nth-child(3) {
+  //           position: absolute;
+  //           right: 50px;
+  //           margin-top: -18px;
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   .rbc-month-view {
+  //     .rbc-row {
+  //       .rbc-row-segment {
+  //         .rbc-event {
+  //           padding: 0px 5px !important;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+}
+
+.rbc-event{
+  // margin-top: -0.8rem !important;
+  padding: 0px 5px !important;
+  
+}
+
+
+/* Add these styles to your CSS file or style block */
+.tick-button {
+  /* Add common styles for the tick button */
+  border: none;
+  cursor: pointer;
+  // font-size: 16px;
+  // padding: 0.2rem 0.57rem;
+  padding: 0rem 0.3rem;
+    border-radius: 50%;
+    position: absolute;
+    right: 45px;
+    margin-top: 0.38rem;
+    font-size: 12px;
+  /* Add any other styles you want for the button */
+
+}
+
+.tick-button.green {
+  color: #008000;
+  border: 1px solid #008000;
+}
+
+.tick-button.red {
+  color: #ff0000;
+  border: 1px solid #ff0000;
+}
