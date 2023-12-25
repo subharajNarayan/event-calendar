@@ -13,7 +13,7 @@ interface Props extends PropsFromRedux {
 }
 
 const predefinedColors = [
-  '#FF0000', // Red
+  '#208ca2', // Red
 ];
 
 const TeamMembForm = (props: Props) => {
@@ -118,6 +118,7 @@ const TeamMembForm = (props: Props) => {
           <div className='form-group'>
             <label htmlFor="">Password <span className="text-danger">*</span></label>
             <input
+            type='password'
               className="form-control"
               name='password'
               value={values.password}

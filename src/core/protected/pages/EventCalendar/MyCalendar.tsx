@@ -8,6 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
 import TeamIndex from './userModal';
 import Form from './userModal/Form';
+import useAuthentication from '../../../../services/authentication/AuthService';
+
 // import Form from './comment';
 
 const localizer = momentLocalizer(moment);
@@ -126,6 +128,10 @@ const TeamCalIndex: React.FC<CalendarProps> = () => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
+
+  const {isAuthenticated, getAuthUser} = useAuthentication();
+  const user = getAuthUser();
+  
   // Initialize events with some default data
   const [events, setEvents] = useState<Event[]>([
     {
@@ -134,7 +140,7 @@ const TeamCalIndex: React.FC<CalendarProps> = () => {
       start: "2023-12-23T04:47", // Use the current date as the start date
       end: "2023-12-23T04:47", // Use the current date as the end date
       description: 'This is a default event',
-      assigned_user_name: "Default Userrr",
+      assigned_user_name: "Subharaj",
       assigned_colour: "#4285f4",
       status: "active",
       task_complete:false,
@@ -145,7 +151,7 @@ const TeamCalIndex: React.FC<CalendarProps> = () => {
       start: "2023-12-26T02:20", // Use the current date as the start date
       end: "2023-12-27T04:47", // Use the current date as the end date
       description: 'This is a default event',
-      assigned_user_name: "Default Userrr2",
+      assigned_user_name: "test",
       assigned_colour: "#ff0000",
       status: "active",
       task_complete:false
@@ -156,7 +162,7 @@ const TeamCalIndex: React.FC<CalendarProps> = () => {
       start: "2023-12-24T02:00", // Use the current date as the start date
       end: "2023-12-24T04:59", // Use the current date as the end date
       description: 'This is a default event',
-      assigned_user_name: "Default Userrr2",
+      assigned_user_name: "Srijan Duwal",
       assigned_colour: "#0ff000",
       status: "active",
       task_complete:false
@@ -165,7 +171,22 @@ const TeamCalIndex: React.FC<CalendarProps> = () => {
   ]);
 
   React.useEffect(() => {
-    setUnfilteredEvents(events);
+    // auth id
+    // /server/getallEvents/{username}
+    // dispatch event fetch request
+    if(user && user.role == 'Team_Member') {
+      let initialEvents = events.filter(event => {
+          console.log(event.assigned_user_name, user.username);
+          
+        return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
+      });
+      setEvents(initialEvents);
+      setUnfilteredEvents(initialEvents);
+    } else if(user && user.role == 'Admin'){
+      setUnfilteredEvents(events);
+    }
+    
+    // setUnfilteredEvents(events);
   }, []);
 
   // State to track the tick button status

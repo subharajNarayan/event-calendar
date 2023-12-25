@@ -43,7 +43,8 @@ export enum RequestMethod {
     },
     oauth: {
       login: {
-        controllerName: "api/signin/",
+        // controllerName: "api/signin/",
+        controllerName: "api/loginTeam",
         actionName: "LOGIN",
         requestMethod: RequestMethod.POST,
         requestBodyType: RequestBodyType.NOAUTH

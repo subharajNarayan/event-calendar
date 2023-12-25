@@ -167,7 +167,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
 
   // In CalendarIndex.tsx
-const [users, setUsers] = useState([]);
+// const [users, setUsers] = useState([]);
 const [eventss, setEvents] = useState([]);
 // const [unfilteredEvents, setUnfilteredEvents] = useState([]);
 

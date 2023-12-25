@@ -16,7 +16,7 @@ import FormikValidationError from "../../../components/React/FormikValidationErr
 
 interface Props extends PropsFromRedux { }
 export interface UserCredentials {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -34,7 +34,7 @@ function Login(props: Props): ReactElement {
         
         props.addUserDetails(loginres.data);
         console.log({d:loginres.data});
-        if (loginres?.data?.role === "admin") {          
+        if (loginres?.data?.role === "Admin") {          
           history("/admin/home");
         } else {
           history("/auth/home");
@@ -84,10 +84,10 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
 
   const [passwordView, showPassword] = useState(false);
   const togglePassword = () => showPassword(!passwordView);
-  const [initialValue] = useState({ email: "", password: "" });
+  const [initialValue] = useState({ username: "", password: "" });
 
   const loginValidationSchema = YupObject().shape({
-    email: YupString().required("This Field id Required"),
+    username: YupString().required("This Field id Required"),
     password: YupString().required("This Field id Required"),
   });
 
@@ -101,51 +101,6 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
   });
 
   const history = useNavigate();
-  // const handleGoogleLogin = useGoogleLogin({
-  //   onSuccess: (response) => {
-  //     // console.log(response?.);
-      
-  //     if (response?.access_token) {
-  //       console.log(response, "test");
-  //       TokenService.setToken({ "access": response.access_token })
-  //       const successMessage = "Logged In Successful"
-  //       toast.success(successMessage)
-        
-
-  //       // if (response?.role === "admin") {
-  //       //   history("/admin/home");
-  //       // } else {
-  //       //   history("/auth/home");
-  //       // }
-  //     }
-  //     else {
-  //       toast.error("Error While Login With Google")
-  //     }
-  //   }
-  // });
-
-  // const loginGoogle = useGoogleLogin({
-  //   onSuccess: tokenResponse => console.log(tokenResponse, "token from google login"),
-  // });
-  // const [isfacebook, setisFacebook] = React.useState()
-
-  // const responseFacebook = (response: any) => {
-  //   if (response?.accessToken) {
-  //     console.log(response, "Facebook Test");
-  //     TokenService.setToken({ "access": response.accessToken })
-  //     setisFacebook(response?.name)
-  //     console.log(response?.name, "success");
-      
-  //     const successMessage = "Logged In Successful"
-  //     toast.success(successMessage)
-  //     history("/home");
-  //   }
-  //   else {
-  //     toast.error("Error While Login With Facebook")
-  //     console.log(response, "Facebook Failed");
-      
-  //   }
-  // }
 
   return (
     <div className="auth-body">
@@ -158,17 +113,16 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
         <div className="auth-form">
           <div className="form-group align-vertical">
             <label htmlFor="" className="mr-4 label">
-              Email
+              Username
             </label>
             <input
               className="form-control"
-              name="email"
-              value={values.email}
+              name="username"
+              value={values.username}
               onChange={handleChange}
               required
-              style={{ marginLeft: "27px" }}
             />
-            <FormikValidationError name="email" errors={errors} touched={touched} />
+            <FormikValidationError name="username" errors={errors} touched={touched} />
           </div>
 
           <div className="form-group align-vertical mt-4">
@@ -194,13 +148,8 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
           </div>
 
           <div className="auth-footer">
-            {/* <div className="flex-grow-1 des">
-                    <span className="text-coolGray600">{t("login:dontHaveAnAccount.title")} </span>
-                    <Link to="/register" className="text-blue">{t("register:title")}</Link>
-                </div> */}
             <Button
               className="btn btn-outlined-primary"
-              // text={t("login:title")}
               text={"Login"}
               loading={authorizing}
               disabled={authorizing}
@@ -208,39 +157,11 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
           </div>
         </div>
       </form>
-      <div className="auth-signup">
+      {/* <div className="auth-signup">
         <p className="align-vertical">Dont't have an account?
           <Link to="/signup">Sign Up</Link>
         </p>
-      </div>
-      {/* <div className="auth-social mt-4">
-        <div className="auth-google mr-2">
-          <Button
-            className="btn btn-outlined-primary"
-            // text={"Sign in with Google"}
-            onClick={() => handleGoogleLogin()}>
-            <img src={google} alt="google" />
-            <p>Sign in with Google</p>
-          </Button>
-        </div>
-        <div className="auth-facebook ml-2">
-          <FacebookLogin
-            appId="799159984481585"
-            autoLoad={true}
-            callback={responseFacebook}
-            render={renderProps => (
-              <Button
-              className="btn btn-outlined-primary"
-              onClick={renderProps.onClick}
-            >
-              <img src={facebook} alt="facebook"/>
-              <p>Sign in with Facebook</p>
-            </Button>
-            )}
-          />
-        </div>
       </div> */}
-
     </div>
   );
 };

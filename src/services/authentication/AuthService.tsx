@@ -6,7 +6,7 @@ interface AuthorizationService {
   currentPath: string;
   /** Function that returns true if authenticated otherwise not */
   isAuthenticated: () => boolean;
-  
+  getAuthUser:() => any;
 }
 
 /**
@@ -18,9 +18,12 @@ function useAuthentication(): AuthorizationService {
   // TokenService.getAccessToken()?.access?.toString()?.split(".").length>1; 
   TokenService.getAccessToken()?.access?.toString()?.split("."); 
 
+  const getAuthUser = () => TokenService.getAccessToken();
+
   return {
     currentPath: location.pathname,
     isAuthenticated: isAuthenticated,
+    getAuthUser: getAuthUser
   };
 }
 

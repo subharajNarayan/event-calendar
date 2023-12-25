@@ -19,11 +19,6 @@ const TeamIndex = (props: Props) => {
         <ModalBody>
           <Form />
         </ModalBody>
-        {/* <ModalFooter>
-          <Button color="secondary" onClick={toggleModal}>
-            Close
-          </Button>
-        </ModalFooter> */}
       </Modal>
 
     </div>
