@@ -5,11 +5,11 @@ import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
 import axios from 'axios';
 import { RootState } from '../../../../store/root-reducer';
+import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
 
 interface Props extends PropsFromRedux {
-  users: { name: string; color: string }[];
+  users: { username: string; color: string }[];
   onFilterChange: (user: string[]) => void;
-  TeamDetails: any;
 }
 
 const AppSidebar = (props: Props) => {
@@ -21,15 +21,23 @@ const AppSidebar = (props: Props) => {
     setIsOpen(!isOpen)
   }
 
+  console.log(props.users, "TEAM MEMBER");
+  
+
   const dispatch = useDispatch()
 
   React.useEffect(() => {
     dispatch(getTeamMemberLogsAction())
+    dispatch(getTaskLogsAction())
   }, [])
 
   const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data)
+  const TaskDetails = useSelector((state: RootState) => state.taskData.getTaskLogs.data)
+
 
   console.log({ TeamDetails });
+  console.log({ TaskDetails });
+
 
   const [data, setData] = React.useState([]);
   console.log({ data });
@@ -44,14 +52,28 @@ const AppSidebar = (props: Props) => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
+      axios.get('http://localhost:5000/api/task') // Replace with API endpoint
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
+  
+
+  // const events = TaskDetails.map((task: any) => ({
+  //   // Adjust the properties based on your task details structure
+  //   name: task.name,
+  //   date: task.date,
+  // }));
 
   function selectAllRows(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
       const allRows = props.users.map((rowData, index) => index);
       setSelectedRows(allRows);
       // Call onFilterChange for each selected user
-      props.onFilterChange(props.users.map(({ name }, index) => name))
+      props.onFilterChange(props.users.map(({ username }, index) => username))
     } else {
       setSelectedRows([]);
       props.onFilterChange([])
@@ -69,7 +91,7 @@ const AppSidebar = (props: Props) => {
   }
 
   React.useEffect(() => {
-    props.onFilterChange(selectedRows.map(index => props.users[index].name));
+    props.onFilterChange(selectedRows.map(index => props.users[index].username));
   }, [selectedRows.length]);
 
   return (
@@ -117,8 +139,8 @@ const AppSidebar = (props: Props) => {
                         checked={selectedRows.includes(index)}
                         onChange={selectRow} />
                     </td>
-                    <td>{item.name}</td>
-                    <td> <span style={{ backgroundColor: item.color, padding: "0.6rem",display: "inline-block", position: "relative", borderRadius: "50%" }}></span> </td>
+                    <td>{item.username}</td>
+                    <td> <span style={{ backgroundColor: item.color, padding: "0.6rem", display: "inline-block", position: "relative", borderRadius: "50%" }}></span> </td>
                   </tr>
                 )
               })}
@@ -149,7 +171,8 @@ const mapStateToProps = () => ({
 })
 
 const mapDispatchToProps = {
-  getTeamMemberLogsAction
+  getTeamMemberLogsAction,
+  getTaskLogsAction
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

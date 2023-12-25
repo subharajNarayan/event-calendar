@@ -7,6 +7,7 @@ import { Table } from 'reactstrap';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 const localizer = momentLocalizer(moment);
 
@@ -17,7 +18,8 @@ interface Event {
   end_date: string;
   description: string; // Include this line
   assigned_user_name: string;
-  assigned_colour: string;
+  // assigned_colour: string;
+  color: string;
 }
 
 
@@ -28,6 +30,8 @@ interface DBEvent {
   end_date: string;
   description: string;
   assigned_user_name: string;
+  // assigned_colour:string;
+  color: string;
 }
 
 
@@ -126,8 +130,17 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   const [selectedEvent, setSelectedEvent] = useState<DBEvent | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM YYYY'));
-  const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day'>('calendar');
+  const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day' | 'listweek' | 'listday'>('calendar');
+  // const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day'>('calendar');
+  const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
+
+
+  React.useEffect(() => {
+    setUnfilteredEvents(events);
+  }, []);
+
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -140,7 +153,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   const eventStyleGetter = (event: Event) => {
     return {
       style: {
-        backgroundColor: event.assigned_colour,
+        backgroundColor: event.color,
         color: 'white',
       },
     };
@@ -153,6 +166,26 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   };
 
 
+  // In CalendarIndex.tsx
+const [users, setUsers] = useState([]);
+const [eventss, setEvents] = useState([]);
+// const [unfilteredEvents, setUnfilteredEvents] = useState([]);
+
+React.useEffect(() => {
+  // Fetch events using Axios when the component mounts
+  axios.get('http://localhost:5000/api/events') // Replace with API endpoint for events
+    .then((response) => {
+      // Update the events state with the fetched data
+      setEvents(response.data);
+      setUnfilteredEvents(response.data);
+    })
+    .catch((error) => {
+      console.error('Error fetching events:', error);
+    });
+}, []);
+
+
+
   const handleSelectEvent = (event: Event) => {
     let dbEvent: DBEvent = {
       id: event.id,
@@ -160,7 +193,9 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       description: event.description,
       start_date: moment(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
       end_date: event.end_date ? moment(event.end_date).format('YYYY-MM-DD HH:mm:ss') : '',
-      assigned_user_name: event.assigned_user_name
+      assigned_user_name: event.assigned_user_name,
+      color: event.color,
+      // assigned_colour: event.assigned_colour
     }
     setSelectedEvent(dbEvent);
     setSelectedDate(null);
@@ -230,6 +265,36 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
           goToMonthView={() => {}}
           goToWeekView={() => {}}
           goToDayView={() => {}}
+
+          // goToMonthView={() => {
+          //   let today = moment(currentDate);
+          //   events(unfilteredEvents.filter(event => {
+          //     return moment(event.start).isBetween(
+          //       today.startOf('month').format('YYYY-MM-DD'), today.endOf('month').format('YYYY-MM-DD')
+          //     );
+          //   }));
+          //   console.log('clicked:month');
+          //   setCurrentView('list');
+          // }}
+          // goToWeekView={() => {
+          //   let today = moment(currentDate);
+          //   setEvents(unfilteredEvents.filter(event => {
+          //     return moment(event.start).isBetween(
+          //       today.startOf('week').format('YYYY-MM-DD'), today.endOf('week').format('YYYY-MM-DD')
+          //     );
+          //   }));
+          //   console.log('clicked:week');
+
+          //   setCurrentView('listweek');
+          // }}
+          // goToDayView={() => {
+          //   let today = moment(currentDate);
+          //   setEvents(unfilteredEvents.filter(event => {
+          //     return moment(event.start).isSame(today);
+          //   }));
+          //   console.log('clicked:day');
+          //   setCurrentView('listday');
+          // }}
           switchToCalendarView={switchToCalendarView}
           switchToListView={switchToListView}
           showAllButton={true}
@@ -242,6 +307,8 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
                 <th>Title</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>Assigned To</th>
+                {/* <th></th> */}
               </tr>
             </thead>
             <tbody>
@@ -250,6 +317,8 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
                   <td>{item.title}</td>
                   <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
                   <td>{moment(item.end_date).format('MMM D, YYYY')}</td>
+                  <td>{item.assigned_user_name} </td>
+                  {/* <td><span style={{ backgroundColor: item.assigned_colour, padding: "0.6rem",display: "inline-block", position: "relative", borderRadius: "50%" }}></span></td> */}
                 </tr>
               ))}
             </tbody>
