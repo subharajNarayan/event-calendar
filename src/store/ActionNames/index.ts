@@ -118,6 +118,14 @@ export enum RequestMethod {
         requestBodyType: RequestBodyType.AUTH
       },
     },
+    CommentLog: {
+      postCommentLogs: {
+        controllerName: "/api/comment",
+        actionName: "POST_COMMENT",
+        requestMethod: RequestMethod.POST,
+        requrestBodyType: RequestBodyType.AUTH
+      },
+    },
 }
 
 type ApiList = typeof apiDetails;

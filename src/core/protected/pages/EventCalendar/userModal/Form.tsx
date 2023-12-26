@@ -4,25 +4,29 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import toast from '../../../../../components/Notifier/Notifier';
 import Button from '../../../../../components/UI/Forms/Buttons';
-
+import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
+import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
+import { RootState } from '../../../../../store/root-reducer';
 
 const validationSchema = Yup.object({
 });
 
-interface Props {
-  // events: any
+interface Props extends PropsFromRedux {
+  selectedEvent: any;
 }
 
 const Form = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
 
-  // console.log(props.events, "Form");
-
-
   const [initialData, setInitialData] = React.useState({
     comment: "",
+    // Add other fields from selectedEvent as needed
+    // eventId: props.selectedEvent.id,
+    title: props.selectedEvent.title,
+    username: props.selectedEvent.assigned_user_name,
   });
+console.log({initialData});
 
   console.log({ initialData });
 
@@ -38,22 +42,24 @@ const Form = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
+      let res;
       setIsLoader(true);
-      try {
-        // Include 'color' in the payload
-        // const payload = { ...values, color: values.color || predefinedColors[0] };
 
-        // Make sure to replace the URL with your actual API endpoint
-        await axios.post('http://localhost:5000/api/register')
-          .then((response) => {
-            setInitialData(response.data);
-            toast.success('Hooray... Data posted Successful');
-            resetForm();
-          });
-      } catch (error) {
-        console.error('Error:', error);
-        toast.error('Oops! Something went wrong.');
+      res = await props.postCommentLogsAction({
+        ...submitValue
+      })
+      if (res.status === 200 || res.status === 201) {
+        if (res.status === 200) {
+          setInitialData(initialData)
+          resetForm();
+          toast.success("Data posted successful...!")
+        } else {
+          toast.error("Oops...Something is Wrong!")
+        }
+      } else {
+        toast.error("SERVER ERROR")
       }
+      
       setIsLoader(false)
     }
   })
@@ -68,7 +74,7 @@ const Form = (props: Props) => {
           }} autoComplete='off'>
           <div className='form-group'>
             <label htmlFor="">Address <span className="text-danger">*</span></label>
-            <textarea name="comment" id=""
+            <textarea name="comment" 
               cols={30}
               rows={2}
               placeholder='Comment Here'
@@ -84,6 +90,8 @@ const Form = (props: Props) => {
               className='btn custom-btn text-white'
               type='submit'
               text="SUBMIT"
+              disabled={props.loading}
+              loading={props.loading}
             />
           </div>
         </form>
@@ -92,4 +100,16 @@ const Form = (props: Props) => {
   )
 }
 
-export default Form;
+const mapStateToProps = (state:RootState) => ({
+  loading: state.commentData.postCommentLogs.isFetching
+})
+
+const mapDispatchToProps = {
+  postCommentLogsAction
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export default connector(Form);

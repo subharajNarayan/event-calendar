@@ -8,6 +8,7 @@ import registerReducer from "./modules/register/register";
 // import {addUserDetailsGoogle} from  "./modules/userDetails/index"
 import teamMemberData from "./modules/TeamMember";
 import taskData from "./modules/Tasks";
+import commentData from "./modules/comment";
 
 
 export const appReducer = combineReducers({
@@ -17,7 +18,8 @@ export const appReducer = combineReducers({
     outhService:outhReducer,
     userDetails,
     teamMemberData,
-    taskData
+    taskData,
+    commentData
 });
 
 export type RootState = ReturnType<typeof appReducer>;
