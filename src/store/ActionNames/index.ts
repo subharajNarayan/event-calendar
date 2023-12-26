@@ -44,13 +44,14 @@ export enum RequestMethod {
     oauth: {
       login: {
         // controllerName: "api/signin/",
-        controllerName: "api/loginTeam",
+        // controllerName: "api/loginTeam",
+        controllerName: "/api/login/",
         actionName: "LOGIN",
         requestMethod: RequestMethod.POST,
         requestBodyType: RequestBodyType.NOAUTH
       },
       register: {
-        controllerName: "/api/signup/",
+        controllerName: "/api/userprofiles/",
         actionName: "REGISTER",
         requestMethod: RequestMethod.POST,
         requestBodyType: RequestBodyType.NOAUTH
@@ -60,33 +61,33 @@ export enum RequestMethod {
         actionName: "INIT",
         requestMethod: RequestMethod.GET
       },
-      autosearch:{
-        controllerName:"/api/v1/search_animal/",
-        actionName:"AUTOSEARCH",
-        requestMethod: RequestMethod.GET
-      }
+      // autosearch:{
+      //   controllerName:"/api/v1/search_animal/",
+      //   actionName:"AUTOSEARCH",
+      //   requestMethod: RequestMethod.GET
+      // }
     },
     TeamMemberLog: {
       postTeamMemberLogs: {
-        controllerName: "/api/teammember",
+        controllerName: "/api/userprofiles/",
         actionName: "POST_TEAMMEMBER",
         requestMethod: RequestMethod.POST,
         requrestBodyType: RequestBodyType.AUTH
       },
       getTeamMemberLogs: {
-        controllerName: "/api/teammember",
+        controllerName: "/api/userprofiles/",
         actionName: "GET_TEAMMEMBER",
         requestMethod: RequestMethod.GET,
         requestBodyType: RequestBodyType.AUTH
       },
       updateTeamMemberLogs: {
-        controllerName: "/api/teammember/{id}",
+        controllerName: "/api/userprofiles/{id}",
         actionName: "UPDATE_TEAMMEMBER",
         requestMethod: RequestMethod.PUT,
         requestBodyType: RequestBodyType.AUTH
       },
       deleteTeamMemberLogs: {
-        controllerName: "/api/teammember/{id}",
+        controllerName: "/api/userprofiles/{id}",
         actionName: "DELETE_TEAMMEMBER",
         requestMethod: RequestMethod.DELETE,
         requestBodyType: RequestBodyType.AUTH
@@ -94,25 +95,25 @@ export enum RequestMethod {
     },
     TaskLog: {
       postTaskLogs: {
-        controllerName: "/api/task",
+        controllerName: "/api/tasks/",
         actionName: "POST_TASK",
         requestMethod: RequestMethod.POST,
         requrestBodyType: RequestBodyType.AUTH
       },
       getTaskLogs: {
-        controllerName: "/api/task",
+        controllerName: "/api/tasks/",
         actionName: "GET_TASK",
         requestMethod: RequestMethod.GET,
         requestBodyType: RequestBodyType.AUTH
       },
       updateTaskLogs: {
-        controllerName: "/api/task/{id}",
+        controllerName: "/api/tasks/{id}",
         actionName: "UPDATE_TASK",
         requestMethod: RequestMethod.PUT,
         requestBodyType: RequestBodyType.AUTH
       },
       deleteTaskLogs: {
-        controllerName: "/api/task/{id}",
+        controllerName: "/api/tasks/{id}",
         actionName: "DELETE_TASK",
         requestMethod: RequestMethod.DELETE,
         requestBodyType: RequestBodyType.AUTH

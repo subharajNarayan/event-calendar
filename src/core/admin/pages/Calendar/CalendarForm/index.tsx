@@ -23,7 +23,7 @@ const CalendarIndex = (props: Props) => {
       <Modal isOpen={isOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Add Task</ModalHeader>
         <ModalBody>
-          <Form editData={editData} />
+          <Form editData={editData} toggleModal={toggleModal}/>
         </ModalBody>
       </Modal>
       {/* <div className="demo d-none">

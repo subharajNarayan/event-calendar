@@ -31,12 +31,12 @@ const AppSidebar = (props: Props) => {
     dispatch(getTaskLogsAction())
   }, [])
 
-  const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data)
-  const TaskDetails = useSelector((state: RootState) => state.taskData.getTaskLogs.data)
+  // const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data)
+  // const TaskDetails = useSelector((state: RootState) => state.taskData.getTaskLogs.data)
 
 
-  console.log({ TeamDetails });
-  console.log({ TaskDetails });
+  // console.log({ TeamDetails });
+  // console.log({ TaskDetails });
 
 
   const [data, setData] = React.useState([]);
@@ -45,14 +45,14 @@ const AppSidebar = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('http://localhost:5000/api/teammember') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-      axios.get('http://localhost:5000/api/task') // Replace with API endpoint
+      axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })

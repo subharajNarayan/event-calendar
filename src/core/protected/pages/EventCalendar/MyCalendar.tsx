@@ -171,12 +171,12 @@ const TeamCalIndex = (props: CalendarProps) => {
   // ]);
 
   const [events, setEvents] = useState<any>([]);
-  // console.log();
+  console.log({events});
 
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('http://localhost:5000/api/task') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         let initialEvents = response.data.map((event: any) => ({ ...event, start: event.start_date, end: event.end_date }));
         // setEvents(initialEvents);

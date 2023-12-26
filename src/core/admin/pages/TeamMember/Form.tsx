@@ -9,7 +9,7 @@ import { RootState } from '../../../../store/root-reducer';
 import { postTeamMemberLogsAction } from '../../../../store/modules/TeamMember/postTeamMemberLogs';
 
 interface Props extends PropsFromRedux {
-
+  toggleModal: () => void; // Add toggleModal prop
 }
 
 const predefinedColors = [
@@ -46,10 +46,11 @@ const TeamMembForm = (props: Props) => {
       })
 
       if (res.status === 200 || res.status === 201) {
-        if (res.status === 200) {
+        if (res.status === 201 || res.status === 200) {
           setInitialData(TeamInitialValues)
-          resetForm()
           toast.success("Data Posted Successful...!")
+          resetForm()
+          props.toggleModal();
         } else {
           toast.error("Oops! Something went wrong...")
         }
@@ -59,10 +60,6 @@ const TeamMembForm = (props: Props) => {
       setIsLoader(false)
     }
   })
-
-  // const toggleColorOptions = () => {
-  //   setShowColorOptions(!showColorOptions);
-  // };
 
   return (
     <div>

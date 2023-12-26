@@ -29,6 +29,8 @@ function Login(props: Props): ReactElement {
     async (userDetails: UserCredentials) => {
       const loginres: any = await loginUser(userDetails);
       
+      console.log({loginres});
+      
       if (loginres?.data?.access) {
         toast.success("Logged In Successful")
         
@@ -157,11 +159,6 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
           </div>
         </div>
       </form>
-      {/* <div className="auth-signup">
-        <p className="align-vertical">Dont't have an account?
-          <Link to="/signup">Sign Up</Link>
-        </p>
-      </div> */}
     </div>
   );
 };

@@ -22,7 +22,7 @@ const Pagination = () => {
 
   useEffect(() => {
     try {
-      axios.get('http://localhost:5000/api/register')
+      axios.get('https://kyush.pythonanywhere.com/accounts/api/register')
       .then((response) => {
         setInitialState(response.data)
       })

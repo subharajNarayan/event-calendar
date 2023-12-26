@@ -26,9 +26,6 @@ function AdminDashboard(props: Props): ReactElement {
   const { children } = props;
   const navigate = useNavigate;
   const { isAuthenticated } = useAuthentication();
-
-  // console.log({props});
-  // console.log({children});
   
   return (
     <Suspense fallback={<FallbackLoader />}>

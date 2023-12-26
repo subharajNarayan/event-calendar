@@ -17,7 +17,7 @@ const TeamIndex = (props: Props) => {
       <Modal isOpen={isOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Add Team Members</ModalHeader>
         <ModalBody>
-          <Form />
+          <Form toggleModal={toggleModal}/>
         </ModalBody>
       </Modal>
 

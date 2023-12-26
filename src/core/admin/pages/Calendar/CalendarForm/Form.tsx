@@ -12,6 +12,7 @@ import { RootState } from '../../../../../store/root-reducer';
 
 interface Props extends PropsFromRedux {
   editData: any,
+  toggleModal: () => void;
 }
 
 const CalendarForm = (props: Props) => {
@@ -70,6 +71,7 @@ const CalendarForm = (props: Props) => {
           toast.success("Data Updated Successful...!")
           resetForm()
           setLoader(false);
+          props.toggleModal()
         } else {
           setInitialData(taskInitialValues)
           toast.success("Data Posted Successful...!")
@@ -90,7 +92,7 @@ const CalendarForm = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('http://localhost:5000/api/teammember') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/team_member') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })

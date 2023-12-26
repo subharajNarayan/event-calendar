@@ -28,120 +28,6 @@ const Home = (props: Props) => {
     dispatch(getTeamMemberLogsAction())
   }, [])
 
-  // const users = [
-  //   { name: 'Subharaj', color: 'blue' },
-  //   { name: 'test', color: 'orange' },
-  //   { name: 'Kyush', color: 'yellow' },
-  //   { name: 'Shreyas', color: 'green' },
-  //   { name: 'ABC', color: 'brown' },
-  //   { name: 'XYZ', color: 'gray' },
-  //   { name: 'EFG', color: 'pink' },
-  //   { name: 'STR', color: 'purple' },
-  // ];
-
-  // const events = [
-  //   {
-  //     id: 1,
-  //     title: 'Meeting',
-  //     start_date: "2023-12-12T02:00",
-  //     end_date: "2023-12-14T05:11" ,
-  //     description: 'Test',
-  //     assigned_user_name: "test",
-  //     assigned_colour: "blue"
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Conference',
-  //     start_date: "2023-12-18T14:00",
-  //     end_date: "2023-12-20T17:00",
-  //     description: 'Test',
-  //     assigned_user_name: "Subharaj",
-  //     assigned_colour: "orange"
-
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Acting',
-  //     start_date: "2023-11-13T10:00",
-  //     end_date: "2023-11-14T12:00",
-  //     description: 'Test',
-
-  //     assigned_user_name: "Kyush",
-  //     assigned_colour: "yellow"
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'test',
-  //     start_date: "2023-11-20T14:00",
-  //     end_date: "2023-11-23T17:00",
-  //     description: 'Test',
-  //     assigned_user_name: "Shreyas",
-  //     assigned_colour: "green"
-  //   },
-  //   {
-  //     id: 5,
-  //     title: 'ABC',
-  //     start_date: "2023-11-11T10:00",
-  //     end_date: "2023-11-12T12:00",
-  //     description: 'Test',
-  //     assigned_user_name: "ABC",
-  //     assigned_colour: "brown"
-  //   },
-  //   {
-  //     id: 6,
-  //     title: 'XYZ',
-  //     start_date: "2023-12-18T14:00",
-  //     end_date: "2023-12-20T17:00",
-  //     description: 'Test',
-  //     assigned_user_name: "XYZ",
-  //     assigned_colour: "gray"
-  //   },
-  //   {
-  //     id: 7,
-  //     title: 'EFG',
-  //     start_date: "2023-11-1T10:00",
-  //     end_date: "2023-11-2T12:00",
-  //     description: 'Test',
-  //     assigned_user_name: "EFG",
-  //     assigned_colour: "pink"
-  //   },
-  //   {
-  //     id: 8,
-  //     title: 'STR',
-  //     start_date: "2023-12-18T14:00",
-  //     end_date: "2023-12-20T17:00",
-  //     description: 'Test',
-  //     assigned_user_name: "STR",
-  //     assigned_colour: "purple"
-  //   },
-  //   {
-  //     id: 9,
-  //     title: 'Conference2',
-  //     start_date: "2023-11-18T14:00",
-  //     end_date: "2023-11-20T17:00",
-  //     description: 'Test2',
-  //     assigned_user_name: "Demo",
-  //     assigned_colour: "black"
-  //   },
-  //   {
-  //     id: 10,
-  //     title: 'Conference3',
-  //     start_date: "2023-11-18T14:00",
-  //     end_date: "2023-11-20T17:00",
-  //     description: 'Test3',
-  //     assigned_user_name: "Subharaj",
-  //     assigned_colour: "#a6ff00"
-  //   },
-  //   // Add more events as needed
-  // ];
-
-  // const TaskDetails = useSelector((state:RootState) => state.taskData.getTaskLogs.data)
-
-  // const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data)
-
-  // console.log({ TeamDetails });
-  // console.log({TaskDetails});
-
   const [users, setUsers] = React.useState([]);
   const [events, setEvents] = React.useState<any>([]);
   console.log({ users });
@@ -151,7 +37,7 @@ const Home = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('http://localhost:5000/api/task') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         setEvents(response.data);
       })
@@ -159,7 +45,7 @@ const Home = (props: Props) => {
         console.error('Error fetching data:', error);
       });
     // Fetch data using Axios when the component mounts
-    axios.get('http://localhost:5000/api/teammember') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setUsers(response.data);
       })

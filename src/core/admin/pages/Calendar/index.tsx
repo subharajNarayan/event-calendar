@@ -19,7 +19,7 @@ interface Event {
   description: string; // Include this line
   assigned_user_name: string;
   // assigned_colour: string;
-  color: string;
+  assigned_user_colour: string;
 }
 
 
@@ -31,7 +31,7 @@ interface DBEvent {
   description: string;
   assigned_user_name: string;
   // assigned_colour:string;
-  color: string;
+  assigned_user_colour: string;
 }
 
 
@@ -153,7 +153,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   const eventStyleGetter = (event: Event) => {
     return {
       style: {
-        backgroundColor: event.color,
+        backgroundColor: event.assigned_user_colour,
         color: 'white',
       },
     };
@@ -173,7 +173,7 @@ const [eventss, setEvents] = useState([]);
 
 React.useEffect(() => {
   // Fetch events using Axios when the component mounts
-  axios.get('http://localhost:5000/api/events') // Replace with API endpoint for events
+  axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint for events
     .then((response) => {
       // Update the events state with the fetched data
       setEvents(response.data);
@@ -194,7 +194,7 @@ React.useEffect(() => {
       start_date: moment(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
       end_date: event.end_date ? moment(event.end_date).format('YYYY-MM-DD HH:mm:ss') : '',
       assigned_user_name: event.assigned_user_name,
-      color: event.color,
+      assigned_user_colour: event.assigned_user_colour,
       // assigned_colour: event.assigned_colour
     }
     setSelectedEvent(dbEvent);
@@ -260,41 +260,11 @@ React.useEffect(() => {
       {currentView === 'list' && (
         <div>
           <CustomToolbar
-          toolbar={{ label: currentMonth, onNavigate: () => {} }}
+          toolbar={{ label: currentMonth, onNavigate: handleNavigate }}
           currentView={currentView}
           goToMonthView={() => {}}
           goToWeekView={() => {}}
           goToDayView={() => {}}
-
-          // goToMonthView={() => {
-          //   let today = moment(currentDate);
-          //   events(unfilteredEvents.filter(event => {
-          //     return moment(event.start).isBetween(
-          //       today.startOf('month').format('YYYY-MM-DD'), today.endOf('month').format('YYYY-MM-DD')
-          //     );
-          //   }));
-          //   console.log('clicked:month');
-          //   setCurrentView('list');
-          // }}
-          // goToWeekView={() => {
-          //   let today = moment(currentDate);
-          //   setEvents(unfilteredEvents.filter(event => {
-          //     return moment(event.start).isBetween(
-          //       today.startOf('week').format('YYYY-MM-DD'), today.endOf('week').format('YYYY-MM-DD')
-          //     );
-          //   }));
-          //   console.log('clicked:week');
-
-          //   setCurrentView('listweek');
-          // }}
-          // goToDayView={() => {
-          //   let today = moment(currentDate);
-          //   setEvents(unfilteredEvents.filter(event => {
-          //     return moment(event.start).isSame(today);
-          //   }));
-          //   console.log('clicked:day');
-          //   setCurrentView('listday');
-          // }}
           switchToCalendarView={switchToCalendarView}
           switchToListView={switchToListView}
           showAllButton={true}
