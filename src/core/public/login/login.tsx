@@ -32,7 +32,8 @@ function Login(props: Props): ReactElement {
       console.log({loginres});
       
       if (loginres?.data?.access) {
-        toast.success("Logged In Successful")
+        // toast.success("Logged In Successful")
+        toast.success(loginres.data.message)
         
         props.addUserDetails(loginres.data);
         console.log({d:loginres.data});
@@ -42,7 +43,8 @@ function Login(props: Props): ReactElement {
           history("/auth/home");
         }
       } else {
-        toast.error(loginres?.message?.error)
+        // toast.error(loginres?.data?.message)
+        toast.error("Server Error")
         // toast.error("Server is taking too long to respond, please try again in sometime!");
       }
     },

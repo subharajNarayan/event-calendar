@@ -21,7 +21,7 @@ const AppSidebar = (props: Props) => {
     setIsOpen(!isOpen)
   }
 
-  console.log(props.users, "TEAM MEMBER");
+  // console.log(props.users, "TEAM MEMBER");
   
 
   const dispatch = useDispatch()
@@ -40,7 +40,7 @@ const AppSidebar = (props: Props) => {
 
 
   const [data, setData] = React.useState([]);
-  console.log({ data });
+  // console.log({ data });
 
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {

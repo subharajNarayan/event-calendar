@@ -55,7 +55,7 @@ const CalendarForm = (props: Props) => {
       setLoader(true);
 
 
-      if (props.editData) {
+      if (props.editData?.id) {
         res = await props.updateTaskLogsAction(props.editData.id, {
           ...submitValue
         })

@@ -6,6 +6,7 @@ import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
 import { RootState } from '../../../../store/root-reducer';
 import axios from 'axios';
+import moment from 'moment';
 
 
 interface Props extends PropsFromRedux {
@@ -30,16 +31,21 @@ const Home = (props: Props) => {
 
   const [users, setUsers] = React.useState([]);
   const [events, setEvents] = React.useState<any>([]);
-  console.log({ users });
-  console.log({ events });
-
 
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
     axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
-        setEvents(response.data);
+        // get js Date Object from momentjs
+        let initialEvents = response.data.map((event: any) => 
+          ({ 
+            ...event, 
+            start_date: moment(event.start_date).toDate(), 
+            end_date: moment(event.end_date).toDate() 
+          }));
+          
+        setEvents(initialEvents);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -54,12 +60,9 @@ const Home = (props: Props) => {
       });
   }, []);
 
-  const filteredEvents = events.filter((item: { assigned_user_name: string; }) =>
-    selectedUsers.includes(item.assigned_user_name)
-  )
-
-  console.log({filteredEvents});
-  
+  const filteredEvents = events.filter((item: { assigned_user_name: string; }) => {
+    return selectedUsers.length == 0 || selectedUsers.includes(item.assigned_user_name);
+  })
 
 
   const handleUserToggle = (userName: string[]) => {
