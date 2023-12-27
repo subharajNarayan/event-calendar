@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { ConnectedProps, connect } from 'react-redux';
-import Form from './Form';
-import { RootState } from '../../../../../store/root-reducer';
-import { updateTaskLogsAction } from '../../../../../store/modules/Tasks/updateTaskLogs';
+// import { updateTaskLogsAction } from '../../../../../store/modules/Tasks/updateTaskLogs';
 import { useFormik } from 'formik';
-import toast from '../../../../../components/Notifier/Notifier';
+// import toast from '../../../../../components/Notifier/Notifier';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import toast from '../../../../../components/Notifier/Notifier';
 import { DeleteIcon, EditIconDark } from '../../../../../assets/images/xd';
+import { updateTaskLogsAction } from '../../../../../store/modules/Tasks/updateTaskLogs';
+import { RootState } from '../../../../../store/root-reducer';
+// import { DeleteIcon, EditIconDark } from '../../../../../assets/images/xd';
 interface Props extends PropsFromRedux {
-  isOpen: boolean;
-  toggleModal: () => void;
-  selectedEvent: any;
+  detailsModal: boolean;
+  toggleDetailsModal: () => void;
+  selectedDetails: any;
 }
 
 const validationSchema = Yup.object({});
 
-const TeamIndex = (props: Props) => {
+const AdminIndex = (props: Props) => {
   const [initialData, setInitialData] = useState({
     task_complete: 'false',
   });
@@ -30,8 +32,8 @@ const TeamIndex = (props: Props) => {
   }, [initialData.task_complete]);
 
   const handleTickButtonClick = async () => {
-    const res = await props.updateTaskLogsAction(props.selectedEvent.id, {
-      ...props.selectedEvent,
+    const res = await props.updateTaskLogsAction(props.selectedDetails.id, {
+      ...props.selectedDetails,
       task_complete: (!isTaskComplete).toString(),
     });
 
@@ -60,9 +62,9 @@ const TeamIndex = (props: Props) => {
 
   return (
     <div>
-      <Modal isOpen={props.isOpen} toggle={props.toggleModal}>
-        <ModalHeader toggle={props.toggleModal}>
-          {props.selectedEvent ? props.selectedEvent.title : ''}
+      <Modal isOpen={props.detailsModal} toggle={props.toggleDetailsModal}>
+        <ModalHeader toggle={props.toggleDetailsModal}>
+          {props.selectedDetails ? props.selectedDetails.title : ''}
           <div className="right-side-btn " style={{position:"absolute", right:"47px", top:"14px"}}>
             <div className="action d-flex align-item-center">
               <div role='button' className="mr-0" 
@@ -85,14 +87,14 @@ const TeamIndex = (props: Props) => {
         <ModalBody>
           <div className="event-body">
             <div className="description">
-              <p style={{ fontSize: '12px' }}>{props.selectedEvent.start_date}</p>
-              <text>{props.selectedEvent.description}</text>
+              <p style={{ fontSize: '12px' }}>{props.selectedDetails.start_date}</p>
+              <text>{props.selectedDetails.description}</text>
             </div>
             <hr />
             <div className="date-time">
-              <p className='d-flex align-items-center '>Assignee: {props.selectedEvent.assigned_user_name}</p>
+              <p className='d-flex align-items-center '>Assignee: {props.selectedDetails.assigned_user_name}</p>
             </div>
-            <Form selectedEvent={props.selectedEvent} toggleModal={props.toggleModal} />
+            {/* <Form selectedDetails={props.selectedDetails} toggleModal={props.toggleModal} /> */}
           </div>
         </ModalBody>
       </Modal>
@@ -112,4 +114,4 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(TeamIndex);
+export default connector(AdminIndex);

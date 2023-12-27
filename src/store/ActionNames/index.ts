@@ -121,10 +121,16 @@ export enum RequestMethod {
     },
     CommentLog: {
       postCommentLogs: {
-        controllerName: "/api/comment",
+        controllerName: "/api/comments/",
         actionName: "POST_COMMENT",
         requestMethod: RequestMethod.POST,
         requrestBodyType: RequestBodyType.AUTH
+      },
+      getCommentLogs: {
+        controllerName: "/api/comments/",
+        actionName: "GET_COMMENT",
+        requestMethod: RequestMethod.GET,
+        requestBodyType: RequestBodyType.AUTH
       },
     },
 }

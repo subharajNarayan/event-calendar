@@ -6,6 +6,9 @@ export const taskInitialValues = {
   start_date: "",
   end_date: "",
   assigned_user_name:"",
+  task_complete: false,
+  status: "active",
+  location: ""
 };
 
 export const taskValidationSchema = Yup.object().shape({

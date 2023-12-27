@@ -7,28 +7,23 @@ import initDefaultReducer from "../../helper/default-reducer";
 import initialState from "../../helper/default-state";
 
 
-export type TaskType = {
+export type CommentType = {
   id: number,
+  comment: string,
   title: string,
-  description: string,
-  start_date: string,
-  end_date: string,
-  assigned_user_name: string,
-  assigned_colour: string,
-  task_complete: boolean,
-  status: string,
-  location: string,
+  username: string,
+  created_at: string
 }[]
 
-const apiDetails = Object.freeze(apiList.TaskLog.getTaskLogs);
+const apiDetails = Object.freeze(apiList.CommentLog.getCommentLogs);
 
-export default function getTaskLogsReducer(state = initialState, action: DefaultAction): DefaultState<TaskType> {
+export default function getCommentLogsReducer(state = initialState, action: DefaultAction): DefaultState<CommentType> {
   const stateCopy = Object.assign({}, state);
   const actionName = apiDetails.actionName;
 
   return initDefaultReducer(actionName, action, stateCopy);
 }
 
-export const getTaskLogsAction = (): AppThunk<APIResponseDetail<TaskType>> => async (dispatch: Dispatch) => {
+export const getCommentLogsAction = (): AppThunk<APIResponseDetail<CommentType>> => async (dispatch: Dispatch) => {
   return await initDefaultAction(apiDetails, dispatch, { disableSuccessToast: true });
 };

@@ -131,6 +131,16 @@ const CalendarForm = (props: Props) => {
             ></textarea>
           </div>
           <div className='form-group'>
+            <label htmlFor="">Address</label>
+            <input
+              className='form-control'
+              name='location'
+              value={values.location}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </div>
+          <div className='form-group'>
             <label htmlFor="">Start Date</label>
             <input
               className='form-control'

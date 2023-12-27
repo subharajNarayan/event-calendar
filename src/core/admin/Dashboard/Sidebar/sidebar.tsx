@@ -6,23 +6,31 @@ import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/ge
 import axios from 'axios';
 import { RootState } from '../../../../store/root-reducer';
 import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
+import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
+import toast from '../../../../components/Notifier/Notifier';
+import { deleteTeamMemberLogsAction } from '../../../../store/modules/TeamMember/deleteTeamMemberLogs';
+import ConfirmationModal from '../../../../components/UI/ConfirmationModal';
+import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
 
 interface Props extends PropsFromRedux {
-  users: { username: string; color: string }[];
+  users: { id: number; username: string; color: string }[];
   onFilterChange: (user: string[]) => void;
+  // setEditData: any;
+  setEditData: (data: any) => void;
 }
 
 const AppSidebar = (props: Props) => {
 
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [isOpen, setIsOpen] = React.useState(false)
+  const { modal, editId, toggleModal, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
 
-  const toggleModal = () => {
+  const toggleTeamModal = () => {
     setIsOpen(!isOpen)
   }
 
   // console.log(props.users, "TEAM MEMBER");
-  
+
 
   const dispatch = useDispatch()
 
@@ -52,7 +60,7 @@ const AppSidebar = (props: Props) => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-      axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
@@ -60,13 +68,6 @@ const AppSidebar = (props: Props) => {
         console.error('Error fetching data:', error);
       });
   }, []);
-  
-
-  // const events = TaskDetails.map((task: any) => ({
-  //   // Adjust the properties based on your task details structure
-  //   name: task.name,
-  //   date: task.date,
-  // }));
 
   function selectAllRows(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
@@ -94,15 +95,38 @@ const AppSidebar = (props: Props) => {
     props.onFilterChange(selectedRows.map(index => props.users[index].username));
   }, [selectedRows.length]);
 
+  const handleTeamMemberAction = async () => {
+    const res = await props.deleteTeamMemberLogsAction(editId);
+
+    if (res.status === 200 || res.status === 201 || res.status === 204) {
+      toast.success("Data Deleted Successful...!")
+      resetDeleteData();
+      // setData();
+    } else {
+      toast.error("Server Error")
+    }
+  }
+
+  const [TeamData, setTeamEditData] = React.useState<any>();
+
+  // console.log(TeamData, "sidebarTeam");
+  
+  const handleEditClick = (data: any) => {
+    setTeamEditData(data);
+    toggleTeamModal();
+  }
+
+  
+
   return (
     <>
-      <TeamIndex isOpen={isOpen} toggleModal={toggleModal} />
+      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData}/>
       <aside className="sidebar">
         <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
           <div className='sidebar-header-top align-vertical px-3 mt-2'>
             <div className='d-flex'>
               <h6 className='sidebar-text text-center text-uppercase font-bold'>Team Members
-                <span className="p-2" onClick={() => toggleModal()} style={{ cursor: "pointer" }}>
+                <span className="p-2" onClick={() => toggleTeamModal()} style={{ cursor: "pointer" }}>
                   +
                 </span>
               </h6>
@@ -124,6 +148,7 @@ const AppSidebar = (props: Props) => {
                 </th>
                 <th className='text-black'>Select All</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -141,27 +166,29 @@ const AppSidebar = (props: Props) => {
                     </td>
                     <td>{item.username}</td>
                     <td> <span style={{ backgroundColor: item.color, padding: "0.6rem", display: "inline-block", position: "relative", borderRadius: "50%" }}></span> </td>
+                    <td className='action d-flex align-item-center'>
+                      <div role='button' className="mr-0" onClick={() => {
+                        // props.setEditData(item);
+                        handleEditClick(item)
+                      }}>
+                        <img src={EditIconDark} alt="edit" width="10px"  className='mx-2'/>
+                      </div>
+                      <div role='button' className="mr-0" onClick={() => {
+                        handleDeleteClick(item.id)
+                      }}>
+                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2'/>
+                      </div>
+                    </td>
                   </tr>
                 )
               })}
-              {/* {props.users.map((item, index) => (
-                <tr key={index}>
-                  <td >
-                    <input
-                      style={{ color: item.color }}
-                      value={index}
-                      type="checkbox"
-                      id="checked-data"
-                      checked={selectedRows.includes(index)}
-                      onChange={selectRow} />
-                  </td>
-                  <td>{item.name}</td>
-                </tr>
-              ))} */}
             </tbody>
           </Table>
         </div>
       </aside>
+      <ConfirmationModal open={modal}
+        handleModal={() => toggleModal()}
+        handleConfirmClick={() => handleTeamMemberAction()} />
     </>
   )
 }
@@ -172,7 +199,8 @@ const mapStateToProps = () => ({
 
 const mapDispatchToProps = {
   getTeamMemberLogsAction,
-  getTaskLogsAction
+  getTaskLogsAction,
+  deleteTeamMemberLogsAction,
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

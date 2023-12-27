@@ -7,9 +7,12 @@ import toast from '../../../../components/Notifier/Notifier';
 import { TeamInitialValues, validationSchema } from './schema';
 import { RootState } from '../../../../store/root-reducer';
 import { postTeamMemberLogsAction } from '../../../../store/modules/TeamMember/postTeamMemberLogs';
+import { updateTeamMemberLogsAction } from '../../../../store/modules/TeamMember/updateTeamMemberLogs';
+import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
 
 interface Props extends PropsFromRedux {
   toggleModal: () => void; // Add toggleModal prop
+  editData: any;
 }
 
 const predefinedColors = [
@@ -20,11 +23,36 @@ const TeamMembForm = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
   const [showColorOptions, setShowColorOptions] = React.useState(false);
+  // console.log(props.editData, "AAYO SET EDIT");
 
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
-    ...TeamInitialValues
+    ...TeamInitialValues, ...(props.editData || {})
   });
+
+  console.log(initialData, "initialData");
+  
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    // if (props.editData) {
+    //   setInitialData({
+    //     ...props.editData,
+    //   })
+    // }
+    if (props.editData) {
+      setInitialData({
+        ...props.editData,
+      });
+    } else {
+      // Set default values for creating a new team member
+      setInitialData({
+        ...TeamInitialValues,
+        color: predefinedColors[0], // Set the default color here
+      });
+    }
+    dispatch(getTeamMemberLogsAction())
+  }, [props.editData]);
 
   const {
     values,
@@ -34,30 +62,41 @@ const TeamMembForm = (props: Props) => {
     handleChange,
     handleBlur,
   } = useFormik({
-    initialValues: initialData,
+    initialValues: props.editData || initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-
+      console.log('Submitting form with values:', submitValue);
       let res
       setIsLoader(true);
 
-      res = await props.postTeamMemberLogsAction({
-        ...submitValue
-      })
+      if (props.editData && props.editData.id) {
+        res = await props.updateTeamMemberLogsAction(props.editData.id, {
+          ...submitValue,
+        });
+      } else {
+        res = await props.postTeamMemberLogsAction({
+          ...submitValue,
+        });
+      }
+      
 
-      if (res.status === 200 || res.status === 201) {
-        if (res.status === 201 || res.status === 200) {
+      if (res.status === 201 || res.status === 200) {
+        if (props.editData) {
+          setInitialData(TeamInitialValues)
+          toast.success("Data Updated Successful...!")
+          resetForm()
+          // setLoader(false);
+          props.toggleModal()
+        } else {
           setInitialData(TeamInitialValues)
           toast.success("Data Posted Successful...!")
           resetForm()
-          props.toggleModal();
-        } else {
-          toast.error("Oops! Something went wrong...")
+          // setLoader(false)
         }
-      }else{
-        toast.error("SERVER ERROR...")
+      } else {
+        toast.error("SERVER ERROR")
+        // setLoader(false)
       }
-      setIsLoader(false)
     }
   })
 
@@ -80,18 +119,7 @@ const TeamMembForm = (props: Props) => {
             <FormikValidationError name='username' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
-            <label htmlFor="">Address <span className="text-danger">*</span></label>
-            <input
-              className='form-control'
-              name='address'
-              value={values.address}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            <FormikValidationError name='address' errors={errors} touched={touched} />
-          </div>
-          <div className='form-group'>
-            <label htmlFor="">Contact No. <span className="text-danger">*</span></label>
+            <label htmlFor="">Phone No. <span className="text-danger">*</span></label>
             <input
               className='form-control'
               name='contactnumber'
@@ -99,7 +127,6 @@ const TeamMembForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormikValidationError name='contactnumber' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
             <label htmlFor="">Email <span className="text-danger">*</span></label>
@@ -110,12 +137,12 @@ const TeamMembForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormikValidationError name='email' errors={errors} touched={touched} />
+            {/* <FormikValidationError name='email' errors={errors} touched={touched} /> */}
           </div>
           <div className='form-group'>
             <label htmlFor="">Password <span className="text-danger">*</span></label>
             <input
-            type='password'
+              type='password'
               className="form-control"
               name='password'
               value={values.password}
@@ -153,11 +180,14 @@ const TeamMembForm = (props: Props) => {
 
 const mapStateToProps = (state: RootState) => ({
   loading:
+    state.teamMemberData.updateTeamMemberLogs.isFetching ||
     state.teamMemberData.postTeamMemberLogs.isFetching
 });
 
 const mapDispatchToProps = {
+  getTeamMemberLogsAction,
   postTeamMemberLogsAction,
+  updateTeamMemberLogsAction
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

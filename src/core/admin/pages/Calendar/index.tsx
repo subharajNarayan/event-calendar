@@ -6,8 +6,12 @@ import CalendarIndex from './CalendarForm';
 import { Table } from 'reactstrap';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarAlt, faCheck, faList, faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import AdminIndex from './AdminModal';
+import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
+import Button from '../../../../components/UI/Forms/Buttons';
 
 const localizer = momentLocalizer(moment);
 
@@ -42,7 +46,7 @@ interface CalendarProps {
 
 const CustomToolbar: React.FC<{
   toolbar: any;
-  currentView:'month' | 'week' | 'day';
+  currentView: 'month' | 'week' | 'day';
   view: 'calendar' | 'list';
   goToMonthView: () => void;
   goToWeekView: () => void;
@@ -152,6 +156,9 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
   const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('month');
 
+  const [detailsModal, setDetailsModal] = useState(false);
+  const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
+
   React.useEffect(() => {
     setUnfilteredEvents(events);
   }, [events.length]);
@@ -160,6 +167,9 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
     setIsFormOpen(!isFormOpen);
   };
 
+  const toggleDetailsModal = () => {
+    setDetailsModal(!detailsModal);
+  }
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
@@ -175,13 +185,13 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedDate(slotInfo.start);
-    const event : DBEvent = {
+    const event: DBEvent = {
       start_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
       id: 0,
       title: '',
       description: '',
       // end_date: '',
-      end_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
+      end_date: moment(slotInfo.end).format('YYYY-MM-DD HH:mm:ss'),
       assigned_user_name: '',
       assigned_user_colour: '',
     };
@@ -207,6 +217,11 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
     toggleModal();
   };
 
+  const handleDetailEvent = (event: any) => {
+    setSelectedDetails(event);
+    setDetailsModal(true);
+  }
+
   const handleNavigate = (date: Date) => {
     setCurrentMonth(moment(date).format('MMMM YYYY'));
   };
@@ -217,7 +232,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
   const switchToListView = () => {
     console.log('clicked');
-    
+
     setCurrentView('list');
   };
 
@@ -228,20 +243,20 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
     }
   }, [isOpen]);
 
-  const getViewEvents = (currentViewOverride:string = '') => {
+  const getViewEvents = (currentViewOverride: string = '') => {
     switch (currentViewOverride || currentView) {
       case 'month': case 'list': case 'calendar': {
         return events.filter(event => {
-              return moment(event.start_date).isBetween(
-                moment().startOf('month').format('YYYY-MM-DD'), 
-                moment().endOf('month').format('YYYY-MM-DD')
-              );
-            });
+          return moment(event.start_date).isBetween(
+            moment().startOf('month').format('YYYY-MM-DD'),
+            moment().endOf('month').format('YYYY-MM-DD')
+          );
+        });
       }
       case 'week': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf('week').format('YYYY-MM-DD'), 
+            moment().startOf('week').format('YYYY-MM-DD'),
             moment().endOf('week').format('YYYY-MM-DD')
           );
         })
@@ -249,7 +264,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       case 'day': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf('day').format('YYYY-MM-DD 00:00:00'), 
+            moment().startOf('day').format('YYYY-MM-DD 00:00:00'),
             moment().endOf('day').format('YYYY-MM-DD 23:59:59')
           );
         })
@@ -261,6 +276,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   }
 
   const [taskStatus, setTaskStatus] = React.useState<string>('');
+
 
   return (
     <div>
@@ -275,7 +291,8 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
           eventPropGetter={eventStyleGetter}
           selectable={true}
           onSelectSlot={handleSelectSlot}
-          onSelectEvent={handleSelectEvent}
+          // onSelectEvent={handleSelectEvent}
+          onSelectEvent={handleDetailEvent}
           views={['month', 'week', 'day']}
           // onView={(view:any) => setCurrentView(view)}
           onNavigate={handleNavigate}
@@ -304,30 +321,30 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
                 toggleForm={toggleForm}
                 taskStatus={taskStatus}
                 handleTaskStatusChange={(e) => {
-                    setTaskStatus(e.target.value);
-                    switch(e.target.value) {
-                      case 'done': {
-                        setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                          return Boolean(event.task_complete);
-                        }))
-                        break;
-                      }
-                      case 'overdue': {
-                        setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                          return event.status === 'overdue';
-                        }))
-                        break;
-                      }
-                      case 'active': {
-                        setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                          return event.status === 'active';
-                        }))
-                        break;
-                      }
-                      default: {
-                        setUnfilteredEvents(getViewEvents());
-                      }
+                  setTaskStatus(e.target.value);
+                  switch (e.target.value) {
+                    case 'done': {
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return Boolean(event.task_complete);
+                      }))
+                      break;
                     }
+                    case 'overdue': {
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return event.status === 'overdue';
+                      }))
+                      break;
+                    }
+                    case 'active': {
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return event.status === 'active';
+                      }))
+                      break;
+                    }
+                    default: {
+                      setUnfilteredEvents(getViewEvents());
+                    }
+                  }
                 }}
               />
             ),
@@ -338,55 +355,55 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       {currentView === 'list' && (
         <div>
           <CustomToolbar
-          toolbar={{ label: currentMonth, onNavigate: handleNavigate }}
-          currentView={listCurrentView}
-          view={currentView}
-          goToMonthView={() => {
-            setUnfilteredEvents(getViewEvents('month'));
-            setListCurrentView('month');
-          }}
-          goToWeekView={() => {
-            setUnfilteredEvents(getViewEvents('week'));
-            setListCurrentView('week');
-          }}
-          goToDayView={() => {
-            setUnfilteredEvents(getViewEvents('day'));
-            setListCurrentView('day');
-          }}
-          taskStatus={taskStatus}
-          handleTaskStatusChange={(e) => {
-            setTaskStatus(e.target.value);
-            switch(e.target.value) {
-              case 'done': {
-                setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                  return Boolean(event.task_complete);
-                }))
-                break;
+            toolbar={{ label: currentMonth, onNavigate: handleNavigate }}
+            currentView={listCurrentView}
+            view={currentView}
+            goToMonthView={() => {
+              setUnfilteredEvents(getViewEvents('month'));
+              setListCurrentView('month');
+            }}
+            goToWeekView={() => {
+              setUnfilteredEvents(getViewEvents('week'));
+              setListCurrentView('week');
+            }}
+            goToDayView={() => {
+              setUnfilteredEvents(getViewEvents('day'));
+              setListCurrentView('day');
+            }}
+            taskStatus={taskStatus}
+            handleTaskStatusChange={(e) => {
+              setTaskStatus(e.target.value);
+              switch (e.target.value) {
+                case 'done': {
+                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                    return Boolean(event.task_complete);
+                  }))
+                  break;
+                }
+                case 'overdue': {
+                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                    return event.status === 'overdue';
+                  }))
+                  break;
+                }
+                case 'active': {
+                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                    return event.status === 'active';
+                  }))
+                  break;
+                }
+                default: {
+                  setUnfilteredEvents(getViewEvents());
+                }
               }
-              case 'overdue': {
-                setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                  return event.status === 'overdue';
-                }))
-                break;
-              }
-              case 'active': {
-                setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                  return event.status === 'active';
-                }))
-                break;
-              }
-              default: {
-                setUnfilteredEvents(getViewEvents());
-              }
-            }
-            
-          }}
-          switchToCalendarView={switchToCalendarView}
-          switchToListView={switchToListView}
-          showAllButton={true}
-          showYearDate={false}
-          toggleForm={toggleForm}
-        />
+
+            }}
+            switchToCalendarView={switchToCalendarView}
+            switchToListView={switchToListView}
+            showAllButton={true}
+            showYearDate={false}
+            toggleForm={toggleForm}
+          />
           <Table>
             <thead>
               <tr>
@@ -399,7 +416,8 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
             </thead>
             <tbody>
               {(unfilteredEvents)?.map((item, index) => (
-                <tr key={index} onClick={() => handleSelectEvent(item)}>
+                // <tr key={index} onClick={() => handleSelectEvent(item)}>
+                <tr key={index} onClick={() => handleDetailEvent(item)}>
                   <td>{item.title}</td>
                   <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
                   <td>{moment(item.end_date).format('MMM D, YYYY')}</td>
@@ -411,6 +429,77 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
           </Table>
         </div>
       )}
+      {selectedDetails &&
+        // <AdminIndex isOpen={detailsModal} toggleModal={toggleDetailsModal} />
+        <Modal isOpen={detailsModal} toggle={toggleDetailsModal}>
+          <ModalHeader>
+            {selectedDetails ? selectedDetails.title : ''}
+            <div className="right-side-btn " style={{ position: "absolute", right: "47px", top: "14px" }}>
+              <div className="action d-flex align-item-center">
+                <div role='button' className="mr-0" onClick={() => handleSelectEvent(selectedDetails)}
+                >
+                  <img src={EditIconDark} alt="edit" width="15px" className='mx-2' />
+                </div>
+                <div role='button' className="mr-0">
+                  <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
+                </div>
+                <button className="tick-button ml-2" style={{right: "-26px"}}>
+                  {/* {isTaskComplete ? <div className='tick-true'>
+                <FontAwesomeIcon icon={faCheck} />
+              </div> : <div className='tick-false'>
+                <FontAwesomeIcon icon={faCheck} />
+              </div>} */}
+              <div className="tick-true">
+                <FontAwesomeIcon icon={faCheck} />
+              </div>
+                </button>
+              </div>
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            <div className="event-body">
+              <div className="description">
+                {/* <text>{selectedDetails ? selectedDetails.start_date : ''}</text> */}
+                <text>{selectedDetails ? selectedDetails.description : ''}</text>
+              </div>
+              <hr />
+              <div className="date-timesf">
+                {/* <text>{selectedDetails.assigned_user_name}</text> */}
+              </div>
+              <div className="form-admin">
+                <form action="form">
+                  <div className="row">
+                    <div className="col-lg-10">
+
+                      <div className='form-group'>
+                        <textarea name="comment"
+                          cols={30}
+                          rows={1}
+                          placeholder='Comment Here'
+                          className='form-control'
+                        >
+                        </textarea>
+                      </div>
+                    </div>
+                    <div className="col-lg-2">
+
+                      <div className="button">
+                        <Button
+                          style={{ padding: "3px 16px" }}
+                          className='btn custom-btn text-white'
+                          type='submit'
+                        >
+                          <FontAwesomeIcon icon={faLongArrowRight} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </ModalBody>
+        </Modal>
+      }
 
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} />}
       {selectedEvent && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}

@@ -7,12 +7,16 @@ import Button from '../../../../../components/UI/Forms/Buttons';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
 import { RootState } from '../../../../../store/root-reducer';
+import { getCommentLogsAction } from '../../../../../store/modules/comment/getCommentLogs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faChevronCircleRight, faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 const validationSchema = Yup.object({
 });
 
 interface Props extends PropsFromRedux {
   selectedEvent: any;
+  toggleModal: () => void;
 }
 
 const Form = (props: Props) => {
@@ -26,10 +30,30 @@ const Form = (props: Props) => {
     title: props.selectedEvent.title,
     username: props.selectedEvent.assigned_user_name,
   });
-console.log({initialData});
 
-  console.log({ initialData });
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    // dispatch(props.getCommentLogsAction())
+  }, [])
 
+  // const CommentDetails = useSelector((state: RootState) => state.commentData.getCommentLogs.data || []);
+
+  // console.log(CommentDetails);
+
+  const [data, setData] = React.useState<any[]>([]);
+  console.log({ data });
+
+  // Not using anywhere but it just to view/Fetch data
+  React.useEffect(() => {
+    // Fetch data using Axios when the component mounts
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/comments/') // Replace with API endpoint
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   const {
     values,
@@ -49,62 +73,84 @@ console.log({initialData});
         ...submitValue
       })
       if (res.status === 200 || res.status === 201) {
-        if (res.status === 200) {
+        if (res.status === 200 || res.status === 201) {
           setInitialData(initialData)
           resetForm();
           toast.success("Data posted successful...!")
+          props.toggleModal()
         } else {
           toast.error("Oops...Something is Wrong!")
+          props.toggleModal()
         }
       } else {
         toast.error("SERVER ERROR")
       }
-      
+
       setIsLoader(false)
     }
   })
 
   return (
     <div>
-      <div className='team-form-body'>
+      <div className='user-body'>
 
         <form action="form"
           onSubmit={(e) => {
             handleSubmit(e)
           }} autoComplete='off'>
-          <div className='form-group'>
-            <label htmlFor="">Address <span className="text-danger">*</span></label>
-            <textarea name="comment" 
-              cols={30}
-              rows={2}
-              placeholder='Comment Here'
-              className='form-control'
-              value={values.comment}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            >
-            </textarea>
-          </div>
-          <div className="button">
-            <Button
-              className='btn custom-btn text-white'
-              type='submit'
-              text="SUBMIT"
-              disabled={props.loading}
-              loading={props.loading}
-            />
+          <div className="row">
+            <div className="col-lg-10">
+
+              <div className='form-group'>
+                <textarea name="comment"
+                  cols={30}
+                  rows={1}
+                  placeholder='Comment Here'
+                  className='form-control'
+                  value={values.comment}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                >
+                </textarea>
+              </div>
+            </div>
+            <div className="col-lg-2">
+
+              <div className="button">
+                <Button
+                  style={{ padding: "3px 16px" }}
+                  className='btn custom-btn text-white'
+                  type='submit'
+                  // text="SUBMIT"
+                  disabled={props.loading}
+                  loading={props.loading}
+                >
+                  <FontAwesomeIcon icon={faLongArrowRight} />
+                </Button>
+              </div>
+            </div>
           </div>
         </form>
+      </div>
+      <hr />
+      <div className="comment-view">
+        {/* <p>Testing comment here 2023-12-12T12:00:00 Subharaj</p> */}
+        {data.map((item) => (
+          <div className="" key={item.id}>
+            <p> {item.comment} {item.created_at} {item.username}</p>
+          </div>
+        ))}
       </div>
     </div>
   )
 }
 
-const mapStateToProps = (state:RootState) => ({
+const mapStateToProps = (state: RootState) => ({
   loading: state.commentData.postCommentLogs.isFetching
 })
 
 const mapDispatchToProps = {
+  // getCommentLogsAction,
   postCommentLogsAction
 }
 

@@ -13,6 +13,9 @@ type RequestData = {
   start_date: string,
   end_date: string,
   assigned_user_name: string,
+  task_complete: boolean,
+  status: string,
+  location: string,
 }
 
 const apiDetails = Object.freeze(apiList.TaskLog.updateTaskLogs);
