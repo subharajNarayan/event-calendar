@@ -27,32 +27,18 @@ const TeamMembForm = (props: Props) => {
 
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
-    ...TeamInitialValues, ...(props.editData || {})
+    ...TeamInitialValues, ...(props.editData || {}),
   });
-
-  console.log(initialData, "initialData");
+  // console.log(initialData, "INITIAL DATA");
   
-  const dispatch = useDispatch();
-
+  
   React.useEffect(() => {
-    // if (props.editData) {
-    //   setInitialData({
-    //     ...props.editData,
-    //   })
-    // }
-    if (props.editData) {
-      setInitialData({
-        ...props.editData,
-      });
-    } else {
-      // Set default values for creating a new team member
-      setInitialData({
-        ...TeamInitialValues,
-        color: predefinedColors[0], // Set the default color here
-      });
-    }
-    dispatch(getTeamMemberLogsAction())
-  }, [props.editData]);
+    setInitialData({
+      ...props.editData,
+    });
+    
+  }, [props.editData?.username]);
+  // console.log(props.editData, initialData, "EDIT DATA");
 
   const {
     values,
@@ -62,7 +48,8 @@ const TeamMembForm = (props: Props) => {
     handleChange,
     handleBlur,
   } = useFormik({
-    initialValues: props.editData || initialData,
+    enableReinitialize: true,
+    initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
       console.log('Submitting form with values:', submitValue);

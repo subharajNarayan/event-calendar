@@ -9,7 +9,7 @@ import initialState from "../../helper/default-state";
 
 type RequestData = {
   username: string,
-  address: string,
+  // address: string,
   contactnumber: string,
   email: string,
   password: string,

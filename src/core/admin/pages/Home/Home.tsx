@@ -4,10 +4,10 @@ import Calendar from '../Calendar';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
-import { RootState } from '../../../../store/root-reducer';
+import { RootState, logoutAction } from '../../../../store/root-reducer';
 import axios from 'axios';
 import moment from 'moment';
-
+import useAuthentication from '../../../../services/authentication/AuthService';
 
 interface Props extends PropsFromRedux {
 
@@ -18,11 +18,30 @@ const Home = (props: Props) => {
   const [selectedUsers, setSelectedUsers] = React.useState<string[]>([]);
   const [isOpen, setIsOpen] = React.useState(false)
 
+  const {getAuthUser} = useAuthentication();
+  const user = getAuthUser();
+  
+  
+  const dispatch = useDispatch();
+  const LogOutAction = () => {
+    dispatch(logoutAction())
+    // window.location.reload();
+}
+
+
+  React.useEffect(() => {
+    if(user && user.role && user.role?.toLowerCase() !== 'admin'){
+      LogOutAction();
+      window.location.reload();
+    }
+  }, [user?.role]);
+  
+
   const toggleModal = () => {
     setIsOpen(!isOpen)
   }
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(getTaskLogsAction());

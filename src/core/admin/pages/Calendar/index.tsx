@@ -228,12 +228,16 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
   const switchToCalendarView = () => {
     setCurrentView('calendar');
+    setListCurrentView('month');
+    setUnfilteredEvents(getViewEvents('month'));
   };
 
   const switchToListView = () => {
     console.log('clicked');
 
     setCurrentView('list');
+    setListCurrentView('month');
+    setUnfilteredEvents(getViewEvents('month'));
   };
 
   React.useEffect(() => {

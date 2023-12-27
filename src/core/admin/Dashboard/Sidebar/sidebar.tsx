@@ -29,6 +29,11 @@ const AppSidebar = (props: Props) => {
     setIsOpen(!isOpen)
   }
 
+  React.useEffect(() => {
+    if(!isOpen) {
+      setTeamEditData({});
+    }
+  }, [isOpen]);
   // console.log(props.users, "TEAM MEMBER");
 
 
@@ -90,6 +95,13 @@ const AppSidebar = (props: Props) => {
     }
 
   }
+
+  React.useEffect(() => {
+    if(props.users.length > 0) {
+      const allRows = props.users.map((rowData, index) => index);
+      setSelectedRows(allRows);
+    }
+  }, [props.users.length])
 
   React.useEffect(() => {
     props.onFilterChange(selectedRows.map(index => props.users[index].username));

@@ -11,6 +11,7 @@ import Form from './userModal/Form';
 import useAuthentication from '../../../../services/authentication/AuthService';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { useStateManager } from 'react-select';
 // import Form from './comment';
 
 const localizer = momentLocalizer(moment);
@@ -33,7 +34,7 @@ interface CalendarProps extends PropsFromRedux {
 
 const CustomToolbar: React.FC<{
   toolbar: any;
-  currentView: 'calendar' | 'list' | 'month' | 'week' | 'day' | 'listweek' | 'listday';
+  currentView: 'calendar' | 'list';
   goToMonthView: () => void;
   goToWeekView: () => void;
   goToDayView: () => void;
@@ -41,6 +42,9 @@ const CustomToolbar: React.FC<{
   switchToListView: () => void;
   showAllButton: boolean;
   showYearDate: boolean;
+  listView: 'month' | 'week' | 'day';
+  handleTaskStatusChange: (e: any) => void;
+  taskStatus: string;
 }> = ({
   toolbar,
   currentView,
@@ -51,6 +55,9 @@ const CustomToolbar: React.FC<{
   switchToListView,
   showAllButton,
   showYearDate,
+  listView,
+  handleTaskStatusChange,
+  taskStatus,
 }) => {
     return (
       <div className='calendar-view'>
@@ -61,11 +68,11 @@ const CustomToolbar: React.FC<{
           <div className="toolbar-select ">
             <div className="form-group d-flex align-items-baseline p-1">
               <label htmlFor="">Select</label>
-              <select name="" id="" className='form-control mx-2'>
-                <option value="">All</option>
-                <option value="">Done</option>
-                <option value="">OverDue</option>
-                <option value="">Active</option>
+              <select name="" id="" className='form-control mx-2' onChange={handleTaskStatusChange}>
+                <option value="" selected={taskStatus === ''}>All</option>
+                <option value="done" selected={taskStatus === "done"}>Done</option>
+                <option value="overdue" selected={taskStatus === "overdue"}>OverDue</option>
+                <option value="active" selected={taskStatus === "active"}>Active</option>
               </select>
             </div>
           </div>
@@ -82,19 +89,19 @@ const CustomToolbar: React.FC<{
             </div>
             <div className="toolbar-weekand">
               <button
-                className={classnames({ active: currentView === 'month' })}
+                className={classnames({ active: listView === 'month' })}
                 onClick={goToMonthView}
               >
                 Month
               </button>
               <button
-                className={classnames({ active: currentView === 'week' })}
+                className={classnames({ active: listView === 'week' })}
                 onClick={goToWeekView}
               >
                 Week
               </button>
               <button
-                className={classnames({ active: currentView === 'day' })}
+                className={classnames({ active: listView === 'day' })}
                 onClick={goToDayView}
               >
                 Day
@@ -114,7 +121,7 @@ const CustomToolbar: React.FC<{
     );
   };
 
-const listView = ['list', 'listweek', 'listday'];
+
 
 // interface Props extends PropsFromRedux {
 
@@ -124,11 +131,13 @@ const TeamCalIndex = (props: CalendarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM YYYY'));
   const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
-  const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day' | 'listweek' | 'listday'>('calendar');
+  const [currentView, setCurrentView] = useState<'calendar' | 'list'>('calendar');
+  const [listView, setListView] = useState<'month' | 'week' | 'day'>('month');
   // const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
+  const [taskStatus, setTaskStatus] = useState<string>('');
 
   const { isAuthenticated, getAuthUser } = useAuthentication();
   const user = getAuthUser();
@@ -171,29 +180,25 @@ const TeamCalIndex = (props: CalendarProps) => {
   // ]);
 
   const [events, setEvents] = useState<any>([]);
-  console.log({events});
 
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks') // Replace with API endpoint
       .then((response) => {
-        let initialEvents = response.data.map((event: any) => ({ ...event, start: event.start_date, end: event.end_date }));
-        // setEvents(initialEvents);
-        // setUnfilteredEvents(initialEvents);
+        let initialEvents = response.data.map((event: any) => ({
+          ...event,
+          start_date: moment(event.start_date).toDate(),
+          end_date: moment(event.end_date).toDate()
+        }));
 
-        if (user && user.role == 'Team_Member') {
-          initialEvents = initialEvents.filter((event: any) => {
-            // console.log(event.assigned_user_name, user.username);
+        initialEvents = initialEvents.filter((event: any) => {
+          // console.log(event.assigned_user_name, user.username);
+          return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
+        });
 
-            return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
-          });
-          setEvents(initialEvents);
-          setUnfilteredEvents(initialEvents);
-        } else if (user && user.role == 'Admin') {
-          setUnfilteredEvents(initialEvents);
-        }
-
+        setEvents(initialEvents);
+        setUnfilteredEvents(initialEvents);
 
       })
       .catch((error) => {
@@ -262,7 +267,7 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   // State to track the selected event
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-console.log({selectedEvent});
+  // console.log({selectedEvent});
 
   // Function to handle opening the modal for a specific event
   const handleEventsSelect = (event: any) => {
@@ -293,12 +298,43 @@ console.log({selectedEvent});
   //   setCurrentView('month')
   // }
 
+  const getViewEvents = (currentViewOverride: string = '') => {
+    switch (currentViewOverride || currentView) {
+      case "month": case "list": case "calendar":
+        return events.filter((event: any) => {
+          return moment(event.start_date).isBetween(
+            moment().startOf("month").format("YYYY-MM-DD"),
+            moment().endOf("month").format("YYYY-MM-DD")
+          );
+        })
+        break;
+      case "week":
+        return events.filter((event: any) => {
+          return moment(event.start_date).isBetween(
+            moment().startOf("week").format("YYYY-MM-DD"),
+            moment().endOf("week").format("YYYY-MM-DD")
+          );
+        })
+        break;
+      case "day":
+        return events.filter((event: any) => {
+          return moment(event.start_date).isBetween(
+            moment().startOf("day").format("YYYY-MM-DD 00:00:00"),
+            moment().endOf("day").format("YYYY-MM-DD 23:59:59")
+          );
+        })
+      default:
+        break;
+    }
+  }
+
+
   return (
     <div>
       {currentView === 'calendar' && (
         <Calendar
           localizer={localizer}
-          events={events}
+          events={unfilteredEvents}
           startAccessor="start_date"
           endAccessor="end_date"
           style={{ height: 600 }}
@@ -314,13 +350,46 @@ console.log({selectedEvent});
               <CustomToolbar
                 toolbar={toolbarProps}
                 currentView={currentView}
-                goToMonthView={() => toolbarProps.onView('month')}
-                goToWeekView={() => toolbarProps.onView('week')}
-                goToDayView={() => toolbarProps.onView('day')}
+                listView={listView}
+                goToMonthView={() => {
+                  toolbarProps.onView('month');
+                  setListView('month');
+                }}
+                goToWeekView={() => {
+                  toolbarProps.onView('week');
+                  setListView('week');
+                }}
+                goToDayView={() => {
+                  toolbarProps.onView('day');
+                  setListView('day');
+                }}
                 switchToCalendarView={switchToCalendarView}
                 switchToListView={switchToListView}
                 showAllButton={false}
                 showYearDate={true}
+                taskStatus={taskStatus}
+                handleTaskStatusChange={(e) => {
+                  setTaskStatus(e.target.value);
+                  switch (e.target.value) {
+                    case 'done':
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return Boolean(event.task_complete);
+                      }));
+                      break;
+                    case 'active':
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return !event.task_complete;
+                      }))
+                      break;
+                    case 'overdue':
+                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                        return event.status === 'overdue';
+                      }))
+                      break;
+                    default:
+                      break;
+                  }
+                }}
               />
             ),
           }}
@@ -358,33 +427,35 @@ console.log({selectedEvent});
       {/* )
       })} */}
 
-      {listView.indexOf(currentView) !== -1 && (
+      {currentView === 'list' && (
         <section className='table-with-paginate'>
           <div className='list-view'>
             <CustomToolbar
               toolbar={{ label: currentMonth, onNavigate: () => { } }}
-              currentView={currentView === 'calendar' ? 'calendar' : 'list'}
+              currentView={currentView}
+              listView={listView}
               // goToMonthView={switchToMonthView}
               goToMonthView={() => {
                 let today = moment(currentDate);
                 setEvents(unfilteredEvents.filter(event => {
                   return moment(event.start_date).isBetween(
-                    today.startOf('month').format('YYYY-MM-DD'), today.endOf('month').format('YYYY-MM-DD')
+                    today.startOf('month').format('YYYY-MM-DD'),
+                    today.endOf('month').format('YYYY-MM-DD')
                   );
                 }));
                 console.log('clicked:month');
-                setCurrentView('list');
+                setListView('month');
               }}
               goToWeekView={() => {
                 let today = moment(currentDate);
                 setEvents(unfilteredEvents.filter(event => {
                   return moment(event.start_date).isBetween(
-                    today.startOf('week').format('YYYY-MM-DD'), today.endOf('week').format('YYYY-MM-DD')
+                    today.startOf('week').format('YYYY-MM-DD'),
+                    today.endOf('week').format('YYYY-MM-DD')
                   );
                 }));
                 console.log('clicked:week');
-
-                setCurrentView('listweek');
+                setListView('week');
               }}
               goToDayView={() => {
                 let today = moment(currentDate);
@@ -392,12 +463,35 @@ console.log({selectedEvent});
                   return moment(event.start_date).isSame(today);
                 }));
                 console.log('clicked:day');
-                setCurrentView('listday');
+                setListView('day');
               }}
               switchToCalendarView={switchToCalendarView}
               switchToListView={switchToListView}
               showAllButton={true}
               showYearDate={true}
+              taskStatus={taskStatus}
+              handleTaskStatusChange={(e) => {
+                setTaskStatus(e.target.value);
+                switch (e.target.value) {
+                  case 'done':
+                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                      return Boolean(event.task_complete);
+                    }));
+                    break;
+                  case 'active':
+                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                      return !event.task_complete;
+                    }))
+                    break;
+                  case 'overdue':
+                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
+                      return event.status === 'overdue';
+                    }))
+                    break;
+                  default:
+                    break;
+                }
+              }}
             />
             <Table>
               <thead>
@@ -408,7 +502,7 @@ console.log({selectedEvent});
                 </tr>
               </thead>
               <tbody>
-                {events && events.map((item:any) => (
+                {unfilteredEvents && unfilteredEvents.map((item: any) => (
                   <tr key={item.id} onClick={() => handleEventsSelect(item)}>
                     <td>{item.title}</td>
                     <td>{moment(item.start_date).format('MMM D, YYYY')}</td>

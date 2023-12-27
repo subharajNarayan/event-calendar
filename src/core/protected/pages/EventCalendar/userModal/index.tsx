@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { DeleteIcon, EditIconDark } from '../../../../../assets/images/xd';
+import moment from 'moment';
 interface Props extends PropsFromRedux {
   isOpen: boolean;
   toggleModal: () => void;
@@ -85,7 +86,7 @@ const TeamIndex = (props: Props) => {
         <ModalBody>
           <div className="event-body">
             <div className="description">
-              <p style={{ fontSize: '12px' }}>{props.selectedEvent.start_date}</p>
+              <p style={{ fontSize: '12px' }}>{moment(props.selectedEvent.start_date).format('DD MMM YYYY hh:mm A')}</p>
               <text>{props.selectedEvent.description}</text>
             </div>
             <hr />
