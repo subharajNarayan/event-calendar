@@ -73,7 +73,7 @@ const TeamIndex = (props: Props) => {
               <div role='button' className="mr-0">
                 <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
               </div>
-            <button className="tick-button ml-2" onClick={handleTickButtonClick}>
+            <button className="tick-button ml-2" onClick={handleTickButtonClick} style={{right: "68px"}}>
               {isTaskComplete ? <div className='tick-true'>
                 <FontAwesomeIcon icon={faCheck} />
               </div> : <div className='tick-false'>

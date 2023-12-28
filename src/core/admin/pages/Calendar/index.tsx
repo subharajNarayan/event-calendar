@@ -179,7 +179,7 @@ const CIndex = (props: Props) => {
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
 
-  const { modal, editId, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
+  const { modal, editId, resetDeleteData } = useDeleteConfirmation();
 
 
   const [initialData, setInitialData] = useState({
@@ -304,6 +304,7 @@ const CIndex = (props: Props) => {
     setSelectedDate(null);
     console.log({ event });
     toggleModal();
+    setDetailsModal(false);
   };
 
   const handleDetailEvent = (event: any) => {
@@ -370,17 +371,37 @@ const CIndex = (props: Props) => {
 
   const [taskStatus, setTaskStatus] = React.useState<string>('');
 
-  const handleAdminAction = async() => {
-    const res = await props.deleteTaskLogsAction(editId);
+  // const handleAdminAction = async() => {
+  //   const res = await props.deleteTaskLogsAction(editId);
 
-    if (res.status === 200 || res.status === 201 || res.status === 204) {
-      toast.success("Data Deleted Successful...!")
-      resetDeleteData();
-      // setData();
-    } else {
-      toast.error("Server Error")
+  //   if (res.status === 200 || res.status === 201 || res.status === 204) {
+  //     toast.success("Data Deleted Successful...!")
+  //     resetDeleteData();
+  //     toggleDetailsModal();
+  //     // setData();
+  //   } else {
+  //     toast.error("Server Error")
+  //   }
+  // }
+
+  
+  const handleDeleteClick = async (id: number) => {
+    // Assuming your deleteTaskLogsAction returns a Promise
+    try {
+      const res = await props.deleteTaskLogsAction(id);
+
+      if (res.status === 200 || res.status === 201 || res.status === 204) {
+        toast.success("Data Deleted Successfully...!");
+        resetDeleteData();
+        toggleDetailsModal(); // Close the details modal
+        toggleModal(); // Open the confirmation modal
+      } else {
+        toast.error("Server Error");
+      }
+    } catch (error) {
+      toast.error("Oops... Something is Wrong!");
     }
-  }
+  };
 
   return (
     <div>
@@ -519,7 +540,7 @@ const CIndex = (props: Props) => {
               </tr>
             </thead>
             <tbody>
-              {(unfilteredEvents)?.map((item, index) => (
+              {(unfilteredEvents)?.slice(0).reverse().map((item, index) => (
                 // <tr key={index} onClick={() => handleSelectEvent(item)}>
                 <tr key={index} onClick={() => handleDetailEvent(item)}>
                   <td>{item.title}</td>
@@ -583,9 +604,9 @@ const CIndex = (props: Props) => {
       {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
       {isFormOpen && !selectedEvent && <CalendarIndex isOpen={true} toggleModal={toggleForm} />}
 
-      <ConfirmationModal open={modal}
+      {/* <ConfirmationModal open={modal}
         handleModal={() => toggleModal()}
-        handleConfirmClick={() => handleAdminAction()} />
+        handleConfirmClick={() =>handleDeleteClick( )} /> */}
     </div>
   );
 };

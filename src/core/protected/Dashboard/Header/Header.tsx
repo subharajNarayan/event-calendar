@@ -42,7 +42,7 @@ const AppHeader = (props: Props) => {
           <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
             <div className='header-top align-vertical px-3 mt-2'>
               <div>
-                <h6 className='text text-start text-uppercase font-bold'>Dynase|USA - Task Manager</h6>
+                <h6 className='text text-start text-uppercase font-bold'>DYNASEl USA - TASK MANAGER</h6>
               </div>
             </div>
           </div>

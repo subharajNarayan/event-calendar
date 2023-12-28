@@ -110,7 +110,7 @@ const LoginForm = ({ authorizing, handleLogin }: LoginFormProps) => {
     <div className="auth-body">
       <form className="" onSubmit={handleSubmit} autoComplete="off">
         {/* <h5 className="mb-2 font-bold">Water</h5> */}
-        <p className="">Dynase|USA - Task Manager</p>
+        <p className="">DYNASEl USA - TASK MANAGER</p>
 
         <h6 className="mb-2 font-bold">CONFIGURATIONS</h6>
 

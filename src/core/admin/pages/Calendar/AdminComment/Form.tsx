@@ -8,7 +8,7 @@ import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
 import { RootState } from '../../../../../store/root-reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 const validationSchema = Yup.object({
 });
@@ -21,7 +21,7 @@ interface Props extends PropsFromRedux {
 const Form = (props: Props) => {
 
   console.log(props.selectedEvent, "USER COMMENT ");
-  
+
   const [isLoader, setIsLoader] = React.useState(false);
 
   const [initialData, setInitialData] = React.useState({
@@ -135,7 +135,8 @@ const Form = (props: Props) => {
       <div className="comment-view">
         {data.slice(0).reverse().map((item) => (
           <div className="" key={item.id}>
-            <p> {item.comment} {item.created_at} {item.username}</p>
+            <p style={{fontSize: '16px'}} className='mb-0'> {item.comment} </p>
+            <span style={{fontSize: '12px'}}>{item.created_at} &nbsp; {item.username}</span>
             <hr />
           </div>
         ))}
