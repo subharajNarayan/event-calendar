@@ -17,6 +17,7 @@ interface Props extends PropsFromRedux {
 
 const predefinedColors = [
   '#208ca2', // Red
+  // '#e3e3e3'
 ];
 
 const TeamMembForm = (props: Props) => {

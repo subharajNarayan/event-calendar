@@ -6,12 +6,15 @@ import CalendarIndex from './CalendarForm';
 import { Table } from 'reactstrap';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt, faCheck, faList, faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import { faCalendarAlt, faCheck, faList } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
-import AdminIndex from './AdminModal';
+// import AdminIndex from './AdminModal';
 import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
 import Button from '../../../../components/UI/Forms/Buttons';
+import Form from './AdminComment/Form';
+import { RootState } from '../../../../store/root-reducer';
+import { ConnectedProps, connect, useDispatch } from 'react-redux';
+
 
 const localizer = momentLocalizer(moment);
 
@@ -39,7 +42,7 @@ interface DBEvent {
 }
 
 
-interface CalendarProps {
+interface CalendarProps extends PropsFromRedux {
   events: Event[];
   allEvents: Event[];
 }
@@ -447,15 +450,15 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
                 <div role='button' className="mr-0">
                   <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
                 </div>
-                <button className="tick-button ml-2" style={{right: "-26px"}}>
+                <button className="tick-button ml-2" style={{ right: "-26px" }}>
                   {/* {isTaskComplete ? <div className='tick-true'>
                 <FontAwesomeIcon icon={faCheck} />
               </div> : <div className='tick-false'>
                 <FontAwesomeIcon icon={faCheck} />
               </div>} */}
-              <div className="tick-true">
-                <FontAwesomeIcon icon={faCheck} />
-              </div>
+                  <div className="tick-true">
+                    <FontAwesomeIcon icon={faCheck} />
+                  </div>
                 </button>
               </div>
             </div>
@@ -463,43 +466,15 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
           <ModalBody>
             <div className="event-body">
               <div className="description">
-                {/* <text>{selectedDetails ? selectedDetails.start_date : ''}</text> */}
-                <text>{selectedDetails ? selectedDetails.description : ''}</text>
+                <p style={{ fontSize: '12px' }}>{moment(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')}</p>
+                <text>{selectedDetails.description}</text>
               </div>
               <hr />
-              <div className="date-timesf">
-                {/* <text>{selectedDetails.assigned_user_name}</text> */}
+              <div className="date-time">
+                <p className='d-flex align-items-center '>Assignee: {selectedDetails.assigned_user_name}</p>
               </div>
-              <div className="form-admin">
-                <form action="form">
-                  <div className="row">
-                    <div className="col-lg-10">
-
-                      <div className='form-group'>
-                        <textarea name="comment"
-                          cols={30}
-                          rows={1}
-                          placeholder='Comment Here'
-                          className='form-control'
-                        >
-                        </textarea>
-                      </div>
-                    </div>
-                    <div className="col-lg-2">
-
-                      <div className="button">
-                        <Button
-                          style={{ padding: "3px 16px" }}
-                          className='btn custom-btn text-white'
-                          type='submit'
-                        >
-                          <FontAwesomeIcon icon={faLongArrowRight} />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+              {/* <Form selectedEvent={props.selectedEvent} toggleModal={props.toggleModal} /> */}
+              <Form selectedEvent={selectedDetails} toogleModal={toggleDetailsModal} />
             </div>
           </ModalBody>
         </Modal>
@@ -512,4 +487,16 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
   );
 };
 
-export default CIndex;
+const mapStateToProps = (state: RootState) => ({
+  
+})
+
+const mapDispatchToProps = {
+  
+}
+
+const connector = connect(mapStateToProps, mapDispatchToProps)
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+export default connector(CIndex);
