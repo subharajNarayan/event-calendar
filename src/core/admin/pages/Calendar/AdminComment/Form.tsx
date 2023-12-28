@@ -133,10 +133,10 @@ const Form = (props: Props) => {
       </div>
       <hr />
       <div className="comment-view">
-        {/* <p>Testing comment here 2023-12-12T12:00:00 Subharaj</p> */}
-        {data.map((item) => (
+        {data.slice(0).reverse().map((item) => (
           <div className="" key={item.id}>
             <p> {item.comment} {item.created_at} {item.username}</p>
+            <hr />
           </div>
         ))}
       </div>

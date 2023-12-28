@@ -107,7 +107,7 @@ const TeamMembForm = (props: Props) => {
             <FormikValidationError name='username' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
-            <label htmlFor="">Phone No. <span className="text-danger">*</span></label>
+            <label htmlFor="">Phone No.</label>
             <input
               className='form-control'
               name='contactnumber'
@@ -115,9 +115,10 @@ const TeamMembForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
+            <FormikValidationError name='contactnumber' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
-            <label htmlFor="">Email <span className="text-danger">*</span></label>
+            <label htmlFor="">Email</label>
             <input
               className="form-control"
               name='email'
@@ -125,7 +126,7 @@ const TeamMembForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {/* <FormikValidationError name='email' errors={errors} touched={touched} /> */}
+            <FormikValidationError name='email' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
             <label htmlFor="">Password <span className="text-danger">*</span></label>

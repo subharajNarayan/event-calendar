@@ -1,57 +1,68 @@
 .body-calendar {
-  .calendar-view{
-    .toolbar{
-      &-heading{
+  .calendar-view {
+    .toolbar {
+      &-heading {
         justify-content: space-between;
         align-items: baseline;
       }
-      &-weekand{
-        button{
+
+      &-weekand {
+        button {
           border: none;
           padding: 0.3rem 0.8rem;
-          &:hover{
+
+          &:hover {
             background-color: #d3d3d3;
           }
         }
-        .active{
+
+        .active {
           background-color: #d3d3d3;
           border: none;
         }
       }
+
       // .active{
       //   background-color: red;
       // }
-      &-year-date{
+      &-year-date {
         justify-content: space-between;
         align-items: baseline;
         margin-bottom: 0.69rem;
-        button{
+
+        button {
           border: 1px solid lightgray;
           padding: 0.3rem 0.8rem;
         }
       }
-      &-view-right{
+
+      &-view-right {
         align-items: baseline;
       }
-      &-calendar-list{
-        button{
+
+      &-calendar-list {
+        button {
           border: none;
           padding: 0.3rem 0.8rem;
         }
-        .active{
+
+        .active {
           background-color: lightgray;
           border: none;
         }
       }
-      &-add{
+
+      &-add {
+
         // margin: 1rem;
-        button{
+        button {
           border: none;
           padding: 0.3rem 0.8rem;
         }
       }
     }
   }
+
   // .calendar-list {
   //   position: absolute;
   //   margin-top: -3.67rem;
@@ -98,10 +109,10 @@
   // }
 }
 
-.rbc-event{
+.rbc-event {
   // margin-top: -0.8rem !important;
   padding: 0px 5px !important;
-  
+
 }
 
 
@@ -118,17 +129,25 @@
   font-size: 12px;
   background-color: transparent;
   /* Add any other styles you want for the button */
-  
+
 }
+
 .tick-true {
   border-radius: 50%;
   padding: 0.1rem 0.3rem;
   color: green;
   border: 1px solid green;
 }
+
 .tick-false {
   border-radius: 50%;
   padding: 0.1rem 0.3rem;
   border: 1px solid red;
   color: red;
+}
+
+.comment-view {
+  height: 130px;
+  overflow: auto;
+  scroll-behavior: smooth;
 }

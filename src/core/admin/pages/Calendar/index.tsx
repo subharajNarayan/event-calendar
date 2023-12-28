@@ -13,10 +13,18 @@ import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
 import Button from '../../../../components/UI/Forms/Buttons';
 import Form from './AdminComment/Form';
 import { RootState } from '../../../../store/root-reducer';
-import { ConnectedProps, connect, useDispatch } from 'react-redux';
-
+import { ConnectedProps, connect } from 'react-redux';
+import { updateTaskLogsAction } from '../../../../store/modules/Tasks/updateTaskLogs';
+import { useFormik } from 'formik';
+import toast from '../../../../components/Notifier/Notifier';
+import * as Yup from 'yup';
+import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
+import ConfirmationModal from '../../../../components/UI/ConfirmationModal';
+import { deleteTaskLogsAction } from '../../../../store/modules/Tasks/deleteTaskLogs';
 
 const localizer = momentLocalizer(moment);
+
+const validationSchema = Yup.object({});
 
 interface Event {
   id: number;
@@ -27,6 +35,9 @@ interface Event {
   assigned_user_name: string;
   // assigned_colour: string;
   assigned_user_colour: string;
+  task_complete: boolean;
+  status: string;
+  location: string;
 }
 
 
@@ -39,10 +50,13 @@ interface DBEvent {
   assigned_user_name: string;
   // assigned_colour:string;
   assigned_user_colour: string;
+  task_complete: boolean;
+  status: string;
+  location: string;
 }
 
 
-interface CalendarProps extends PropsFromRedux {
+interface Props extends PropsFromRedux {
   events: Event[];
   allEvents: Event[];
 }
@@ -147,7 +161,10 @@ const CustomToolbar: React.FC<{
   };
 
 
-const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
+// const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
+const CIndex = (props: Props) => {
+
+  const { events, allEvents } = props;
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<DBEvent | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -161,6 +178,64 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
+
+  const { modal, editId, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
+
+
+  const [initialData, setInitialData] = useState({
+    task_complete: 'false',
+  });
+
+  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(false);
+
+  React.useEffect(() => {
+    setIsTaskComplete(initialData.task_complete === 'true');
+  }, [initialData.task_complete]);
+
+  const handleTickButtonClick = async () => {
+    console.log("ChECKED");
+    
+    if (selectedDetails) {
+      const updatedEvent = {
+        ...selectedDetails,
+        task_complete: !isTaskComplete,
+      };
+
+      // Assuming your updateTaskLogsAction returns a Promise
+      try {
+        // Dispatch the updateTaskLogsAction with the updated event
+        await props.updateTaskLogsAction(updatedEvent.id, updatedEvent);
+
+        // Update local state to reflect the new task completion status
+        setSelectedDetails({
+          ...selectedDetails,
+          task_complete: !isTaskComplete,
+        });
+        setIsTaskComplete(!isTaskComplete);
+
+        toast.success('Task updated successfully...!');
+      } catch (error) {
+        toast.error('Oops...Something is Wrong!');
+      }
+    }
+  };
+
+
+  const {
+    values,
+    errors,
+    touched,
+    handleSubmit,
+    handleChange,
+    handleBlur,
+  } = useFormik({
+    initialValues: initialData,
+    validationSchema: validationSchema,
+    onSubmit: async (submitValue, { resetForm }) => {
+      // Your existing code for submitting the form
+    },
+  });
+
 
   React.useEffect(() => {
     setUnfilteredEvents(events);
@@ -197,6 +272,9 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       end_date: moment(slotInfo.end).format('YYYY-MM-DD HH:mm:ss'),
       assigned_user_name: '',
       assigned_user_colour: '',
+      task_complete: false,
+      status: '',
+      location: '',
     };
     setSelectedEvent(event);
     toggleModal();
@@ -212,6 +290,9 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       end_date: event.end_date ? moment(event.end_date).format('YYYY-MM-DD HH:mm:ss') : '',
       assigned_user_name: event.assigned_user_name,
       assigned_user_colour: event.assigned_user_colour,
+      task_complete: event.task_complete,
+      status: event.status,
+      location: event.location,
       // assigned_colour: event.assigned_colour
     }
     setSelectedEvent(dbEvent);
@@ -284,6 +365,17 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
 
   const [taskStatus, setTaskStatus] = React.useState<string>('');
 
+  const handleAdminAction = async() => {
+    const res = await props.deleteTaskLogsAction(editId);
+
+    if (res.status === 200 || res.status === 201 || res.status === 204) {
+      toast.success("Data Deleted Successful...!")
+      resetDeleteData();
+      // setData();
+    } else {
+      toast.error("Server Error")
+    }
+  }
 
   return (
     <div>
@@ -439,7 +531,7 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       {selectedDetails &&
         // <AdminIndex isOpen={detailsModal} toggleModal={toggleDetailsModal} />
         <Modal isOpen={detailsModal} toggle={toggleDetailsModal}>
-          <ModalHeader>
+          <ModalHeader toggle={toggleDetailsModal}>
             {selectedDetails ? selectedDetails.title : ''}
             <div className="right-side-btn " style={{ position: "absolute", right: "47px", top: "14px" }}>
               <div className="action d-flex align-item-center">
@@ -447,19 +539,21 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
                 >
                   <img src={EditIconDark} alt="edit" width="15px" className='mx-2' />
                 </div>
-                <div role='button' className="mr-0">
+                <div role='button' className="mr-0" onClick={() => handleDeleteClick(selectedDetails.id)}>
                   <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
                 </div>
-                <button className="tick-button ml-2" style={{ right: "-26px" }}>
-                  {/* {isTaskComplete ? <div className='tick-true'>
-                <FontAwesomeIcon icon={faCheck} />
-              </div> : <div className='tick-false'>
-                <FontAwesomeIcon icon={faCheck} />
-              </div>} */}
-                  <div className="tick-true">
-                    <FontAwesomeIcon icon={faCheck} />
-                  </div>
+                <button className="tick-button ml-2" style={{ right: "68px" }} onClick={handleTickButtonClick}>
+                  {isTaskComplete ? (
+                    <div className='tick-true'>
+                      <FontAwesomeIcon icon={faCheck} />
+                    </div>
+                  ) : (
+                    <div className='tick-false'>
+                      <FontAwesomeIcon icon={faCheck} />
+                    </div>
+                  )}
                 </button>
+
               </div>
             </div>
           </ModalHeader>
@@ -483,16 +577,22 @@ const CIndex: React.FC<CalendarProps> = ({ events, allEvents }) => {
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} />}
       {selectedEvent && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
       {isFormOpen && <CalendarIndex isOpen={true} toggleModal={toggleForm} />}
+
+      <ConfirmationModal open={modal}
+        handleModal={() => toggleModal()}
+        handleConfirmClick={() => handleAdminAction()} />
     </div>
   );
 };
 
+
 const mapStateToProps = (state: RootState) => ({
-  
+
 })
 
 const mapDispatchToProps = {
-  
+  updateTaskLogsAction,
+  deleteTaskLogsAction
 }
 
 const connector = connect(mapStateToProps, mapDispatchToProps)
