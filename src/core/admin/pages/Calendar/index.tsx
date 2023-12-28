@@ -248,9 +248,14 @@ const CIndex = (props: Props) => {
   const toggleDetailsModal = () => {
     setDetailsModal(!detailsModal);
   }
+  // const toggleModal = () => {
+  //   setIsOpen(!isOpen);
+  // };
   const toggleModal = () => {
     setIsOpen(!isOpen);
+    setSelectedDate(null); // Reset selectedDate when closing the modal
   };
+  
 
   const eventStyleGetter = (event: Event) => {
     return {
@@ -575,8 +580,8 @@ const CIndex = (props: Props) => {
       }
 
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} />}
-      {selectedEvent && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
-      {isFormOpen && <CalendarIndex isOpen={true} toggleModal={toggleForm} />}
+      {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
+      {isFormOpen && !selectedEvent && <CalendarIndex isOpen={true} toggleModal={toggleForm} />}
 
       <ConfirmationModal open={modal}
         handleModal={() => toggleModal()}
