@@ -90,7 +90,7 @@ const Home = (props: Props) => {
 
   return (
     <>
-      <div className='d-flex'>
+      <div className='admin-body d-flex'>
 
         <AppSidebar users={users} onFilterChange={handleUserToggle} />
 

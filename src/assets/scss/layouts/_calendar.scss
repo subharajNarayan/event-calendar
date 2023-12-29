@@ -151,3 +151,17 @@
   overflow: auto;
   scroll-behavior: smooth;
 }
+
+
+@media only screen and (max-width: 767px){
+  .body-calendar{ 
+    .calendar-view {
+      .toolbar-heading {
+        display: inline-block !important;
+        &-top{
+          text-align: center;
+        }
+      }
+    }
+  } 
+}
