@@ -8,6 +8,7 @@ import initialState from "../../helper/default-state";
 
 
 type RequestData = {
+  username: any;
 }
 
 const apiDetails = Object.freeze(apiList.TeamMemberLog.postTeamMemberLogs);

@@ -141,43 +141,6 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   const { isAuthenticated, getAuthUser } = useAuthentication();
   const user = getAuthUser();
-  // Initialize events with some default data
-  // const [events, setEvents] = useState<Event[]>([
-  //   {
-  //     id: 1,
-  //     title: 'Default Event 1',
-  //     start: "2023-12-23T04:47", // Use the current date as the start date
-  //     end: "2023-12-23T04:47", // Use the current date as the end date
-  //     description: 'This is a default event',
-  //     assigned_user_name: "Subharaj",
-  //     assigned_colour: "#4285f4",
-  //     status: "active",
-  //     task_complete: false,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Default Event 2',
-  //     start: "2023-12-26T02:20", // Use the current date as the start date
-  //     end: "2023-12-27T04:47", // Use the current date as the end date
-  //     description: 'This is a default event',
-  //     assigned_user_name: "test",
-  //     assigned_colour: "#ff0000",
-  //     status: "active",
-  //     task_complete: false
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Default Event 3',
-  //     start: "2023-12-24T02:00", // Use the current date as the start date
-  //     end: "2023-12-24T04:59", // Use the current date as the end date
-  //     description: 'This is a default event',
-  //     assigned_user_name: "Srijan Duwal",
-  //     assigned_colour: "#0ff000",
-  //     status: "active",
-  //     task_complete: false
-  //   },
-  //   // Add more default events as needed
-  // ]);
 
   const [events, setEvents] = useState<any>([]);
 
@@ -206,7 +169,6 @@ const TeamCalIndex = (props: CalendarProps) => {
       });
   }, []);
 
-  // React.useEffect(() => {
   //   // auth id
   //   // /server/getallEvents/{username}
   //   // dispatch event fetch request
@@ -226,7 +188,7 @@ const TeamCalIndex = (props: CalendarProps) => {
   // }, []);
 
   // State to track the tick button status
-  const [isTickButtonGreen, setIsTickButtonGreen] = useState(false);
+  // const [isTickButtonGreen, setIsTickButtonGreen] = useState(false);
 
   // STATE TO PAGINATE THE MULTIPLE DATA
   const itemsPerPage = 5;
@@ -242,10 +204,10 @@ const TeamCalIndex = (props: CalendarProps) => {
   );
 
   // Function to handle tick button click
-  const handleTickButtonClick = () => {
-    setIsTickButtonGreen(!isTickButtonGreen);
-    console.log(isTickButtonGreen);
-  };
+  // const handleTickButtonClick = () => {
+  //   setIsTickButtonGreen(!isTickButtonGreen);
+  //   console.log(isTickButtonGreen);
+  // };
 
 
   const toggleModal = () => {
@@ -293,10 +255,6 @@ const TeamCalIndex = (props: CalendarProps) => {
       // Do something when the modal is closed
     }
   }, [isOpen]);
-
-  // const switchToMonthView =() => {
-  //   setCurrentView('month')
-  // }
 
   const getViewEvents = (currentViewOverride: string = '') => {
     switch (currentViewOverride || currentView) {
@@ -399,30 +357,6 @@ const TeamCalIndex = (props: CalendarProps) => {
         return ( */}
       {selectedEvent && (
         <TeamIndex isOpen={isOpen} toggleModal={toggleModal} selectedEvent={selectedEvent} />
-        // <Modal isOpen={isOpen} toggle={toggleModal}>
-        //   <ModalHeader toggle={toggleModal}>
-        //     {selectedEvent.title}
-        //     <button
-        //       className={`tick-button ${isTickButtonGreen ? 'green' : 'red'}`}
-        //       onClick={handleTickButtonClick}
-        //     >
-        //       ✔
-        //     </button>
-        //   </ModalHeader>
-        //   <ModalBody>
-        //     <div className="event-body">
-        //       <div className="description">
-        //         <p style={{ fontSize: "12px" }}>{selectedEvent.start_date}</p>
-        //         <text>{selectedEvent.description}</text>
-        //       </div>
-        //       <hr />
-        //       <div className="date-time">
-        //         <p>{selectedEvent.assigned_user_name}</p>
-        //       </div>
-        //       <Form />
-        //     </div>
-        //   </ModalBody>
-        // </Modal>
       )}
       {/* )
       })} */}

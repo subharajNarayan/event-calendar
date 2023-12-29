@@ -10,6 +10,7 @@ import { postTeamMemberLogsAction } from '../../../../store/modules/TeamMember/p
 import { updateTeamMemberLogsAction } from '../../../../store/modules/TeamMember/updateTeamMemberLogs';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
 
+
 interface Props extends PropsFromRedux {
   toggleModal: () => void; // Add toggleModal prop
   editData: any;
@@ -31,15 +32,15 @@ const TeamMembForm = (props: Props) => {
     ...TeamInitialValues, ...(props.editData || {}),
   });
   // console.log(initialData, "INITIAL DATA");
-  
-  
+
+  const dispatch = useDispatch();
+
   React.useEffect(() => {
     setInitialData({
       ...props.editData,
     });
-    
+    dispatch(getTeamMemberLogsAction())
   }, [props.editData?.username]);
-  // console.log(props.editData, initialData, "EDIT DATA");
 
   const {
     values,
@@ -53,40 +54,44 @@ const TeamMembForm = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      console.log('Submitting form with values:', submitValue);
       let res
       setIsLoader(true);
 
-      if (props.editData && props.editData.id) {
-        res = await props.updateTeamMemberLogsAction(props.editData.id, {
-          ...submitValue,
-        });
-      } else {
-        res = await props.postTeamMemberLogsAction({
-          ...submitValue,
-        });
-      }
-      
+      try {
 
-      if (res.status === 201 || res.status === 200) {
-        if (props.editData) {
-          setInitialData(TeamInitialValues)
-          toast.success("Data Updated Successful...!")
-          resetForm()
-          // setLoader(false);
-          props.toggleModal()
+        if (props.editData && props.editData.id) {
+          res = await props.updateTeamMemberLogsAction(props.editData.id, {
+            ...submitValue,
+          });
         } else {
-          setInitialData(TeamInitialValues)
-          toast.success("Data Posted Successful...!")
-          resetForm()
-          // setLoader(false)
+          res = await props.postTeamMemberLogsAction({
+            ...submitValue,
+          });
         }
-      } else {
-        toast.error("SERVER ERROR")
-        // setLoader(false)
+
+        if (res.status === 201 || res.status === 200) {
+          if (props.editData) {
+            setInitialData(TeamInitialValues)
+            toast.success("Data Updated Successful...!")
+            resetForm()
+            props.toggleModal()
+          } else {
+            setInitialData(TeamInitialValues)
+            toast.success("Data Posted Successful...!")
+            resetForm()
+          }
+          window.location.reload()
+        } else {
+          toast.error("Server Errorsdfdsf")
+        }
       }
+      catch (error) {
+        toast.error("Oops... Something is Wrong!")
+      }
+
     }
   })
+
 
   return (
     <div>

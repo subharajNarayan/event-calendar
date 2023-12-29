@@ -78,6 +78,7 @@ const CalendarForm = (props: Props) => {
           resetForm()
           setLoader(false)
         }
+        window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)
@@ -86,7 +87,7 @@ const CalendarForm = (props: Props) => {
   });
 
 
-   const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState([]);
   console.log({ data });
 
   // Not using anywhere but it just to view/Fetch data
@@ -178,10 +179,6 @@ const CalendarForm = (props: Props) => {
                   <option key={index}>{item.username}</option>
                 )
               })}
-              {/* <option value="Subharaj">Subharaj </option>
-              <option value="Srijan">Srijan</option>
-              <option value="Kyush">Kyush</option>
-              <option value="Shreyas">Shreyas</option> */}
             </select>
             <div className="color-indicator" style={{ backgroundColor: values.assigned_user_name && values.assigned_user_name.toLowerCase() }}></div>
           </div>

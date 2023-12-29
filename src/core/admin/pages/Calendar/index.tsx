@@ -48,7 +48,6 @@ interface DBEvent {
   end_date: string;
   description: string;
   assigned_user_name: string;
-  // assigned_colour:string;
   assigned_user_colour: string;
   task_complete: boolean;
   status: string;
@@ -194,7 +193,7 @@ const CIndex = (props: Props) => {
 
   const handleTickButtonClick = async () => {
     console.log("ChECKED");
-    
+
     if (selectedDetails) {
       const updatedEvent = {
         ...selectedDetails,
@@ -243,6 +242,21 @@ const CIndex = (props: Props) => {
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
+    // Set initial data for the form
+    const currentDate = selectedDate || moment(); // Use selectedDate if available, or use the current date
+    const event: DBEvent = {
+      id: 0,
+      title: '',
+      description: '',
+      start_date: moment(currentDate).format('YYYY-MM-DD HH:mm:ss'),
+      end_date: moment(currentDate).format('YYYY-MM-DD HH:mm:ss'),
+      assigned_user_name: '',
+      assigned_user_colour: '',
+      task_complete: false,
+      status: 'active',
+      location: '',
+    };
+    setSelectedEvent(event);
   };
 
   const toggleDetailsModal = () => {
@@ -255,7 +269,7 @@ const CIndex = (props: Props) => {
     setIsOpen(!isOpen);
     setSelectedDate(null); // Reset selectedDate when closing the modal
   };
-  
+
 
   const eventStyleGetter = (event: Event) => {
     return {
@@ -278,7 +292,7 @@ const CIndex = (props: Props) => {
       assigned_user_name: '',
       assigned_user_colour: '',
       task_complete: false,
-      status: '',
+      status: 'active',
       location: '',
     };
     setSelectedEvent(event);
@@ -371,20 +385,7 @@ const CIndex = (props: Props) => {
 
   const [taskStatus, setTaskStatus] = React.useState<string>('');
 
-  // const handleAdminAction = async() => {
-  //   const res = await props.deleteTaskLogsAction(editId);
 
-  //   if (res.status === 200 || res.status === 201 || res.status === 204) {
-  //     toast.success("Data Deleted Successful...!")
-  //     resetDeleteData();
-  //     toggleDetailsModal();
-  //     // setData();
-  //   } else {
-  //     toast.error("Server Error")
-  //   }
-  // }
-
-  
   const handleDeleteClick = async (id: number) => {
     // Assuming your deleteTaskLogsAction returns a Promise
     try {
@@ -561,14 +562,14 @@ const CIndex = (props: Props) => {
             {selectedDetails ? selectedDetails.title : ''}
             <div className="right-side-btn " style={{ position: "absolute", right: "47px", top: "14px" }}>
               <div className="action d-flex align-item-center">
-                <div role='button' className="mr-0" onClick={() => handleSelectEvent(selectedDetails)}
+                <div role='button' className="mr-0" title='Edit' onClick={() => handleSelectEvent(selectedDetails)}
                 >
                   <img src={EditIconDark} alt="edit" width="15px" className='mx-2' />
                 </div>
-                <div role='button' className="mr-0" onClick={() => handleDeleteClick(selectedDetails.id)}>
+                <div role='button' className="mr-0" title='Delete' onClick={() => handleDeleteClick(selectedDetails.id)}>
                   <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
                 </div>
-                <button className="tick-button ml-2" style={{ right: "68px" }} onClick={handleTickButtonClick}>
+                <button className="tick-button ml-2" title='Tick' style={{ right: "68px" }} onClick={handleTickButtonClick}>
                   {isTaskComplete ? (
                     <div className='tick-true'>
                       <FontAwesomeIcon icon={faCheck} />
@@ -579,7 +580,6 @@ const CIndex = (props: Props) => {
                     </div>
                   )}
                 </button>
-
               </div>
             </div>
           </ModalHeader>
@@ -602,7 +602,7 @@ const CIndex = (props: Props) => {
 
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} />}
       {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
-      {isFormOpen && !selectedEvent && <CalendarIndex isOpen={true} toggleModal={toggleForm} />}
+      {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} />}
 
       {/* <ConfirmationModal open={modal}
         handleModal={() => toggleModal()}

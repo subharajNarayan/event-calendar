@@ -21,10 +21,13 @@ const validationSchema = Yup.object({});
 
 const TeamIndex = (props: Props) => {
   const [initialData, setInitialData] = useState({
-    task_complete: 'false',
+    task_complete: props.selectedEvent.task_complete.toString(),
   });
 
-  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(false);
+  console.log(props.selectedEvent,"TASK");
+  
+
+  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(props.selectedEvent.task_complete);
 
   useEffect(() => {
     setIsTaskComplete(initialData.task_complete === 'true');
@@ -70,10 +73,10 @@ const TeamIndex = (props: Props) => {
               >
                 <img src={EditIconDark} alt="edit" width="15px" className='mx-2' />
               </div>
-              <div role='button' className="mr-0">
+              {/* <div role='button' className="mr-0">
                 <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
-              </div>
-            <button className="tick-button ml-2" onClick={handleTickButtonClick} style={{right: "68px"}}>
+              </div> */}
+            <button className="tick-button ml-2" onClick={handleTickButtonClick} style={{right: "35px"}}>
               {isTaskComplete ? <div className='tick-true'>
                 <FontAwesomeIcon icon={faCheck} />
               </div> : <div className='tick-false'>

@@ -26,10 +26,6 @@ const CalendarIndex = (props: Props) => {
           <Form editData={editData} toggleModal={toggleModal}/>
         </ModalBody>
       </Modal>
-      {/* <div className="demo d-none">
-
-      <CIndex events={[]} setEditData={setEditData}/>
-      </div> */}
 
     </div>
   )
