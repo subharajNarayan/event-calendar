@@ -27,31 +27,36 @@ function Login(props: Props): ReactElement {
 
   const handleLogin = useCallback(
     async (userDetails: UserCredentials) => {
-      const loginres: any = await loginUser(userDetails);
-      
-      console.log({loginres});
-      
-      if (loginres?.data?.access) {
-        // toast.success("Logged In Successful")
-        toast.success(loginres.data.message)
-        
-        props.addUserDetails(loginres.data);
-        console.log({d:loginres.data});
-        if (loginres?.data?.role === "Admin") {          
-          history("/admin/home");
+      try {
+        const loginres: any = await loginUser(userDetails);
+
+        if (loginres?.data?.access) {
+          props.addUserDetails(loginres.data);
+          console.log({ d: loginres.data });
+          if (loginres?.data?.role === "Admin") {
+            history("/admin/home");
+          } else {
+            history("/auth/home");
+          }
+          toast.success(loginres.data.message);
         } else {
-          history("/auth/home");
+          // Failed login attempt
+          console.log("loginres", loginres?.message);
+
+          if (loginres?.status === 401) {
+            // Display a more user-friendly message for failed authentication
+            toast.error("Invalid username or password");
+          } else {
+            // Display other error messages or a generic server error
+            toast.error(loginres?.data?.message || "Server Error");
+          }
         }
-      } else {
-        // toast.error(loginres?.data?.message)
-        toast.error("Server Error")
-        // toast.error("Server is taking too long to respond, please try again in sometime!");
+      } catch (error) {
+        toast.error("Server is taking too long to respond, please try again in sometime!");
       }
     },
     [loginUser, history, props]
   );
-
-
 
   return (
     <div className="app bg-white">

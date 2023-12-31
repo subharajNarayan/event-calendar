@@ -182,58 +182,107 @@ const CIndex = (props: Props) => {
 
 
   const [initialData, setInitialData] = useState({
-    task_complete: 'false',
+    task_complete: selectedDetails?.task_complete,
   });
 
-  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(false);
+  console.log({ initialData });
+  
+
+  // const taskComplete = events.map((item) => item.task_complete);
+
+  // Make sure this code is executed before any usage of isTaskComplete
+  // const taskComplete = selectedDetails?.task_complete;
+  const [isTaskComplete, setIsTaskComplete] = useState<boolean>();
+  console.log({ isTaskComplete });
 
   React.useEffect(() => {
-    setIsTaskComplete(initialData.task_complete === 'true');
-  }, [initialData.task_complete]);
-
-  const handleTickButtonClick = async () => {
-    console.log("ChECKED");
-
     if (selectedDetails) {
-      const updatedEvent = {
+      const taskComplete = selectedDetails.task_complete;
+      const initialIsTaskComplete = taskComplete;
+      setIsTaskComplete(initialIsTaskComplete);
+    }
+  }, [selectedDetails]);
+  
+  const handleTickButtonClick = async () => {
+  try {
+    if (selectedDetails) {
+      const updatedTask = {
         ...selectedDetails,
-        task_complete: !isTaskComplete,
+        task_complete: (!isTaskComplete),
       };
 
-      // Assuming your updateTaskLogsAction returns a Promise
-      try {
-        // Dispatch the updateTaskLogsAction with the updated event
-        await props.updateTaskLogsAction(updatedEvent.id, updatedEvent);
+      const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
 
-        // Update local state to reflect the new task completion status
-        setSelectedDetails({
-          ...selectedDetails,
-          task_complete: !isTaskComplete,
-        });
-        setIsTaskComplete(!isTaskComplete);
+      if (res.status === 200) {
+        const updatedTaskData = res.data;
 
-        toast.success('Task updated successfully...!');
-      } catch (error) {
-        toast.error('Oops...Something is Wrong!');
+        // Check if updatedTaskData is not null before accessing its properties
+        if (updatedTaskData) {
+          setInitialData({ task_complete: updatedTaskData.task_complete });
+          toast.success('Task updated successfully...!');
+        } else {
+          toast.error('Updated task data is null.');
+        }
+      } else {
+        toast.error('Oops... Something is Wrong!');
       }
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error('Oops... Something went wrong!');
+  }
+};
+
+  
+  
+
+  // React.useEffect(() => {
+  //   setIsTaskComplete(initialData.task_complete === 'true');
+  // }, [initialData.task_complete]);
+
+  // const handleTickButtonClick = async () => {
+  //   console.log("ChECKED");
+
+  //   if (selectedDetails) {
+  //     const updatedEvent = {
+  //       ...selectedDetails,
+  //       task_complete: !isTaskComplete,
+  //     };
+
+  //     // Assuming your updateTaskLogsAction returns a Promise
+  //     try {
+  //       // Dispatch the updateTaskLogsAction with the updated event
+  //       await props.updateTaskLogsAction(updatedEvent.id, updatedEvent);
+
+  //       // Update local state to reflect the new task completion status
+  //       setSelectedDetails({
+  //         ...selectedDetails,
+  //         task_complete: !isTaskComplete,
+  //       });
+  //       setIsTaskComplete(!isTaskComplete);
+
+  //       toast.success('Task updated successfully...!');
+  //     } catch (error) {
+  //       toast.error('Oops...Something is Wrong!');
+  //     }
+  //   }
+  // };
 
 
-  const {
-    values,
-    errors,
-    touched,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-  } = useFormik({
-    initialValues: initialData,
-    validationSchema: validationSchema,
-    onSubmit: async (submitValue, { resetForm }) => {
-      // Your existing code for submitting the form
-    },
-  });
+  // const {
+  //   values,
+  //   errors,
+  //   touched,
+  //   handleSubmit,
+  //   handleChange,
+  //   handleBlur,
+  // } = useFormik({
+  //   initialValues: initialData,
+  //   validationSchema: validationSchema,
+  //   onSubmit: async (submitValue, { resetForm }) => {
+  //     // Your existing code for submitting the form
+  //   },
+  // });
 
 
   React.useEffect(() => {
