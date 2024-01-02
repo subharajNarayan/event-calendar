@@ -82,13 +82,24 @@ const TeamMembForm = (props: Props) => {
             setInitialData(TeamInitialValues)
             toast.success("Data Posted Successful...!")
             resetForm()
+            props.success();
           }
-          // window.location.reload()
         } else {
           // Failed login attempt
           if (res?.status === 400) {
-            console.log("loginres", res?.message);
-            toast.error("Username Already Exits");
+            console.error("loginres", res?.message); // Log the message to the console
+
+            // Convert the object to a string for display in the toast
+            // const errorMessage = res?.message ? JSON.stringify(res.message) : '';             
+            // // toast.error(`Oops... Something is Wrong! ${errorMessage}`);
+            // toast.error(errorMessage)
+
+            // Convert the object to a string for display in the toast
+            const errorMessage = res?.message ? JSON.stringify(res.message) : '';
+            // Remove square brackets from the error message
+            const formattedErrorMessage = errorMessage.replace(/[\[\]"]+/g, '');
+
+            toast.error(formattedErrorMessage);
           }
           else {
             toast.error("Oops... Something is Wrong!")

@@ -26,7 +26,7 @@ const AppSidebar = (props: Props) => {
   const { modal, editId, toggleModal, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
   const [teamData, setTeamData] = React.useState<{ id: number; username: string; color: string }[]>([]);
   const [fetchNewMember, setFetchNewMember] = React.useState<number>(0);
-  console.log({ teamData });
+  // console.log({ teamData });
   const toggleTeamModal = () => {
     setIsOpen(!isOpen)
   }
@@ -45,16 +45,6 @@ const AppSidebar = (props: Props) => {
     dispatch(getTeamMemberLogsAction())
     dispatch(getTaskLogsAction())
   }, [])
-
-  // const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data)
-  // const TaskDetails = useSelector((state: RootState) => state.taskData.getTaskLogs.data)
-
-
-  // console.log({ TeamDetails });
-  // console.log({ TaskDetails });
-
-
-
 
   // Not using anywhere but it just to view/Fetch data
   useEffect(() => {
@@ -107,7 +97,6 @@ const AppSidebar = (props: Props) => {
     if (res.status === 200 || res.status === 201 || res.status === 204) {
       toast.success("Data Deleted Successful...!")
       resetDeleteData();
-      // setTeamData();
       setFetchNewMember(fetchNewMember + 1);
 
     } else {
