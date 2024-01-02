@@ -3,17 +3,19 @@ import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../components/UI/Forms/Buttons';
 import { useFormik } from 'formik';
 import FormikValidationError from '../../../../components/React/FormikValidationError/FormikValidationError';
-import toast from '../../../../components/Notifier/Notifier';
+// import toast from '../../../../components/Notifier/Notifier';
 import { TeamInitialValues, validationSchema } from './schema';
 import { RootState } from '../../../../store/root-reducer';
 import { postTeamMemberLogsAction } from '../../../../store/modules/TeamMember/postTeamMemberLogs';
 import { updateTeamMemberLogsAction } from '../../../../store/modules/TeamMember/updateTeamMemberLogs';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
+import { toast } from 'react-toastify';
 
 
 interface Props extends PropsFromRedux {
   toggleModal: () => void; // Add toggleModal prop
   editData: any;
+  success: () => void;
 }
 
 const predefinedColors = [
@@ -75,20 +77,27 @@ const TeamMembForm = (props: Props) => {
             toast.success("Data Updated Successful...!")
             resetForm()
             props.toggleModal()
+            props.success();
           } else {
             setInitialData(TeamInitialValues)
             toast.success("Data Posted Successful...!")
             resetForm()
           }
-          window.location.reload()
+          // window.location.reload()
         } else {
-          toast.error("Server Errorsdfdsf")
+          // Failed login attempt
+          if (res?.status === 400) {
+            console.log("loginres", res?.message);
+            toast.error("Username Already Exits");
+          }
+          else {
+            toast.error("Oops... Something is Wrong!")
+          }
         }
       }
       catch (error) {
-        toast.error("Oops... Something is Wrong!")
+        toast.error("Server Error")
       }
-
     }
   })
 

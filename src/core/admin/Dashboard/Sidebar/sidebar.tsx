@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table } from 'reactstrap';
 import TeamIndex from '../../pages/TeamMember';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
@@ -24,7 +24,9 @@ const AppSidebar = (props: Props) => {
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [isOpen, setIsOpen] = React.useState(false)
   const { modal, editId, toggleModal, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
-
+  const [teamData, setTeamData] = React.useState<{ id: number; username: string; color: string }[]>([]);
+  const [fetchNewMember, setFetchNewMember] = React.useState<number>(0);
+  console.log({ teamData });
   const toggleTeamModal = () => {
     setIsOpen(!isOpen)
   }
@@ -34,7 +36,7 @@ const AppSidebar = (props: Props) => {
       setTeamEditData({});
     }
   }, [isOpen]);
-  // console.log(props.users, "TEAM MEMBER");
+  // console.log(teamData, "TEAM MEMBER");
 
 
   const dispatch = useDispatch()
@@ -52,34 +54,26 @@ const AppSidebar = (props: Props) => {
   // console.log({ TaskDetails });
 
 
-  const [data, setData] = React.useState([]);
-  // console.log({ data });
+
 
   // Not using anywhere but it just to view/Fetch data
-  React.useEffect(() => {
+useEffect(() => {
     // Fetch data using Axios when the component mounts
     axios.get('https://kyush.pythonanywhere.com/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
-        setData(response.data);
+        setTeamData(response.data);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+  }, [fetchNewMember]);
 
   function selectAllRows(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
-      const allRows = props.users.map((rowData, index) => index);
+      const allRows = teamData.map((rowData, index) => index);
       setSelectedRows(allRows);
       // Call onFilterChange for each selected user
-      props.onFilterChange(props.users.map(({ username }, index) => username))
+      // props.onFilterChange(teamData.map(({ username }, index) => username))
     } else {
       setSelectedRows([]);
       props.onFilterChange([])
@@ -97,14 +91,14 @@ const AppSidebar = (props: Props) => {
   }
 
   React.useEffect(() => {
-    if(props.users.length > 0) {
-      const allRows = props.users.map((rowData, index) => index);
+    if(teamData.length > 0) {
+      const allRows = teamData.map((rowData, index) => index);
       setSelectedRows(allRows);
     }
-  }, [props.users.length])
+  }, [teamData.length])
 
   React.useEffect(() => {
-    props.onFilterChange(selectedRows.map(index => props.users[index].username));
+    props.onFilterChange(selectedRows.map(index => teamData[index].username));
   }, [selectedRows.length]);
 
   const handleTeamMemberAction = async () => {
@@ -113,7 +107,7 @@ const AppSidebar = (props: Props) => {
     if (res.status === 200 || res.status === 201 || res.status === 204) {
       toast.success("Data Deleted Successful...!")
       resetDeleteData();
-      // setData();
+      // setTeamData();
     } else {
       toast.error("Server Error")
     }
@@ -128,11 +122,14 @@ const AppSidebar = (props: Props) => {
     toggleTeamModal();
   }
 
+  const handleTeamMemberAdd = () => {
+    setFetchNewMember(fetchNewMember + 1);
+  };
   
 
   return (
     <>
-      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData}/>
+      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData} success={handleTeamMemberAdd}/>
       <aside className="sidebar">
         <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
           <div className='sidebar-header-top align-vertical px-3 mt-2'>
@@ -155,7 +152,7 @@ const AppSidebar = (props: Props) => {
                     type="checkbox"
                     name="selectAll"
                     id="selectAll"
-                    checked={props.users.length == selectedRows.length}
+                    checked={teamData.length == selectedRows.length}
                     onChange={selectAllRows} />
                 </th>
                 <th className='text-black'>Select All</th>
@@ -164,7 +161,7 @@ const AppSidebar = (props: Props) => {
               </tr>
             </thead>
             <tbody>
-              {props.users.map((item, index) => {
+              {teamData.map((item, index) => {
                 return (
                   <tr key={index}>
                     <td >

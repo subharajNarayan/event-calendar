@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import axios from 'axios';
@@ -22,6 +22,8 @@ interface Props extends PropsFromRedux {
 const Form = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
+  const [data, setData] = React.useState<any[]>([]);
+  console.log({ data });
 
   const [initialData, setInitialData] = React.useState({
     comment: "",
@@ -40,20 +42,8 @@ const Form = (props: Props) => {
 
   // console.log(CommentDetails);
 
-  const [data, setData] = React.useState<any[]>([]);
-  console.log({ data });
 
-  // Not using anywhere but it just to view/Fetch data
-  React.useEffect(() => {
-    // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/comments/') // Replace with API endpoint
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+
 
   const {
     values,
@@ -89,6 +79,18 @@ const Form = (props: Props) => {
       setIsLoader(false)
     }
   })
+
+  useEffect(() => {
+    // Fetch data using Axios when the component mounts
+    axios
+      .get('https://kyush.pythonanywhere.com/accounts/api/comments/')
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   return (
     <div>

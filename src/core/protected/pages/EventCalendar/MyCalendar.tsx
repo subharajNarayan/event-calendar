@@ -142,7 +142,7 @@ const TeamCalIndex = (props: CalendarProps) => {
   const { isAuthenticated, getAuthUser } = useAuthentication();
   const user = getAuthUser();
 
-  const [events, setEvents] = useState<any>([]);
+  const [events, setEvents] = useState<Event[]>([]);
 
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
@@ -244,10 +244,12 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   const switchToCalendarView = () => {
     setCurrentView('calendar');
+    setListView('month');
   };
 
   const switchToListView = () => {
     setCurrentView('list');
+    setListView('month');
   };
 
   React.useEffect(() => {
@@ -256,36 +258,87 @@ const TeamCalIndex = (props: CalendarProps) => {
     }
   }, [isOpen]);
 
+  // const [taskStatus, setTaskStatus] = React.useState<string>('');
+
+  React.useEffect(() => {
+    let eventlist : Event[] = [];
+    if(currentView == 'calendar') {
+      eventlist = getViewEvents();
+    }
+    if(currentView == 'list') {
+      eventlist = getViewEvents(listView);
+    }
+    switch (taskStatus) {
+      case 'done': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return Boolean(event.task_complete);
+        }))
+        break;
+      }
+      case 'overdue': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return event.status === 'overdue';
+        }))
+        break;
+      }
+      case 'active': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return event.status === 'active';
+        }))
+        break;
+      }
+      default: {
+        setUnfilteredEvents(eventlist);
+      }
+    }
+  }, [currentMonth, taskStatus, listView, currentView]);
+
+  // React.useEffect(() => {
+    
+  //   if(currentView == 'calendar') {
+  //     setUnfilteredEvents(getViewEvents());
+  //   }
+  //   if(currentView == 'list') {
+  //     setUnfilteredEvents(getViewEvents(listView));
+  //   }
+    
+  // }, []);
+
   const getViewEvents = (currentViewOverride: string = '') => {
-    switch (currentViewOverride || currentView) {
-      case "month": case "list": case "calendar":
-        return events.filter((event: any) => {
+
+    // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
+    let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
+    
+    switch (currentViewOverride) {
+      case 'month':{
+        return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf("month").format("YYYY-MM-DD"),
-            moment().endOf("month").format("YYYY-MM-DD")
+            date.startOf('month').format('YYYY-MM-DD'),
+            date.endOf('month').format('YYYY-MM-DD')
+          );
+        });
+      }
+      case 'week': {
+        return events.filter(event => {
+          return moment(event.start_date).isBetween(
+            date.startOf('week').format('YYYY-MM-DD'),
+            date.endOf('week').format('YYYY-MM-DD')
           );
         })
-        break;
-      case "week":
-        return events.filter((event: any) => {
+      }
+      case 'day': {
+        return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf("week").format("YYYY-MM-DD"),
-            moment().endOf("week").format("YYYY-MM-DD")
+            date.startOf('day').format('YYYY-MM-DD 00:00:00'),
+            date.endOf('day').format('YYYY-MM-DD 23:59:59')
           );
         })
-        break;
-      case "day":
-        return events.filter((event: any) => {
-          return moment(event.start_date).isBetween(
-            moment().startOf("day").format("YYYY-MM-DD 00:00:00"),
-            moment().endOf("day").format("YYYY-MM-DD 23:59:59")
-          );
-        })
-      default:
-        break;
+      }
+      default: {
+        return events
+      }
     }
   }
-
 
   return (
     <div>
@@ -328,25 +381,6 @@ const TeamCalIndex = (props: CalendarProps) => {
                 taskStatus={taskStatus}
                 handleTaskStatusChange={(e) => {
                   setTaskStatus(e.target.value);
-                  switch (e.target.value) {
-                    case 'done':
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return Boolean(event.task_complete);
-                      }));
-                      break;
-                    case 'active':
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return !event.task_complete;
-                      }))
-                      break;
-                    case 'overdue':
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return event.status === 'overdue';
-                      }))
-                      break;
-                    default:
-                      break;
-                  }
                 }}
               />
             ),
@@ -370,33 +404,12 @@ const TeamCalIndex = (props: CalendarProps) => {
               listView={listView}
               // goToMonthView={switchToMonthView}
               goToMonthView={() => {
-                let today = moment(currentDate);
-                setEvents(unfilteredEvents.filter(event => {
-                  return moment(event.start_date).isBetween(
-                    today.startOf('month').format('YYYY-MM-DD'),
-                    today.endOf('month').format('YYYY-MM-DD')
-                  );
-                }));
-                console.log('clicked:month');
                 setListView('month');
               }}
               goToWeekView={() => {
-                let today = moment(currentDate);
-                setEvents(unfilteredEvents.filter(event => {
-                  return moment(event.start_date).isBetween(
-                    today.startOf('week').format('YYYY-MM-DD'),
-                    today.endOf('week').format('YYYY-MM-DD')
-                  );
-                }));
-                console.log('clicked:week');
                 setListView('week');
               }}
               goToDayView={() => {
-                let today = moment(currentDate);
-                setEvents(unfilteredEvents.filter(event => {
-                  return moment(event.start_date).isSame(today);
-                }));
-                console.log('clicked:day');
                 setListView('day');
               }}
               switchToCalendarView={switchToCalendarView}
@@ -406,25 +419,6 @@ const TeamCalIndex = (props: CalendarProps) => {
               taskStatus={taskStatus}
               handleTaskStatusChange={(e) => {
                 setTaskStatus(e.target.value);
-                switch (e.target.value) {
-                  case 'done':
-                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                      return Boolean(event.task_complete);
-                    }));
-                    break;
-                  case 'active':
-                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                      return !event.task_complete;
-                    }))
-                    break;
-                  case 'overdue':
-                    setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                      return event.status === 'overdue';
-                    }))
-                    break;
-                  default:
-                    break;
-                }
               }}
             />
             <Table>

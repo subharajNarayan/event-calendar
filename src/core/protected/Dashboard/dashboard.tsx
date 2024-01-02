@@ -44,6 +44,10 @@ function Dashboard(props: Props): ReactElement {
           <PrivateRoute
           appRoutes={appRoutes.filter((route) => route.type !== "login")}
         />
+        {/* <PrivateRoute
+          appRoutes={appRoutes.filter((route) => route.type !== "login")}
+          redirectPath={[{ from: "*", to: isAuthenticated() ? "/admin/home" : "home" }]}
+        /> */}
           </div>
           <AppFooter />
         </main>

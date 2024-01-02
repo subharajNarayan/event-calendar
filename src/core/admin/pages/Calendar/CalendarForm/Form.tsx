@@ -9,6 +9,7 @@ import { updateTaskLogsAction } from '../../../../../store/modules/Tasks/updateT
 import toast from '../../../../../components/Notifier/Notifier';
 import Button from '../../../../../components/UI/Forms/Buttons';
 import { RootState } from '../../../../../store/root-reducer';
+import moment from 'moment';
 
 interface Props extends PropsFromRedux {
   editData: any,
@@ -51,17 +52,25 @@ const CalendarForm = (props: Props) => {
     validationSchema: taskValidationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
 
+      let start_date = submitValue.start_date;
+      let end_date = submitValue.end_date;
+
+      if(moment(end_date).isBefore(start_date)) {
+        toast.error("End date should be greater than start date")
+        return
+      }
+
       let res;
       setLoader(true);
 
 
-      if (props.editData?.id) {
+      if (props.editData?.id > 0) {
         res = await props.updateTaskLogsAction(props.editData.id, {
           ...submitValue
         })
       } else {
         res = await props.postTaskLogsAction({
-          ...submitValue
+          ...submitValue, id : undefined
         })
       }
 
@@ -78,7 +87,7 @@ const CalendarForm = (props: Props) => {
           resetForm()
           setLoader(false)
         }
-        window.location.reload()
+        // window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)

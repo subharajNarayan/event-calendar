@@ -192,6 +192,8 @@ const CIndex = (props: Props) => {
 
   // Make sure this code is executed before any usage of isTaskComplete
   // const taskComplete = selectedDetails?.task_complete;
+  console.log({ selectedDetails });
+  
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>();
   console.log({ isTaskComplete });
 
@@ -382,7 +384,7 @@ const CIndex = (props: Props) => {
   const switchToCalendarView = () => {
     setCurrentView('calendar');
     setListCurrentView('month');
-    setUnfilteredEvents(getViewEvents('month'));
+    // setUnfilteredEvents(getViewEvents('month'));
   };
 
   const switchToListView = () => {
@@ -390,7 +392,7 @@ const CIndex = (props: Props) => {
 
     setCurrentView('list');
     setListCurrentView('month');
-    setUnfilteredEvents(getViewEvents('month'));
+    // setUnfilteredEvents(getViewEvents('month'));
   };
 
   React.useEffect(() => {
@@ -399,30 +401,80 @@ const CIndex = (props: Props) => {
       setSelectedEvent(null);
     }
   }, [isOpen]);
+  
+  const [taskStatus, setTaskStatus] = React.useState<string>('');
+
+  React.useEffect(() => {
+    let eventlist : Event[] = [];
+    if(currentView == 'calendar') {
+      eventlist = getViewEvents();
+    }
+    if(currentView == 'list') {
+      eventlist = getViewEvents(listCurrentView);
+    }
+    switch (taskStatus) {
+      case 'done': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return Boolean(event.task_complete);
+        }))
+        break;
+      }
+      case 'overdue': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return event.status === 'overdue';
+        }))
+        break;
+      }
+      case 'active': {
+        setUnfilteredEvents(eventlist.filter((event: any) => {
+          return event.status === 'active';
+        }))
+        break;
+      }
+      default: {
+        setUnfilteredEvents(eventlist);
+      }
+    }
+  }, [currentMonth, taskStatus, listCurrentView, currentView]);
+
+  // React.useEffect(() => {
+    
+  //   if(currentView == 'calendar') {
+  //     setUnfilteredEvents(getViewEvents());
+  //   }
+  //   if(currentView == 'list') {
+  //     setUnfilteredEvents(getViewEvents(listCurrentView));
+  //   }
+    
+  // }, []);
 
   const getViewEvents = (currentViewOverride: string = '') => {
-    switch (currentViewOverride || currentView) {
-      case 'month': case 'list': case 'calendar': {
+
+    // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
+    let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
+    
+    switch (currentViewOverride) {
+      case 'month':{
         return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf('month').format('YYYY-MM-DD'),
-            moment().endOf('month').format('YYYY-MM-DD')
+            date.startOf('month').format('YYYY-MM-DD'),
+            date.endOf('month').format('YYYY-MM-DD')
           );
         });
       }
       case 'week': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf('week').format('YYYY-MM-DD'),
-            moment().endOf('week').format('YYYY-MM-DD')
+            date.startOf('week').format('YYYY-MM-DD'),
+            date.endOf('week').format('YYYY-MM-DD')
           );
         })
       }
       case 'day': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
-            moment().startOf('day').format('YYYY-MM-DD 00:00:00'),
-            moment().endOf('day').format('YYYY-MM-DD 23:59:59')
+            date.startOf('day').format('YYYY-MM-DD 00:00:00'),
+            date.endOf('day').format('YYYY-MM-DD 23:59:59')
           );
         })
       }
@@ -432,7 +484,6 @@ const CIndex = (props: Props) => {
     }
   }
 
-  const [taskStatus, setTaskStatus] = React.useState<string>('');
 
 
   const handleDeleteClick = async (id: number) => {
@@ -497,29 +548,6 @@ const CIndex = (props: Props) => {
                 taskStatus={taskStatus}
                 handleTaskStatusChange={(e) => {
                   setTaskStatus(e.target.value);
-                  switch (e.target.value) {
-                    case 'done': {
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return Boolean(event.task_complete);
-                      }))
-                      break;
-                    }
-                    case 'overdue': {
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return event.status === 'overdue';
-                      }))
-                      break;
-                    }
-                    case 'active': {
-                      setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                        return event.status === 'active';
-                      }))
-                      break;
-                    }
-                    default: {
-                      setUnfilteredEvents(getViewEvents());
-                    }
-                  }
                 }}
               />
             ),
@@ -534,44 +562,20 @@ const CIndex = (props: Props) => {
             currentView={listCurrentView}
             view={currentView}
             goToMonthView={() => {
-              setUnfilteredEvents(getViewEvents('month'));
+              // setUnfilteredEvents(getViewEvents('month'));
               setListCurrentView('month');
             }}
             goToWeekView={() => {
-              setUnfilteredEvents(getViewEvents('week'));
+              // setUnfilteredEvents(getViewEvents('week'));
               setListCurrentView('week');
             }}
             goToDayView={() => {
-              setUnfilteredEvents(getViewEvents('day'));
+              // setUnfilteredEvents(getViewEvents('day'));
               setListCurrentView('day');
             }}
             taskStatus={taskStatus}
             handleTaskStatusChange={(e) => {
               setTaskStatus(e.target.value);
-              switch (e.target.value) {
-                case 'done': {
-                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                    return Boolean(event.task_complete);
-                  }))
-                  break;
-                }
-                case 'overdue': {
-                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                    return event.status === 'overdue';
-                  }))
-                  break;
-                }
-                case 'active': {
-                  setUnfilteredEvents(getViewEvents().filter((event: any) => {
-                    return event.status === 'active';
-                  }))
-                  break;
-                }
-                default: {
-                  setUnfilteredEvents(getViewEvents());
-                }
-              }
-
             }}
             switchToCalendarView={switchToCalendarView}
             switchToListView={switchToListView}

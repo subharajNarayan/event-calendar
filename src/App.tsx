@@ -62,13 +62,17 @@ function App() {
 
   useEffect(() => {
     const userDetails = tok;
-    setIsRole('');
+    // setIsRole('');
     
-    if (userDetails?.role === "admin") {
+    if (userDetails?.role?.toLowerCase() === "admin") {
       setIsRole("ADMIN")
-    } else if (userDetails?.role === "moderator") {
-      setIsRole("Moderator")
+    } else if (userDetails?.role?.toLowerCase() === "team_member") {
+      setIsRole("Team_Member")
+    } else {
+      setIsRole("")
     }
+    // console.log(userDetails);
+    
   }, [tok?.role]);
 
 

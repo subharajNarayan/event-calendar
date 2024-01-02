@@ -80,7 +80,7 @@ const Home = (props: Props) => {
   }, []);
 
   const filteredEvents = events.filter((item: { assigned_user_name: string; }) => {
-    return selectedUsers.length == 0 || selectedUsers.includes(item.assigned_user_name);
+    return selectedUsers.includes(item.assigned_user_name);
   })
 
 

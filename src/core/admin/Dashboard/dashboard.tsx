@@ -26,6 +26,14 @@ function AdminDashboard(props: Props): ReactElement {
   const { children } = props;
   const navigate = useNavigate;
   const { isAuthenticated } = useAuthentication();
+
+  React.useEffect(() => {
+    // check api valid token
+    // /user/token/verify
+    // true/false
+    // if not valid redirect to login
+    // if valid do nothing
+  }, []);
   
   return (
     <Suspense fallback={<FallbackLoader />}>

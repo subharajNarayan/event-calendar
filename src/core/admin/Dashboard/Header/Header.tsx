@@ -61,7 +61,7 @@ const AppHeader = (props: Props) => {
                 <Dropdown isOpen={dropdownOpen} toggle={toggle} tag="div">
                   <DropdownToggle className="auth" tag="div" role="button">
                     <div className="textbox mr-2">
-                      <h6 className="username font-bold">{userDetails.firstname}</h6>
+                      <h6 className="username font-bold">{userDetails.username}</h6>
                     </div>
                     <i className="ic-dropdown"></i>
                   </DropdownToggle>

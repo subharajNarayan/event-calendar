@@ -133,6 +133,14 @@ export enum RequestMethod {
         requestBodyType: RequestBodyType.AUTH
       },
     },
+    ChangeLog: {
+      getChangeLogs: {
+        controllerName: "/api/taskeditlogs/{id}",
+        actionName: "GET_TASK",
+        requestMethod: RequestMethod.GET,
+        requestBodyType: RequestBodyType.AUTH
+      },
+    },
 }
 
 type ApiList = typeof apiDetails;

@@ -9,7 +9,7 @@ import registerReducer from "./modules/register/register";
 import teamMemberData from "./modules/TeamMember";
 import taskData from "./modules/Tasks";
 import commentData from "./modules/comment";
-
+import checkData from "./modules/ChangeLog";
 
 export const appReducer = combineReducers({
     i18nextData: i18nextReducer,
@@ -19,7 +19,8 @@ export const appReducer = combineReducers({
     userDetails,
     teamMemberData,
     taskData,
-    commentData
+    commentData,
+    checkData,
 });
 
 export type RootState = ReturnType<typeof appReducer>;

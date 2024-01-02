@@ -7,6 +7,7 @@ interface Props  {
   isOpen: boolean;
   toggleModal: () => void;
   TeamData: any;
+  success: () => void;
 }
 
 const TeamIndex = (props: Props) => {
@@ -27,7 +28,7 @@ const TeamIndex = (props: Props) => {
       <Modal isOpen={isOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Add Team Members</ModalHeader>
         <ModalBody>
-          <Form toggleModal={toggleModal} editData={editData}/>
+          <Form toggleModal={toggleModal} editData={editData} success={props.success}/>
         </ModalBody>
       </Modal>
 
