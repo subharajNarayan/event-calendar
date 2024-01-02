@@ -25,6 +25,8 @@ function Login(props: Props): ReactElement {
   const { loginData, loginUser } = props;
   // const i18nextData = useSelector((state: RootState) => state.i18nextData, shallowEqual);
 
+  const [ isLoader, setIsLoader ] = useState(false);
+
   const handleLogin = useCallback(
     async (userDetails: UserCredentials) => {
       try {
@@ -38,6 +40,7 @@ function Login(props: Props): ReactElement {
           } else {
             history("/auth/home");
           }
+          setIsLoader(true)
           toast.success(loginres.data.message);
         } else {
           // Failed login attempt
@@ -46,16 +49,21 @@ function Login(props: Props): ReactElement {
           if (loginres?.status === 401) {
             // Display a more user-friendly message for failed authentication
             toast.error("Authentication Failed");
+            setIsLoader(true)
           } else if(loginres?.status === 404) {
             toast.error ("Username doesn't Match")
+            setIsLoader(true)
           }else{
             // Display other error messages or a generic server error
             toast.error(loginres?.data?.message || "Server Error");
+            setIsLoader(true)
           }
         }
       } catch (error) {
+        setIsLoader(false);
         toast.error("Server is taking too long to respond, please try again in sometime!");
       }
+      setIsLoader(false)
     },
     [loginUser, history, props]
   );
@@ -64,7 +72,8 @@ function Login(props: Props): ReactElement {
     <div className="app bg-white">
       <div className="container">
         <div className="auth-wrapper">
-          <LoginForm handleLogin={handleLogin} authorizing={loginData.isFetching} />
+          {/* <LoginForm handleLogin={handleLogin} authorizing={loginData.isFetching} /> */}
+          <LoginForm handleLogin={handleLogin} authorizing={isLoader} />
         </div>
       </div>
     </div>
