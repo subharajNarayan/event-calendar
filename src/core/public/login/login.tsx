@@ -30,6 +30,7 @@ function Login(props: Props): ReactElement {
   const handleLogin = useCallback(
     async (userDetails: UserCredentials) => {
       try {
+        setIsLoader(true); // Set loader to true when initiating login
         const loginres: any = await loginUser(userDetails);
 
         if (loginres?.data?.access) {
@@ -40,7 +41,6 @@ function Login(props: Props): ReactElement {
           } else {
             history("/auth/home");
           }
-          setIsLoader(true)
           toast.success(loginres.data.message);
         } else {
           // Failed login attempt
@@ -49,21 +49,18 @@ function Login(props: Props): ReactElement {
           if (loginres?.status === 401) {
             // Display a more user-friendly message for failed authentication
             toast.error("Authentication Failed");
-            setIsLoader(true)
           } else if(loginres?.status === 404) {
             toast.error ("Username doesn't Match")
-            setIsLoader(true)
           }else{
             // Display other error messages or a generic server error
             toast.error(loginres?.data?.message || "Server Error");
-            setIsLoader(true)
           }
         }
       } catch (error) {
-        setIsLoader(false);
         toast.error("Server is taking too long to respond, please try again in sometime!");
+      }finally{
+        setIsLoader(false)
       }
-      setIsLoader(false)
     },
     [loginUser, history, props]
   );

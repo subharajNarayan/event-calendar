@@ -17,6 +17,8 @@ const Home = (props: Props) => {
 
   const [selectedUsers, setSelectedUsers] = React.useState<string[]>([]);
   const [isOpen, setIsOpen] = React.useState(false)
+  const [fetchEvents, setFetchEvents] = React.useState<number>(0);
+
 
   const {getAuthUser} = useAuthentication();
   const user = getAuthUser();
@@ -37,9 +39,9 @@ const Home = (props: Props) => {
   }, [user?.role]);
   
 
-  const toggleModal = () => {
-    setIsOpen(!isOpen)
-  }
+  // const toggleModal = () => {
+  //   setIsOpen(!isOpen)
+  // }
 
   // const dispatch = useDispatch();
 
@@ -77,7 +79,11 @@ const Home = (props: Props) => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [fetchEvents]);
+
+  const handleEventAdd = () => {
+    setFetchEvents(fetchEvents + 1);
+  };
 
   const filteredEvents = events.filter((item: { assigned_user_name: string; }) => {
     return selectedUsers.includes(item.assigned_user_name);
@@ -97,7 +103,7 @@ const Home = (props: Props) => {
         <div className="main-content">
           <div className="main-content-home">
             <div className="body-calendar">
-              <Calendar events={filteredEvents} allEvents={events} />
+              <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} />
             </div>
           </div>
         </div>

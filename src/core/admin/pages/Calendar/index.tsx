@@ -58,6 +58,7 @@ interface DBEvent {
 interface Props extends PropsFromRedux {
   events: Event[];
   allEvents: Event[];
+  fetchSuccess: () => void;
 }
 
 const CustomToolbar: React.FC<{
@@ -496,6 +497,7 @@ const CIndex = (props: Props) => {
         resetDeleteData();
         toggleDetailsModal(); // Close the details modal
         toggleModal(); // Open the confirmation modal
+        props.fetchSuccess();
       } else {
         toast.error("Server Error");
       }
@@ -653,9 +655,9 @@ const CIndex = (props: Props) => {
         </Modal>
       }
 
-      {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} />}
-      {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} />}
-      {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} />}
+      {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess} />}
+      {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess}/>}
+      {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} fetchSuccess={props.fetchSuccess}/>}
 
       {/* <ConfirmationModal open={modal}
         handleModal={() => toggleModal()}

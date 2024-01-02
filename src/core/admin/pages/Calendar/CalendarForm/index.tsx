@@ -8,6 +8,7 @@ interface Props {
   isOpen: boolean;
   toggleModal: () => void;
   data?: any;
+  fetchSuccess: () => void;
 }
 
 const CalendarIndex = (props: Props) => {
@@ -23,7 +24,7 @@ const CalendarIndex = (props: Props) => {
       <Modal isOpen={isOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Add Task</ModalHeader>
         <ModalBody>
-          <Form editData={editData} toggleModal={toggleModal}/>
+          <Form editData={editData} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess}/>
         </ModalBody>
       </Modal>
 

@@ -26,7 +26,7 @@ const predefinedColors = [
 const TeamMembForm = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
-  const [showColorOptions, setShowColorOptions] = React.useState(false);
+  // const [showColorOptions, setShowColorOptions] = React.useState(false);
   // console.log(props.editData, "AAYO SET EDIT");
 
 

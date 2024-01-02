@@ -14,6 +14,7 @@ import moment from 'moment';
 interface Props extends PropsFromRedux {
   editData: any,
   toggleModal: () => void;
+  fetchSuccess: () => void;
 }
 
 const CalendarForm = (props: Props) => {
@@ -82,15 +83,17 @@ const CalendarForm = (props: Props) => {
           toast.success("Data Updated Successful...!")
           resetForm()
           setLoader(false);
-          props.toggleModal()
+          props.fetchSuccess();
+          props.toggleModal();
         } else {
           setInitialData(taskInitialValues)
           toast.success("Data Posted Successful...!")
           resetForm()
           setLoader(false)
-          props.toggleModal()
+          props.fetchSuccess();
+          props.toggleModal();
         }
-        window.location.reload()
+        // window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)
