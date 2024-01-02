@@ -32,7 +32,7 @@ const AppSidebar = (props: Props) => {
   }
 
   React.useEffect(() => {
-    if(!isOpen) {
+    if (!isOpen) {
       setTeamEditData({});
     }
   }, [isOpen]);
@@ -57,7 +57,7 @@ const AppSidebar = (props: Props) => {
 
 
   // Not using anywhere but it just to view/Fetch data
-useEffect(() => {
+  useEffect(() => {
     // Fetch data using Axios when the component mounts
     axios.get('https://kyush.pythonanywhere.com/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
@@ -91,7 +91,7 @@ useEffect(() => {
   }
 
   React.useEffect(() => {
-    if(teamData.length > 0) {
+    if (teamData.length > 0) {
       const allRows = teamData.map((rowData, index) => index);
       setSelectedRows(allRows);
     }
@@ -108,6 +108,8 @@ useEffect(() => {
       toast.success("Data Deleted Successful...!")
       resetDeleteData();
       // setTeamData();
+      setFetchNewMember(fetchNewMember + 1);
+
     } else {
       toast.error("Server Error")
     }
@@ -116,7 +118,7 @@ useEffect(() => {
   const [TeamData, setTeamEditData] = React.useState<any>();
 
   // console.log(TeamData, "sidebarTeam");
-  
+
   const handleEditClick = (data: any) => {
     setTeamEditData(data);
     toggleTeamModal();
@@ -125,11 +127,11 @@ useEffect(() => {
   const handleTeamMemberAdd = () => {
     setFetchNewMember(fetchNewMember + 1);
   };
-  
+
 
   return (
     <>
-      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData} success={handleTeamMemberAdd}/>
+      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData} success={handleTeamMemberAdd} />
       <aside className="sidebar">
         <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
           <div className='sidebar-header-top align-vertical px-3 mt-2'>
@@ -180,12 +182,12 @@ useEffect(() => {
                         // props.setEditData(item);
                         handleEditClick(item)
                       }}>
-                        <img src={EditIconDark} alt="edit" width="10px"  className='mx-2'/>
+                        <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
                       </div>
                       <div role='button' className="mr-0" onClick={() => {
                         handleDeleteClick(item.id)
                       }}>
-                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2'/>
+                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
                       </div>
                     </td>
                   </tr>
