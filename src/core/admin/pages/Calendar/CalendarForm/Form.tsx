@@ -22,6 +22,8 @@ const CalendarForm = (props: Props) => {
     ...taskInitialValues, ...(props.editData || {})
   });
 
+  console.log(initialData, "Task ADD")
+
   const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data);
 
   const dispatch = useDispatch();
@@ -36,7 +38,7 @@ const CalendarForm = (props: Props) => {
   }, [props.editData]);
 
 
-  const [loader, setLoader] = React.useState(false);
+  const [isLoader, setLoader] = React.useState(false);
 
   const {
     values,
@@ -55,7 +57,7 @@ const CalendarForm = (props: Props) => {
       let start_date = submitValue.start_date;
       let end_date = submitValue.end_date;
 
-      if(moment(end_date).isBefore(start_date)) {
+      if (moment(end_date).isBefore(start_date)) {
         toast.error("End date should be greater than start date")
         return
       }
@@ -64,13 +66,13 @@ const CalendarForm = (props: Props) => {
       setLoader(true);
 
 
-      if (props.editData?.id > 0) {
+      if (props.editData && props.editData.id) {
         res = await props.updateTaskLogsAction(props.editData.id, {
           ...submitValue
         })
       } else {
         res = await props.postTaskLogsAction({
-          ...submitValue, id : undefined
+          ...submitValue
         })
       }
 
@@ -86,8 +88,9 @@ const CalendarForm = (props: Props) => {
           toast.success("Data Posted Successful...!")
           resetForm()
           setLoader(false)
+          props.toggleModal()
         }
-        // window.location.reload()
+        window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)
@@ -196,6 +199,8 @@ const CalendarForm = (props: Props) => {
               className='btn custom-btn text-white'
               type='submit'
               text="SUBMIT"
+              disabled={isLoader}
+              loading={isLoader}
             />
           </div>
         </form>
@@ -206,6 +211,7 @@ const CalendarForm = (props: Props) => {
 
 const mapStateToProps = (state: RootState) => ({
   loading:
+    state.taskData.updateTaskLogs.isFetching ||
     state.taskData.postTaskLogs.isFetching
 });
 

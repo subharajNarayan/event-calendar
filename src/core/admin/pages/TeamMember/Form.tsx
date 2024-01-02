@@ -78,11 +78,13 @@ const TeamMembForm = (props: Props) => {
             resetForm()
             props.toggleModal()
             props.success();
+            setIsLoader(false);
           } else {
             setInitialData(TeamInitialValues)
             toast.success("Data Posted Successful...!")
             resetForm()
             props.success();
+            setIsLoader(false);
           }
         } else {
           // Failed login attempt
@@ -100,14 +102,17 @@ const TeamMembForm = (props: Props) => {
             const formattedErrorMessage = errorMessage.replace(/[\[\]"]+/g, '');
 
             toast.error(formattedErrorMessage);
+            setIsLoader(false);
           }
           else {
             toast.error("Oops... Something is Wrong!")
+            setIsLoader(false);
           }
         }
       }
       catch (error) {
         toast.error("Server Error")
+        setIsLoader(false);
       }
     }
   })
@@ -182,8 +187,8 @@ const TeamMembForm = (props: Props) => {
               className='btn custom-btn text-white'
               type='submit'
               text="SUBMIT"
-              disabled={props.loading}
-              loading={props.loading}
+              disabled={isLoader}
+              loading={isLoader}
             />
           </div>
         </form>
