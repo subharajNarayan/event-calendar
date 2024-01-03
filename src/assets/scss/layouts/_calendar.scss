@@ -152,6 +152,18 @@
   scroll-behavior: smooth;
 }
 
+.comment-view-auto {
+  height: auto;
+  overflow-y: auto; /* Add this if you want scrolling when the content exceeds the height */
+}
+
+.comment-view-fixed {
+  height: 220px;
+  overflow-y: auto; /* Add this if you want scrolling when the content exceeds the height */
+}
+
+
+
 
 @media only screen and (max-width: 767px){
   .body-calendar{ 

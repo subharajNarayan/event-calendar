@@ -83,8 +83,8 @@ const CalendarForm = (props: Props) => {
           toast.success("Data Updated Successful...!")
           resetForm()
           setLoader(false);
-          props.fetchSuccess();
           props.toggleModal();
+          props.fetchSuccess();
         } else {
           setInitialData(taskInitialValues)
           toast.success("Data Posted Successful...!")

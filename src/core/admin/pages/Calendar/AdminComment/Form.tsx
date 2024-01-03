@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import axios from 'axios';
@@ -22,22 +22,14 @@ const Form = (props: Props) => {
 
   console.log(props.selectedEvent, "USER COMMENT ");
 
-  const [isLoader, setIsLoader] = React.useState(false);
+  // const [isLoader, setIsLoader] = React.useState(false);
 
   const [initialData, setInitialData] = React.useState({
-    comment: "",
+    task_id: props.selectedEvent?.id,
     title: props.selectedEvent?.title,
     username: props.selectedEvent?.assigned_user_name,
+    comment: "",
   });
-
-  const dispatch = useDispatch();
-  React.useEffect(() => {
-    // dispatch(props.getCommentLogsAction())
-  }, [])
-
-  // const CommentDetails = useSelector((state: RootState) => state.commentData.getCommentLogs.data || []);
-
-  // console.log(CommentDetails);
 
   const [data, setData] = React.useState<any[]>([]);
   console.log({ data });
@@ -54,6 +46,10 @@ const Form = (props: Props) => {
       });
   }, []);
 
+  React.useEffect(() => {
+    console.log('Component Data:', data);
+  }, [data]);
+
   const {
     values,
     errors,
@@ -65,8 +61,7 @@ const Form = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      let res;
-      setIsLoader(true);
+      let res: any;
 
       res = await props.postCommentLogsAction({
         ...submitValue
@@ -75,7 +70,10 @@ const Form = (props: Props) => {
         if (res.status === 200 || res.status === 201) {
           setInitialData(initialData)
           resetForm();
+          // Update data state directly to ensure immediate re-render
+          setData([res.data, ...data]);
           toast.success("Data posted successful...!")
+          // setData(prevData => [res.data, ...prevData]);
           props.toggleModal();
         } else {
           toast.error("Oops...Something is Wrong!")
@@ -84,8 +82,6 @@ const Form = (props: Props) => {
       } else {
         toast.error("SERVER ERROR")
       }
-
-      setIsLoader(false)
     }
   })
 
@@ -95,6 +91,7 @@ const Form = (props: Props) => {
 
         <form action="form"
           onSubmit={(e) => {
+            e.preventDefault();
             handleSubmit(e)
           }} autoComplete='off'>
           <div className="row">
@@ -133,14 +130,43 @@ const Form = (props: Props) => {
       </div>
       <hr />
       <div className="comment-view">
-        {data.slice(0).reverse().map((item) => (
-          <div className="" key={item.id}>
-            <p style={{fontSize: '16px'}} className='mb-0'> {item.comment} </p>
-            <span style={{fontSize: '12px'}}>{item.created_at} &nbsp; {item.username}</span>
-            <hr />
-          </div>
-        ))}
+        {data?.slice(0).reverse().map((item) => {
+          return (
+            <div className="" key={item.id}>
+              {props.selectedEvent?.id === item.task_id && (
+                <>
+                  <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                  <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
+                  <hr />
+                </>
+              )}
+            </div>
+          )
+        })}
       </div>
+
+      {/* <div  >
+        {data?.map((item) => {
+          console.log('Selected Event ID:', props.selectedEvent.id);
+          console.log('Comment Task ID:', item.task_id);
+
+          // Log the entire item object
+          console.log('Item:', item);
+
+          return (
+            <div className="" key={item.id}>
+              {props.selectedEvent?.id === item.task_id && (
+                <>
+                  <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                  <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
+                  <hr />
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div> */}
+
     </div>
   )
 }

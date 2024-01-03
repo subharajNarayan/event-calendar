@@ -624,7 +624,7 @@ const CIndex = (props: Props) => {
                 <div role='button' className="mr-0" title='Delete' onClick={() => handleDeleteClick(selectedDetails.id)}>
                   <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
                 </div>
-                <button className="tick-button ml-2" title='Tick' style={{ right: "68px" }} onClick={handleTickButtonClick}>
+                <button className="tick-button ml-2" title='Done Mark' style={{ right: "68px" }} onClick={handleTickButtonClick}>
                   {isTaskComplete ? (
                     <div className='tick-true'>
                       <FontAwesomeIcon icon={faCheck} />
