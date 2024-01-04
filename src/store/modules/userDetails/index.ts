@@ -2,7 +2,7 @@ import { Dispatch } from "redux";
 
 const initialState = {
     id: null,
-    firstname: "",
+    username: "",
     // slug: "",
     tokens: {
         access: "",
@@ -15,7 +15,7 @@ const initialState = {
 
 type IUserDetails = {
     id: number | null
-    firstname: string
+    username: string
     // slug: string
     tokens: {
         access: string

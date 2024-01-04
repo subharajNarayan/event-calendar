@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { taskInitialValues, taskValidationSchema } from './schema';
+// import { taskInitialValues, taskValidationSchema } from './schema';
 import { useFormik } from 'formik';
 import { getTeamMemberLogsAction } from '../../../../../store/modules/TeamMember/getTeamMemberLogs';
 import { postTaskLogsAction } from '../../../../../store/modules/Tasks/postTaskLogs';
@@ -11,17 +11,22 @@ import Button from '../../../../../components/UI/Forms/Buttons';
 import { RootState } from '../../../../../store/root-reducer';
 import moment from 'moment';
 import TokenService from '../../../../../services/jwt-token/jwt-token';
+import * as Yup from 'yup';
 
+
+export const taskValidationSchema = Yup.object().shape({
+
+})
 interface Props extends PropsFromRedux {
   editData: any,
   toggleModal: () => void;
-  fetchSuccess: () => void;
+  success: () => void;
 }
 
-const CalendarForm = (props: Props) => {
+const UserEditForm = (props: Props) => {
 
-  const [initialData, setInitialData] = useState<typeof taskInitialValues>({
-    ...taskInitialValues, ...(props.editData || {})
+  const [initialData, setInitialData] = useState({
+    ...(props.editData || {})
   });
 
   console.log(initialData, "Task ADD")
@@ -34,6 +39,8 @@ const CalendarForm = (props: Props) => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
+        start_date: moment(props.editData.start_date).format('YYYY-MM-DDTHH:mm'),
+        end_date: moment(props.editData.end_date).format('YYYY-MM-DDTHH:mm'),
       })
     }
     dispatch(getTeamMemberLogsAction())
@@ -75,29 +82,21 @@ const CalendarForm = (props: Props) => {
         // Add other user details if needed
       };
 
-      if (props.editData && props.editData.id) {
-        res = await props.updateTaskLogsAction(props.editData.id, updatedSubmitValue)
-      } else {
-        res = await props.postTaskLogsAction(updatedSubmitValue)
-      }
+      // if (props.editData && props.editData.id) {
+      res = await props.updateTaskLogsAction(props.editData.id, updatedSubmitValue)
+      // } 
 
       if (res.status === 201 || res.status === 200) {
         if (props.editData) {
-          setInitialData(taskInitialValues)
+          setInitialData({
+            ...submitValue
+          })
           toast.success("Data Updated Successful...!")
           resetForm()
           setLoader(false);
-          props.fetchSuccess();
-          props.toggleModal();
-        } else {
-          setInitialData(taskInitialValues)
-          toast.success("Data Posted Successful...!")
-          resetForm()
-          setLoader(false)
-          props.fetchSuccess();
+          props.success();
           props.toggleModal();
         }
-        // window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)
@@ -190,6 +189,7 @@ const CalendarForm = (props: Props) => {
               value={values.assigned_user_name}
               onChange={handleChange}
               onBlur={handleBlur}
+              disabled
             >
 
               <option selected>--Select Team Member--</option>
@@ -232,4 +232,4 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(CalendarForm);
+export default connector(UserEditForm);

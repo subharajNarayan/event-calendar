@@ -9,12 +9,14 @@ import toast from '../../../../../components/Notifier/Notifier';
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { DeleteIcon, EditIconDark } from '../../../../../assets/images/xd';
+import { EditIconDark } from '../../../../../assets/images/xd';
 import moment from 'moment';
+import UserEditIndex from '../userEditModal';
 interface Props extends PropsFromRedux {
   isOpen: boolean;
   toggleModal: () => void;
   selectedEvent: any;
+  success: () => void;
 }
 
 const validationSchema = Yup.object({});
@@ -24,10 +26,16 @@ const TeamIndex = (props: Props) => {
     task_complete: props.selectedEvent.task_complete.toString(),
   });
 
-  console.log(props.selectedEvent,"TASK");
-  
+  // console.log(props.selectedEvent,"TASK");
+
 
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>(props.selectedEvent.task_complete);
+  // const [isEditToggleModal, setIsEditToggleModal] = useState(false);
+
+  // const toggleEditModal = () => {
+  //   setIsEditToggleModal(!isEditToggleModal);
+  //   props.toggleModal();
+  // }
 
   useEffect(() => {
     setIsTaskComplete(initialData.task_complete === 'true');
@@ -47,6 +55,7 @@ const TeamIndex = (props: Props) => {
     }
   };
 
+
   const {
     values,
     errors,
@@ -58,31 +67,36 @@ const TeamIndex = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      // Your existing code for submitting the form
     },
   });
+
+  const handleSelectEvent = (event: any) => {
+    console.log("checked");
+    setRenderUserEditIndex(true);
+    props.toggleModal();
+    props.success();
+  }
+
+  const [renderUserEditIndex, setRenderUserEditIndex] = useState(false);
 
   return (
     <div>
       <Modal isOpen={props.isOpen} toggle={props.toggleModal}>
         <ModalHeader toggle={props.toggleModal}>
           {props.selectedEvent ? props.selectedEvent.title : ''}
-          <div className="right-side-btn " style={{position:"absolute", right:"47px", top:"14px"}}>
+          <div className="right-side-btn " style={{ position: "absolute", right: "47px", top: "14px" }}>
             <div className="action d-flex align-item-center">
-              <div role='button' className="mr-0" 
-              >
+              <div role='button' className="mr-0" onClick={() => handleSelectEvent(props.selectedEvent)}>
+
                 <img src={EditIconDark} alt="edit" width="15px" className='mx-2' />
               </div>
-              {/* <div role='button' className="mr-0">
-                <img src={DeleteIcon} alt="delete" width="15px" className='mx-2' />
-              </div> */}
-            <button className="tick-button ml-2" onClick={handleTickButtonClick} style={{right: "35px"}}>
-              {isTaskComplete ? <div className='tick-true'>
-                <FontAwesomeIcon icon={faCheck} />
-              </div> : <div className='tick-false'>
-                <FontAwesomeIcon icon={faCheck} />
-              </div>}
-            </button>
+              <button className="tick-button ml-2" onClick={handleTickButtonClick} style={{ right: "35px" }}>
+                {isTaskComplete ? <div className='tick-true'>
+                  <FontAwesomeIcon icon={faCheck} />
+                </div> : <div className='tick-false'>
+                  <FontAwesomeIcon icon={faCheck} />
+                </div>}
+              </button>
             </div>
           </div>
         </ModalHeader>
@@ -94,12 +108,20 @@ const TeamIndex = (props: Props) => {
             </div>
             <hr />
             <div className="date-time">
-              <p className='d-flex align-items-center '>Assignee: {props.selectedEvent.assigned_user_name}</p>
+              <p className='d-flex align-items-center '>Assignee: {props.selectedEvent.assignee}</p>
             </div>
             <Form selectedEvent={props.selectedEvent} toggleModal={props.toggleModal} />
           </div>
         </ModalBody>
       </Modal>
+      {renderUserEditIndex && (
+        <UserEditIndex
+          isOpen={true} // Assuming UserEditIndex takes an isOpen prop
+          toggleModal={() => setRenderUserEditIndex(false)} // Close the UserEditIndex modal
+          data={props.selectedEvent}
+          success={props.success}
+        />
+      )}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import toast from '../../../../../components/Notifier/Notifier';
 import Button from '../../../../../components/UI/Forms/Buttons';
-import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
+import { ConnectedProps, connect} from 'react-redux';
 import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
 import { RootState } from '../../../../../store/root-reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,8 +21,6 @@ interface Props extends PropsFromRedux {
 const Form = (props: Props) => {
 
   console.log(props.selectedEvent, "USER COMMENT ");
-
-  // const [isLoader, setIsLoader] = React.useState(false);
 
   const [initialData, setInitialData] = React.useState({
     task_id: props.selectedEvent?.id,

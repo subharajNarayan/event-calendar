@@ -38,6 +38,7 @@ interface Event {
   task_complete: boolean;
   status: string;
   location: string;
+  assignee: string;
 }
 
 
@@ -646,7 +647,7 @@ const CIndex = (props: Props) => {
               </div>
               <hr />
               <div className="date-time">
-                <p className='d-flex align-items-center '>Assignee: {selectedDetails.assigned_user_name}</p>
+                <p className='d-flex align-items-center '>Assignee: {selectedDetails.assignee}</p>
               </div>
               {/* <Form selectedEvent={props.selectedEvent} toggleModal={props.toggleModal} /> */}
               <Form selectedEvent={selectedDetails} toogleModal={toggleDetailsModal} />

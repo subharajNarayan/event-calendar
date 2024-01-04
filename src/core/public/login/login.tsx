@@ -32,6 +32,8 @@ function Login(props: Props): ReactElement {
       try {
         setIsLoader(true); // Set loader to true when initiating login
         const loginres: any = await loginUser(userDetails);
+        console.log("loginres", loginres);
+        
 
         if (loginres?.data?.access) {
           props.addUserDetails(loginres.data);

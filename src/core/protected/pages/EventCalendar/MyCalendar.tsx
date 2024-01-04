@@ -9,10 +9,8 @@ import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
 import TeamIndex from './userModal';
 import Form from './userModal/Form';
 import useAuthentication from '../../../../services/authentication/AuthService';
-import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
+import { ConnectedProps, connect} from 'react-redux';
 import axios from 'axios';
-import { useStateManager } from 'react-select';
-// import Form from './comment';
 
 const localizer = momentLocalizer(moment);
 
@@ -143,6 +141,8 @@ const TeamCalIndex = (props: CalendarProps) => {
   const user = getAuthUser();
 
   const [events, setEvents] = useState<Event[]>([]);
+  const [fetchTasks, setFetchTasks] = React.useState<number>(0);
+
 
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
@@ -167,7 +167,11 @@ const TeamCalIndex = (props: CalendarProps) => {
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  }, [fetchTasks]);
+
+  const handleTasksAdd = () => {
+    setFetchTasks(fetchTasks + 1);
+  };
 
   //   // auth id
   //   // /server/getallEvents/{username}
@@ -387,13 +391,9 @@ const TeamCalIndex = (props: CalendarProps) => {
           }}
         />
       )}
-      {/* {events && events.map((item, index) => {
-        return ( */}
       {selectedEvent && (
-        <TeamIndex isOpen={isOpen} toggleModal={toggleModal} selectedEvent={selectedEvent} />
+        <TeamIndex isOpen={isOpen} toggleModal={toggleModal} selectedEvent={selectedEvent} success={handleTasksAdd} />
       )}
-      {/* )
-      })} */}
 
       {currentView === 'list' && (
         <section className='table-with-paginate'>

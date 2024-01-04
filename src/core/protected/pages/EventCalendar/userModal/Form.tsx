@@ -1,15 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import toast from '../../../../../components/Notifier/Notifier';
 import Button from '../../../../../components/UI/Forms/Buttons';
-import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
+import { ConnectedProps, connect} from 'react-redux';
 import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
 import { RootState } from '../../../../../store/root-reducer';
-import { getCommentLogsAction } from '../../../../../store/modules/comment/getCommentLogs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faChevronCircleRight, faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 const validationSchema = Yup.object({
 });
@@ -21,29 +20,33 @@ interface Props extends PropsFromRedux {
 
 const Form = (props: Props) => {
 
-  const [isLoader, setIsLoader] = React.useState(false);
-  const [data, setData] = React.useState<any[]>([]);
-  console.log({ data });
+  // console.log(props.selectedEvent, "USER COMMENT ");
 
   const [initialData, setInitialData] = React.useState({
+    task_id: props.selectedEvent?.id,
+    title: props.selectedEvent?.title,
+    username: props.selectedEvent?.assigned_user_name,
     comment: "",
-    // Add other fields from selectedEvent as needed
-    // eventId: props.selectedEvent.id,
-    title: props.selectedEvent.title,
-    username: props.selectedEvent.assigned_user_name,
   });
 
-  const dispatch = useDispatch();
+  const [data, setData] = React.useState<any[]>([]);
+  // console.log({ data });
+
+  // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
-    // dispatch(props.getCommentLogsAction())
-  }, [])
+    // Fetch data using Axios when the component mounts
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/comments/') // Replace with API endpoint
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
-  // const CommentDetails = useSelector((state: RootState) => state.commentData.getCommentLogs.data || []);
-
-  // console.log(CommentDetails);
-
-
-
+  React.useEffect(() => {
+    console.log('Component Data:', data);
+  }, [data]);
 
   const {
     values,
@@ -56,8 +59,7 @@ const Form = (props: Props) => {
     initialValues: initialData,
     validationSchema: validationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
-      let res;
-      setIsLoader(true);
+      let res: any;
 
       res = await props.postCommentLogsAction({
         ...submitValue
@@ -66,31 +68,18 @@ const Form = (props: Props) => {
         if (res.status === 200 || res.status === 201) {
           setInitialData(initialData)
           resetForm();
+          // Update data state directly to ensure immediate re-render
+          setData([res.data, ...data]);
           toast.success("Data posted successful...!")
-          props.toggleModal()
         } else {
           toast.error("Oops...Something is Wrong!")
-          props.toggleModal()
+          // props.toggleModal();
         }
       } else {
         toast.error("SERVER ERROR")
       }
-
-      setIsLoader(false)
     }
   })
-
-  useEffect(() => {
-    // Fetch data using Axios when the component mounts
-    axios
-      .get('https://kyush.pythonanywhere.com/accounts/api/comments/')
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
 
   return (
     <div>
@@ -98,6 +87,7 @@ const Form = (props: Props) => {
 
         <form action="form"
           onSubmit={(e) => {
+            e.preventDefault();
             handleSubmit(e)
           }} autoComplete='off'>
           <div className="row">
@@ -136,13 +126,19 @@ const Form = (props: Props) => {
       </div>
       <hr />
       <div className="comment-view">
-        {data.slice(0).reverse().map((item) => (
-          <div className="" key={item.id}>
-            <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
-            <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
-            <hr />
-          </div>
-        ))}
+        {data?.slice(0).reverse().map((item) => {
+          return (
+            <div className="" key={item.id}>
+              {props.selectedEvent?.id === item.task_id && (
+                <>
+                  <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                  <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
+                  <hr />
+                </>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )
