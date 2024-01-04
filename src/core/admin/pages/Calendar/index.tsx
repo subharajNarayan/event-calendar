@@ -183,19 +183,75 @@ const CIndex = (props: Props) => {
   const { modal, editId, resetDeleteData } = useDeleteConfirmation();
 
 
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>(''); //For sorting AssigneTo column
+
+  // const handleSortChange = (e: any) => {
+  //   setSortDirection(e.target.value as 'asc' | 'desc' | '');
+  // };
+
+  // const handleSortChange = (e: any) => {
+  //   const selectedSortDirection = e.target.value as 'asc' | 'desc' | '';
+
+  //   if (selectedSortDirection === '') {
+  //     // If "All" is selected, update events based on the current month
+  //     const currentMonthEvents = getViewEvents();
+  //     console.log({ currentMonthEvents });
+      
+  //     setUnfilteredEvents(currentMonthEvents);
+  //   } else {
+  //     // If other sorting options are selected, update the sort direction
+  //     setUnfilteredEvents([...unfilteredEvents].sort((a, b) => {
+  //       const sortFactor = selectedSortDirection === 'asc' ? 1 : -1;
+  //       const assignedToA = a.assigned_user_name?.toLowerCase() || '';
+  //       const assignedToB = b.assigned_user_name?.toLowerCase() || '';
+  //       return assignedToA.localeCompare(assignedToB) * sortFactor;
+  //     }));
+  //   }
+
+  //   setSortDirection(selectedSortDirection);
+  // };
+
+  const handleSortChange = (e: any) => {
+    const selectedSortDirection = e.target.value as 'asc' | 'desc' | '';
+  
+    if (selectedSortDirection === '') {
+      // If "All" is selected, update events based on the current month
+      const currentMonth = new Date().getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+      const currentMonthEvents = getViewEvents().filter(event => {
+        const eventMonth = new Date(event.start_date).getMonth() + 1;
+        return eventMonth === currentMonth;
+      });
+  
+      console.log({ currentMonthEvents });
+      setUnfilteredEvents(currentMonthEvents);
+    } else {
+      // If other sorting options are selected, update the sort direction
+      setUnfilteredEvents([...unfilteredEvents].sort((a, b) => {
+        const sortFactor = selectedSortDirection === 'asc' ? 1 : -1;
+        const assignedToA = a.assigned_user_name?.toLowerCase() || '';
+        const assignedToB = b.assigned_user_name?.toLowerCase() || '';
+        return assignedToA.localeCompare(assignedToB) * sortFactor;
+      }));
+    }
+  
+    setSortDirection(selectedSortDirection);
+  };
+  
+
+
   const [initialData, setInitialData] = useState({
     task_complete: selectedDetails?.task_complete,
   });
 
   console.log({ initialData });
-  
+
 
   // const taskComplete = events.map((item) => item.task_complete);
 
   // Make sure this code is executed before any usage of isTaskComplete
   // const taskComplete = selectedDetails?.task_complete;
   console.log({ selectedDetails });
-  
+
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>();
   console.log({ isTaskComplete });
 
@@ -206,39 +262,39 @@ const CIndex = (props: Props) => {
       setIsTaskComplete(initialIsTaskComplete);
     }
   }, [selectedDetails]);
-  
+
   const handleTickButtonClick = async () => {
-  try {
-    if (selectedDetails) {
-      const updatedTask = {
-        ...selectedDetails,
-        task_complete: (!isTaskComplete),
-      };
+    try {
+      if (selectedDetails) {
+        const updatedTask = {
+          ...selectedDetails,
+          task_complete: (!isTaskComplete),
+        };
 
-      const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
+        const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
 
-      if (res.status === 200) {
-        const updatedTaskData = res.data;
+        if (res.status === 200) {
+          const updatedTaskData = res.data;
 
-        // Check if updatedTaskData is not null before accessing its properties
-        if (updatedTaskData) {
-          setInitialData({ task_complete: updatedTaskData.task_complete });
-          toast.success('Task updated successfully...!');
+          // Check if updatedTaskData is not null before accessing its properties
+          if (updatedTaskData) {
+            setInitialData({ task_complete: updatedTaskData.task_complete });
+            toast.success('Task updated successfully...!');
+          } else {
+            toast.error('Updated task data is null.');
+          }
         } else {
-          toast.error('Updated task data is null.');
+          toast.error('Oops... Something is Wrong!');
         }
-      } else {
-        toast.error('Oops... Something is Wrong!');
       }
+    } catch (error) {
+      console.error(error);
+      toast.error('Oops... Something went wrong!');
     }
-  } catch (error) {
-    console.error(error);
-    toast.error('Oops... Something went wrong!');
-  }
-};
+  };
 
-  
-  
+
+
 
   // React.useEffect(() => {
   //   setIsTaskComplete(initialData.task_complete === 'true');
@@ -403,15 +459,15 @@ const CIndex = (props: Props) => {
       setSelectedEvent(null);
     }
   }, [isOpen]);
-  
+
   const [taskStatus, setTaskStatus] = React.useState<string>('');
 
   React.useEffect(() => {
-    let eventlist : Event[] = [];
-    if(currentView == 'calendar') {
+    let eventlist: Event[] = [];
+    if (currentView == 'calendar') {
       eventlist = getViewEvents();
     }
-    if(currentView == 'list') {
+    if (currentView == 'list') {
       eventlist = getViewEvents(listCurrentView);
     }
     switch (taskStatus) {
@@ -440,23 +496,23 @@ const CIndex = (props: Props) => {
   }, [currentMonth, taskStatus, listCurrentView, currentView]);
 
   // React.useEffect(() => {
-    
+
   //   if(currentView == 'calendar') {
   //     setUnfilteredEvents(getViewEvents());
   //   }
   //   if(currentView == 'list') {
   //     setUnfilteredEvents(getViewEvents(listCurrentView));
   //   }
-    
+
   // }, []);
 
   const getViewEvents = (currentViewOverride: string = '') => {
 
     // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
     let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
-    
+
     switch (currentViewOverride) {
-      case 'month':{
+      case 'month': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
             date.startOf('month').format('YYYY-MM-DD'),
@@ -586,6 +642,26 @@ const CIndex = (props: Props) => {
             showYearDate={false}
             toggleForm={toggleForm}
           />
+          <div className="row sorting">
+            <div className="col-lg-2">
+              <div className="sorting-data mt-3 d-flex align-items-baseline">
+                <label htmlFor="" style={{whiteSpace: 'nowrap'}}>
+                  Sort By:
+                </label>
+                <select
+                  name=""
+                  id=""
+                  className='form-select outline-none box-shadow-none mx-2'
+                  onChange={handleSortChange}
+                  value={sortDirection}
+                >
+                  <option value="">All</option>
+                  <option value="asc">A-Z</option>
+                  <option value="desc">Z-A</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <Table>
             <thead>
               <tr>
@@ -596,18 +672,43 @@ const CIndex = (props: Props) => {
                 {/* <th></th> */}
               </tr>
             </thead>
+            {/* <tbody>
+              {unfilteredEvents
+                .sort((a, b) => {
+                  const sortFactor = sortDirection === 'asc' ? 1 : -1;
+                  const assignedToA = a.assigned_user_name?.toLowerCase() || '';
+                  const assignedToB = b.assigned_user_name?.toLowerCase() || '';
+                  return assignedToA.localeCompare(assignedToB) * sortFactor;
+                })
+                .map((item: any) => (
+                  <tr key={item.id} onClick={() => handleDetailEvent(item)}>
+                    <td>{item.title}</td>
+                    <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
+                    <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                    <td>{item.assigned_user_name}</td>
+                  </tr>
+                ))}
+            </tbody> */}
             <tbody>
+              {unfilteredEvents.map((item: any) => (
+                <tr key={item.id} onClick={() => handleDetailEvent(item)}>
+                  <td>{item.title}</td>
+                  <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
+                  <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                  <td>{item.assigned_user_name}</td>
+                </tr>
+              ))}
+            </tbody>
+            {/* <tbody>
               {(unfilteredEvents)?.slice(0).reverse().map((item, index) => (
-                // <tr key={index} onClick={() => handleSelectEvent(item)}>
                 <tr key={index} onClick={() => handleDetailEvent(item)}>
                   <td>{item.title}</td>
                   <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
                   <td>{moment(item.end_date).format('MMM D, YYYY')}</td>
                   <td>{item.assigned_user_name} </td>
-                  {/* <td><span style={{ backgroundColor: item.assigned_colour, padding: "0.6rem",display: "inline-block", position: "relative", borderRadius: "50%" }}></span></td> */}
                 </tr>
               ))}
-            </tbody>
+            </tbody> */}
           </Table>
         </div>
       )}
@@ -657,8 +758,8 @@ const CIndex = (props: Props) => {
       }
 
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess} />}
-      {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess}/>}
-      {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} fetchSuccess={props.fetchSuccess}/>}
+      {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess} />}
+      {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} fetchSuccess={props.fetchSuccess} />}
 
       {/* <ConfirmationModal open={modal}
         handleModal={() => toggleModal()}

@@ -44,6 +44,21 @@ const Form = (props: Props) => {
       });
   }, []);
 
+  const [commentCheck, setCommentCheck] = React.useState<any[]>([]);
+  console.log({ commentCheck });
+
+  // Not using anywhere but it just to view/Fetch data
+  React.useEffect(() => {
+    // Fetch data using Axios when the component mounts
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/combined_data/') // Replace with API endpoint
+      .then((response) => {
+        setCommentCheck(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
   React.useEffect(() => {
     console.log('Component Data:', data);
   }, [data]);

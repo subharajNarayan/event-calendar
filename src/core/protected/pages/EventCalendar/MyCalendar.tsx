@@ -9,7 +9,7 @@ import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
 import TeamIndex from './userModal';
 import Form from './userModal/Form';
 import useAuthentication from '../../../../services/authentication/AuthService';
-import { ConnectedProps, connect} from 'react-redux';
+import { ConnectedProps, connect } from 'react-redux';
 import axios from 'axios';
 
 const localizer = momentLocalizer(moment);
@@ -143,7 +143,11 @@ const TeamCalIndex = (props: CalendarProps) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [fetchTasks, setFetchTasks] = React.useState<number>(0);
 
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); //For sorting AssigneTo column
 
+  const handleSortChange = (e: any) => {
+    setSortDirection(e.target.value as 'asc' | 'desc');
+  };
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
@@ -262,14 +266,13 @@ const TeamCalIndex = (props: CalendarProps) => {
     }
   }, [isOpen]);
 
-  // const [taskStatus, setTaskStatus] = React.useState<string>('');
 
   React.useEffect(() => {
-    let eventlist : Event[] = [];
-    if(currentView == 'calendar') {
+    let eventlist: Event[] = [];
+    if (currentView == 'calendar') {
       eventlist = getViewEvents();
     }
-    if(currentView == 'list') {
+    if (currentView == 'list') {
       eventlist = getViewEvents(listView);
     }
     switch (taskStatus) {
@@ -297,24 +300,13 @@ const TeamCalIndex = (props: CalendarProps) => {
     }
   }, [currentMonth, taskStatus, listView, currentView]);
 
-  // React.useEffect(() => {
-    
-  //   if(currentView == 'calendar') {
-  //     setUnfilteredEvents(getViewEvents());
-  //   }
-  //   if(currentView == 'list') {
-  //     setUnfilteredEvents(getViewEvents(listView));
-  //   }
-    
-  // }, []);
-
   const getViewEvents = (currentViewOverride: string = '') => {
 
     // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
     let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
-    
+
     switch (currentViewOverride) {
-      case 'month':{
+      case 'month': {
         return events.filter(event => {
           return moment(event.start_date).isBetween(
             date.startOf('month').format('YYYY-MM-DD'),
@@ -414,13 +406,24 @@ const TeamCalIndex = (props: CalendarProps) => {
               }}
               switchToCalendarView={switchToCalendarView}
               switchToListView={switchToListView}
-              showAllButton={true}
-              showYearDate={true}
+              showAllButton={false}
+              showYearDate={false}
               taskStatus={taskStatus}
               handleTaskStatusChange={(e) => {
                 setTaskStatus(e.target.value);
               }}
             />
+            <div className="sorting-table mt-3">
+            <select
+              name=""
+              id=""
+              className='form-select'
+              onChange={handleSortChange}
+            >
+              <option value="asc" selected={sortDirection === 'asc'}>A-Z</option>
+              <option value="desc" selected={sortDirection === 'desc'}>Z-A</option>
+            </select>
+          </div>
             <Table>
               <thead>
                 <tr>
@@ -429,12 +432,28 @@ const TeamCalIndex = (props: CalendarProps) => {
                   <th>End Date</th>
                 </tr>
               </thead>
+              {/* <tbody>
+              {unfilteredEvents
+                .sort((a, b) => {
+                  const sortFactor = sortDirection === 'asc' ? 1 : -1;
+                  const assignedToA = a.assigned_user_name?.toLowerCase() || '';
+                  const assignedToB = b.assigned_user_name?.toLowerCase() || '';
+                  return assignedToA.localeCompare(assignedToB) * sortFactor;
+                })
+                .map((item: any) => (
+                  <tr key={item.id} onClick={() => handleEventsSelect(item)}>
+                    <td>{item.title}</td>
+                    <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
+                    <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                    <td>{item.assigned_user_name}</td>
+                  </tr>
+                ))}
+            </tbody> */}
               <tbody>
                 {unfilteredEvents && unfilteredEvents.map((item: any) => (
                   <tr key={item.id} onClick={() => handleEventsSelect(item)}>
                     <td>{item.title}</td>
                     <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
-                    {/* <td>{moment(item.end).format('MMM D, YYYY HH:MM')}</td> */}
                     <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
                   </tr>
                 ))}

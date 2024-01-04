@@ -62,6 +62,18 @@
       }
     }
   }
+  .sorting{
+    &-data{
+      position: absolute;
+      bottom: 8px;
+      select{
+        &:focus{
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
 
   // .calendar-list {
   //   position: absolute;
