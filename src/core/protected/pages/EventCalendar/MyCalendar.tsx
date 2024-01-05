@@ -336,6 +336,32 @@ const TeamCalIndex = (props: CalendarProps) => {
     }
   }
 
+  const [sortColumn, setSortColumn] = useState<keyof Event>('title');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const handleSort = (column: keyof Event) => {
+    const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+
+    const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+      if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
+      if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setSortColumn(column);
+    setSortOrder(newSortOrder);
+    // Update the data
+    setUnfilteredEvents(sortedEvents);
+  };
+
+  const renderArrow = (column: keyof Event) => {
+    if (sortColumn === column) {
+      return sortOrder === 'asc' ? ' ↑' : ' ↓';
+    }
+    return ' ↑↓'; // Both arrows initially displayed
+  };
+
+
   return (
     <div>
       {currentView === 'calendar' && (
@@ -413,23 +439,21 @@ const TeamCalIndex = (props: CalendarProps) => {
                 setTaskStatus(e.target.value);
               }}
             />
-            <div className="sorting-table mt-3">
-            <select
-              name=""
-              id=""
-              className='form-select'
-              onChange={handleSortChange}
-            >
-              <option value="asc" selected={sortDirection === 'asc'}>A-Z</option>
-              <option value="desc" selected={sortDirection === 'desc'}>Z-A</option>
-            </select>
-          </div>
-            <Table>
+            <Table className='list-table'>
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
+                  <th onClick={() => handleSort('title')}>
+                    Title
+                    <span className="arrow">{renderArrow('title')}</span>
+                  </th>
+                  <th onClick={() => handleSort('start_date')}>
+                    Start Date
+                    <span className="arrow">{renderArrow('start_date')}</span>
+                  </th>
+                  <th onClick={() => handleSort('end_date')}>
+                    End Date
+                    <span className="arrow">{renderArrow('end_date')}</span>
+                  </th>
                 </tr>
               </thead>
               {/* <tbody>

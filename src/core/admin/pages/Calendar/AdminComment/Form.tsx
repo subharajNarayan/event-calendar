@@ -4,14 +4,20 @@ import { useFormik } from 'formik';
 import axios from 'axios';
 import toast from '../../../../../components/Notifier/Notifier';
 import Button from '../../../../../components/UI/Forms/Buttons';
-import { ConnectedProps, connect} from 'react-redux';
+import { ConnectedProps, connect } from 'react-redux';
 import { postCommentLogsAction } from '../../../../../store/modules/comment/postCommentLogs';
 import { RootState } from '../../../../../store/root-reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
 const validationSchema = Yup.object({
 });
+
+interface CommentViewStyle {
+  maxHeight: string;
+  overflowY?: 'scroll' | 'visible' | 'hidden' | 'auto' | 'initial' | 'inherit';
+}
 
 interface Props extends PropsFromRedux {
   selectedEvent: any;
@@ -21,6 +27,13 @@ interface Props extends PropsFromRedux {
 const Form = (props: Props) => {
 
   console.log(props.selectedEvent, "USER COMMENT ");
+
+  //Active_Tab
+  const [activeTab, setActiveTab] = React.useState("1");
+
+  const toggleTab = (tab: string) => {
+    if (activeTab !== tab) setActiveTab(tab);
+  }
 
   const [initialData, setInitialData] = React.useState({
     task_id: props.selectedEvent?.id,
@@ -43,6 +56,26 @@ const Form = (props: Props) => {
         console.error('Error fetching data:', error);
       });
   }, []);
+
+  const [combinedData, setCombinedData] = React.useState<any[]>([]);
+  console.log({ combinedData });
+
+  // Not using anywhere but it just to view/Fetch data
+  React.useEffect(() => {
+    // Fetch data using Axios when the component mounts
+    axios.get('https://kyush.pythonanywhere.com/accounts/api/taskeditlogs/') // Replace with API endpoint
+      .then((response) => {
+        setCombinedData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  const commentViewStyle: CommentViewStyle = {
+    maxHeight: data.length > 3 ? '220px' : 'none',
+    overflowY: data.length >= 3 ? 'auto' : 'visible',
+  };
 
   React.useEffect(() => {
     console.log('Component Data:', data);
@@ -70,9 +103,9 @@ const Form = (props: Props) => {
           resetForm();
           // Update data state directly to ensure immediate re-render
           setData([res.data, ...data]);
+          props.toggleModal();
           toast.success("Data posted successful...!")
           // setData(prevData => [res.data, ...prevData]);
-          props.toggleModal();
         } else {
           toast.error("Oops...Something is Wrong!")
           props.toggleModal();
@@ -84,7 +117,7 @@ const Form = (props: Props) => {
   })
 
   return (
-    <div>
+    <div className='user-comments'>
       <div className='user-body'>
 
         <form action="form"
@@ -126,22 +159,69 @@ const Form = (props: Props) => {
           </div>
         </form>
       </div>
-      <hr />
-      <div className="comment-view">
-        {data?.slice(0).reverse().map((item) => {
-          return (
-            <div className="" key={item.id}>
-              {props.selectedEvent?.id === item.task_id && (
-                <>
-                  <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
-                  <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
-                  <hr />
-                </>
-              )}
-            </div>
-          )
-        })}
-      </div>
+
+      <Nav className='mb-3'>
+        <NavItem>
+          <NavLink
+            className={activeTab === "1" ? 'active' : ''}
+            onClick={() => {
+              toggleTab("1")
+            }}
+          >
+            Comment
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink
+            className={activeTab === "2" ? 'active' : ''}
+            onClick={() => {
+              toggleTab("2")
+            }}
+          >
+            Edited Tasks
+          </NavLink>
+        </NavItem>
+      </Nav>
+
+      <TabContent activeTab={activeTab}>
+        <TabPane tabId="1">
+          <div className="comment-view" style={commentViewStyle}>
+            {data && data.length === 0 ? (
+              <span>No Comments Yet</span>
+            ) : (
+              data.slice(0).reverse().map((item) => (
+                <div className="" key={item.id}>
+                  {props.selectedEvent?.id === item.task_id && (
+                    <>
+                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                      <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
+                      <hr />
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </TabPane>
+        <TabPane tabId="2">
+          <div className="comment-view" style={commentViewStyle}>
+            {combinedData && combinedData.length === 0 ? (
+              <span>Edited Task Data Not Yet</span>
+            ) : (
+              combinedData.slice(0).reverse().map((item) => (
+                <div className="" key={item.id}>
+                  {props.selectedEvent?.id === item.task_id && (
+                    <>
+                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.message} </p>
+                      <hr />
+                    </>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </TabPane>
+      </TabContent>
 
       {/* <div  >
         {data?.map((item) => {

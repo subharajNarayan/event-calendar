@@ -16,7 +16,7 @@ interface Props extends PropsFromRedux {
 const Home = (props: Props) => {
 
   const [selectedUsers, setSelectedUsers] = React.useState<string[]>([]);
-  const [isOpen, setIsOpen] = React.useState(false)
+  // const [isOpen, setIsOpen] = React.useState(false)
   const [fetchEvents, setFetchEvents] = React.useState<number>(0);
 
 
@@ -53,6 +53,8 @@ const Home = (props: Props) => {
   const [users, setUsers] = React.useState([]);
   const [events, setEvents] = React.useState<any>([]);
 
+  console.log(events, "AAYO EVENT");
+  
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts

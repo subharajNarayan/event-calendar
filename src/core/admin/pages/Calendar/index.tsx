@@ -10,16 +10,13 @@ import { faCalendarAlt, faCheck, faList } from '@fortawesome/free-solid-svg-icon
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 // import AdminIndex from './AdminModal';
 import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
-import Button from '../../../../components/UI/Forms/Buttons';
 import Form from './AdminComment/Form';
 import { RootState } from '../../../../store/root-reducer';
 import { ConnectedProps, connect } from 'react-redux';
 import { updateTaskLogsAction } from '../../../../store/modules/Tasks/updateTaskLogs';
-import { useFormik } from 'formik';
 import toast from '../../../../components/Notifier/Notifier';
 import * as Yup from 'yup';
 import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
-import ConfirmationModal from '../../../../components/UI/ConfirmationModal';
 import { deleteTaskLogsAction } from '../../../../store/modules/Tasks/deleteTaskLogs';
 
 const localizer = momentLocalizer(moment);
@@ -141,12 +138,12 @@ const CustomToolbar: React.FC<{
         </div>
         <hr />
         {showAllButton && (
-          <div className="list-view d-flex justify-content-end align-items-baseline">
-            <div className="toolbar-all px-3">
-              <p>All</p>
-            </div>
+          <div className="list-view mb-3">
+            {/* <div className="toolbar-all px-3">
+              <p></p>
+            </div> */}
             <div className="toolbar-add text-right">
-              <button onClick={toggleForm}> + </button> Task
+              <button onClick={toggleForm}> + </button> &nbsp; Add Task
             </div>
           </div>
         )}
@@ -177,6 +174,11 @@ const CIndex = (props: Props) => {
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
   const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('month');
 
+  console.log({ unfilteredEvents });
+  console.log({ events });
+
+
+
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
 
@@ -196,7 +198,7 @@ const CIndex = (props: Props) => {
   //     // If "All" is selected, update events based on the current month
   //     const currentMonthEvents = getViewEvents();
   //     console.log({ currentMonthEvents });
-      
+
   //     setUnfilteredEvents(currentMonthEvents);
   //   } else {
   //     // If other sorting options are selected, update the sort direction
@@ -213,7 +215,7 @@ const CIndex = (props: Props) => {
 
   const handleSortChange = (e: any) => {
     const selectedSortDirection = e.target.value as 'asc' | 'desc' | '';
-  
+
     if (selectedSortDirection === '') {
       // If "All" is selected, update events based on the current month
       const currentMonth = new Date().getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
@@ -221,7 +223,7 @@ const CIndex = (props: Props) => {
         const eventMonth = new Date(event.start_date).getMonth() + 1;
         return eventMonth === currentMonth;
       });
-  
+
       console.log({ currentMonthEvents });
       setUnfilteredEvents(currentMonthEvents);
     } else {
@@ -233,10 +235,10 @@ const CIndex = (props: Props) => {
         return assignedToA.localeCompare(assignedToB) * sortFactor;
       }));
     }
-  
+
     setSortDirection(selectedSortDirection);
   };
-  
+
 
 
   const [initialData, setInitialData] = useState({
@@ -347,7 +349,8 @@ const CIndex = (props: Props) => {
 
   React.useEffect(() => {
     setUnfilteredEvents(events);
-  }, [events.length]);
+
+  }, [events.length, props.fetchSuccess]);
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -371,9 +374,6 @@ const CIndex = (props: Props) => {
   const toggleDetailsModal = () => {
     setDetailsModal(!detailsModal);
   }
-  // const toggleModal = () => {
-  //   setIsOpen(!isOpen);
-  // };
   const toggleModal = () => {
     setIsOpen(!isOpen);
     setSelectedDate(null); // Reset selectedDate when closing the modal
@@ -442,6 +442,7 @@ const CIndex = (props: Props) => {
   const switchToCalendarView = () => {
     setCurrentView('calendar');
     setListCurrentView('month');
+
     // setUnfilteredEvents(getViewEvents('month'));
   };
 
@@ -464,6 +465,7 @@ const CIndex = (props: Props) => {
 
   React.useEffect(() => {
     let eventlist: Event[] = [];
+
     if (currentView == 'calendar') {
       eventlist = getViewEvents();
     }
@@ -563,6 +565,58 @@ const CIndex = (props: Props) => {
     }
   };
 
+
+
+  const [sortColumn, setSortColumn] = useState<keyof Event>('title');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const handleSort = (column: keyof Event) => {
+    const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+
+    const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+      if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
+      if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setSortColumn(column);
+    setSortOrder(newSortOrder);
+    // Update the data
+    setUnfilteredEvents(sortedEvents);
+  };
+
+  const renderArrow = (column: keyof Event) => {
+    if (sortColumn === column) {
+      return sortOrder === 'asc' ? ' ↑' : ' ↓';
+    }
+    return ' ↑↓'; // Both arrows initially displayed
+  };
+
+  // const [sortColumn, setSortColumn] = useState<keyof Event>('title');
+  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // const handleSort = (column: keyof Event) => {
+  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+
+  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+  //     if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
+  //     if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+  //     return 0;
+  //   });
+
+  //   setSortColumn(column);
+  //   setSortOrder(newSortOrder);
+  //   // Update the data
+  //   setUnfilteredEvents(sortedEvents);
+  // };
+
+  // const renderArrow = (column: keyof Event) => {
+  //   if (sortColumn === column) {
+  //     return sortOrder === 'asc' ? '↑' : '↓';
+  //   }
+  //   return null;
+  // };
+
   return (
     <div>
       {['calendar'].indexOf(currentView) > -1 && (
@@ -642,7 +696,7 @@ const CIndex = (props: Props) => {
             showYearDate={false}
             toggleForm={toggleForm}
           />
-          <div className="row sorting">
+          {/* <div className="row sorting">
             <div className="col-lg-2">
               <div className="sorting-data mt-3 d-flex align-items-baseline">
                 <label htmlFor="" style={{whiteSpace: 'nowrap'}}>
@@ -661,34 +715,36 @@ const CIndex = (props: Props) => {
                 </select>
               </div>
             </div>
-          </div>
+          </div> */}
           <Table>
-            <thead>
+            {/* <thead>
               <tr>
                 <th>Title</th>
                 <th>Start Date</th>
                 <th>End Date</th>
                 <th>Assigned To</th>
-                {/* <th></th> */}
+              </tr>
+            </thead> */}
+            <thead>
+              <tr>
+                <th onClick={() => handleSort('title')}>
+                  Title
+                  <span className="arrow">{renderArrow('title')}</span>
+                </th>
+                <th onClick={() => handleSort('start_date')}>
+                  Start Date
+                  <span className="arrow">{renderArrow('start_date')}</span>
+                </th>
+                <th onClick={() => handleSort('end_date')}>
+                  End Date
+                  <span className="arrow">{renderArrow('end_date')}</span>
+                </th>
+                <th onClick={() => handleSort('assigned_user_name')}>
+                  Assigned To
+                  <span className="arrow">{renderArrow('assigned_user_name')}</span>
+                </th>
               </tr>
             </thead>
-            {/* <tbody>
-              {unfilteredEvents
-                .sort((a, b) => {
-                  const sortFactor = sortDirection === 'asc' ? 1 : -1;
-                  const assignedToA = a.assigned_user_name?.toLowerCase() || '';
-                  const assignedToB = b.assigned_user_name?.toLowerCase() || '';
-                  return assignedToA.localeCompare(assignedToB) * sortFactor;
-                })
-                .map((item: any) => (
-                  <tr key={item.id} onClick={() => handleDetailEvent(item)}>
-                    <td>{item.title}</td>
-                    <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
-                    <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                    <td>{item.assigned_user_name}</td>
-                  </tr>
-                ))}
-            </tbody> */}
             <tbody>
               {unfilteredEvents.map((item: any) => (
                 <tr key={item.id} onClick={() => handleDetailEvent(item)}>
@@ -699,16 +755,6 @@ const CIndex = (props: Props) => {
                 </tr>
               ))}
             </tbody>
-            {/* <tbody>
-              {(unfilteredEvents)?.slice(0).reverse().map((item, index) => (
-                <tr key={index} onClick={() => handleDetailEvent(item)}>
-                  <td>{item.title}</td>
-                  <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
-                  <td>{moment(item.end_date).format('MMM D, YYYY')}</td>
-                  <td>{item.assigned_user_name} </td>
-                </tr>
-              ))}
-            </tbody> */}
           </Table>
         </div>
       )}

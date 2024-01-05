@@ -71,7 +71,7 @@ const CalendarForm = (props: Props) => {
 
       const updatedSubmitValue = {
         ...submitValue,
-        username: userDetails.username,
+        assignee: userDetails.username,
         // Add other user details if needed
       };
 
@@ -82,7 +82,7 @@ const CalendarForm = (props: Props) => {
       }
 
       if (res.status === 201 || res.status === 200) {
-        if (props.editData) {
+        if (props.editData && props.editData.id) {
           setInitialData(taskInitialValues)
           toast.success("Data Updated Successful...!")
           resetForm()

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import Form from './Form';
-import CIndex from '..';
-
 
 interface Props {
   isOpen: boolean;

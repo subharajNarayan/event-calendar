@@ -74,6 +74,15 @@
     }
   }
 
+  .list-table{
+    thead{
+      tr{
+        th{
+          border-top: none;
+        }
+      }
+    }
+  }
 
   // .calendar-list {
   //   position: absolute;
@@ -121,6 +130,46 @@
   // }
 }
 
+.user{
+  &-comments{
+    .nav{
+      .nav-item{
+        a{
+          padding: 6.5px 16px 6.5px 1px !important;
+        }
+        .active{
+          color: #000 !important;
+          &::after{
+            content: '';
+            height: 2px;
+            width: auto;
+            background-color: #000;
+            display: block;
+            margin-top: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Add your styles to App.css or create a new CSS file */
+th {
+  cursor: pointer;
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 5px;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+th:hover .arrow {
+  // opacity: 1;
+}
+
+
 .rbc-event {
   // margin-top: -0.8rem !important;
   padding: 0px 5px !important;
@@ -158,23 +207,11 @@
   color: red;
 }
 
-.comment-view {
-  height: 220px;
-  overflow: auto;
-  scroll-behavior: smooth;
-}
-
-.comment-view-auto {
-  height: auto;
-  overflow-y: auto; /* Add this if you want scrolling when the content exceeds the height */
-}
-
-.comment-view-fixed {
-  height: 220px;
-  overflow-y: auto; /* Add this if you want scrolling when the content exceeds the height */
-}
-
-
+// .comment-view {
+//   height: 220px;
+//   overflow-y: auto;
+//   scroll-behavior: smooth;
+// }
 
 
 @media only screen and (max-width: 767px){
