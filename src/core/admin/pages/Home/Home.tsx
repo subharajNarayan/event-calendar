@@ -20,24 +20,24 @@ const Home = (props: Props) => {
   const [fetchEvents, setFetchEvents] = React.useState<number>(0);
 
 
-  const {getAuthUser} = useAuthentication();
+  const { getAuthUser } = useAuthentication();
   const user = getAuthUser();
-  
-  
+
+
   const dispatch = useDispatch();
   const LogOutAction = () => {
     dispatch(logoutAction())
     // window.location.reload();
-}
+  }
 
 
   React.useEffect(() => {
-    if(user && user.role && user.role?.toLowerCase() !== 'admin'){
+    if (user && user.role && user.role?.toLowerCase() !== 'admin') {
       LogOutAction();
       window.location.reload();
     }
   }, [user?.role]);
-  
+
 
   // const toggleModal = () => {
   //   setIsOpen(!isOpen)
@@ -54,20 +54,22 @@ const Home = (props: Props) => {
   const [events, setEvents] = React.useState<any>([]);
 
   console.log(events, "AAYO EVENT");
-  
+
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
     axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         // get js Date Object from momentjs
-        let initialEvents = response.data.map((event: any) => 
-          ({ 
-            ...event, 
-            start_date: moment(event.start_date).toDate(), 
-            end_date: moment(event.end_date).toDate() 
-          }));
-          
+        let initialEvents = response.data.map((event: any) =>
+        ({
+          ...event,
+          // start_date: moment(event.start_date).toDate(), 
+          // end_date: moment(event.end_date).toDate()
+          start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
+          end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
+        }));
+
         setEvents(initialEvents);
       })
       .catch((error) => {

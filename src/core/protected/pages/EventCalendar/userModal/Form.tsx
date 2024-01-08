@@ -211,7 +211,7 @@ const Form = (props: Props) => {
                   {props.selectedEvent?.id === item.task_id && (
                     <>
                       <p style={{ fontSize: '16px' }} className='mb-0'> {item.message} </p>
-                      {/* <hr /> */}
+                      <hr />
                     </>
                   )}
                 </div>

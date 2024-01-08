@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faList } from '@fortawesome/free-solid-svg-icons';
 import TeamIndex from './userModal';
-import Form from './userModal/Form';
 import useAuthentication from '../../../../services/authentication/AuthService';
 import { ConnectedProps, connect } from 'react-redux';
 import axios from 'axios';
@@ -155,14 +154,19 @@ const TeamCalIndex = (props: CalendarProps) => {
       .then((response) => {
         let initialEvents = response.data.map((event: any) => ({
           ...event,
-          start_date: moment(event.start_date).toDate(),
-          end_date: moment(event.end_date).toDate()
+          // start_date: moment(event.start_date).toDate(),
+          // end_date: moment(event.end_date).toDate()
+          start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
+          end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
+
         }));
 
         initialEvents = initialEvents.filter((event: any) => {
           // console.log(event.assigned_user_name, user.username);
           return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
         });
+        console.log(initialEvents, "DATA INITIAL");
+
 
         setEvents(initialEvents);
         setUnfilteredEvents(initialEvents);
@@ -237,7 +241,7 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   // State to track the selected event
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  // console.log({selectedEvent});
+  console.log({ events });
 
   // Function to handle opening the modal for a specific event
   const handleEventsSelect = (event: any) => {

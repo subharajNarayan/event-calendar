@@ -29,7 +29,7 @@ const UserEditForm = (props: Props) => {
     ...(props.editData || {})
   });
 
-  console.log(initialData, "Task ADD")
+  console.log(props.editData, "Task ADD")
 
   const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data);
 
@@ -39,8 +39,8 @@ const UserEditForm = (props: Props) => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
-        start_date: moment(props.editData.start_date).format('YYYY-MM-DDTHH:mm'),
-        end_date: moment(props.editData.end_date).format('YYYY-MM-DDTHH:mm'),
+        start_date: moment(props.editData.start_date).format('YYYY-MM-DD HH:mm'),
+        end_date: moment(props.editData.end_date).format('YYYY-MM-DD HH:mm'),
       })
     }
     dispatch(getTeamMemberLogsAction())

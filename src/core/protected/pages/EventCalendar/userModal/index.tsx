@@ -22,20 +22,14 @@ interface Props extends PropsFromRedux {
 const validationSchema = Yup.object({});
 
 const TeamIndex = (props: Props) => {
+
+  console.log(props.selectedEvent, "selectedEvent");
+  
   const [initialData, setInitialData] = useState({
     task_complete: props.selectedEvent.task_complete.toString(),
   });
 
-  // console.log(props.selectedEvent,"TASK");
-
-
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>(props.selectedEvent.task_complete);
-  // const [isEditToggleModal, setIsEditToggleModal] = useState(false);
-
-  // const toggleEditModal = () => {
-  //   setIsEditToggleModal(!isEditToggleModal);
-  //   props.toggleModal();
-  // }
 
   useEffect(() => {
     setIsTaskComplete(initialData.task_complete === 'true');

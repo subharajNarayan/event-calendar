@@ -4,7 +4,7 @@ import Button from '../../../../components/UI/Forms/Buttons';
 import { useFormik } from 'formik';
 import FormikValidationError from '../../../../components/React/FormikValidationError/FormikValidationError';
 // import toast from '../../../../components/Notifier/Notifier';
-import { TeamInitialValues, validationSchema } from './schema';
+import { TeamInitialValues, TeamValidationSchema } from './schema';
 import { RootState } from '../../../../store/root-reducer';
 import { postTeamMemberLogsAction } from '../../../../store/modules/TeamMember/postTeamMemberLogs';
 import { updateTeamMemberLogsAction } from '../../../../store/modules/TeamMember/updateTeamMemberLogs';
@@ -19,15 +19,12 @@ interface Props extends PropsFromRedux {
 }
 
 const predefinedColors = [
-  '#208ca2', // Red
-  // '#e3e3e3'
+  '#208ca2', 
 ];
 
 const TeamMembForm = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
-  // const [showColorOptions, setShowColorOptions] = React.useState(false);
-  // console.log(props.editData, "AAYO SET EDIT");
 
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
@@ -54,7 +51,7 @@ const TeamMembForm = (props: Props) => {
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
-    validationSchema: validationSchema,
+    validationSchema: TeamValidationSchema,
     onSubmit: async (submitValue, { resetForm }) => {
       let res
       setIsLoader(true);
@@ -72,7 +69,7 @@ const TeamMembForm = (props: Props) => {
         }
 
         if (res.status === 201 || res.status === 200) {
-          if (props.editData) {
+          if (props.editData && props.editData.id) {
             setInitialData(TeamInitialValues)
             toast.success("Data Updated Successful...!")
             resetForm()
@@ -122,9 +119,7 @@ const TeamMembForm = (props: Props) => {
     <div>
       <div className='team-form-body'>
         <form action="form"
-          onSubmit={(e) => {
-            handleSubmit(e)
-          }} autoComplete='off'>
+          onSubmit={handleSubmit} autoComplete='off'>
           <div className='form-group'>
             <label htmlFor="">Username <span className='text-danger'>*</span></label>
             <input
@@ -159,7 +154,7 @@ const TeamMembForm = (props: Props) => {
             <FormikValidationError name='email' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
-            <label htmlFor="">Password <span className="text-danger">*</span></label>
+            <label htmlFor="">Password  <span className="text-danger">*</span></label>
             <input
               type='password'
               className="form-control"

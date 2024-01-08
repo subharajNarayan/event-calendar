@@ -44,6 +44,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.2",
     "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.8",
     "react-to-print": "^2.14.12",
     "react-toastify": "^9.1.1",
     "reactstrap": "^9.1.5",

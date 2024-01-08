@@ -185,61 +185,6 @@ const CIndex = (props: Props) => {
   const { modal, editId, resetDeleteData } = useDeleteConfirmation();
 
 
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>(''); //For sorting AssigneTo column
-
-  // const handleSortChange = (e: any) => {
-  //   setSortDirection(e.target.value as 'asc' | 'desc' | '');
-  // };
-
-  // const handleSortChange = (e: any) => {
-  //   const selectedSortDirection = e.target.value as 'asc' | 'desc' | '';
-
-  //   if (selectedSortDirection === '') {
-  //     // If "All" is selected, update events based on the current month
-  //     const currentMonthEvents = getViewEvents();
-  //     console.log({ currentMonthEvents });
-
-  //     setUnfilteredEvents(currentMonthEvents);
-  //   } else {
-  //     // If other sorting options are selected, update the sort direction
-  //     setUnfilteredEvents([...unfilteredEvents].sort((a, b) => {
-  //       const sortFactor = selectedSortDirection === 'asc' ? 1 : -1;
-  //       const assignedToA = a.assigned_user_name?.toLowerCase() || '';
-  //       const assignedToB = b.assigned_user_name?.toLowerCase() || '';
-  //       return assignedToA.localeCompare(assignedToB) * sortFactor;
-  //     }));
-  //   }
-
-  //   setSortDirection(selectedSortDirection);
-  // };
-
-  const handleSortChange = (e: any) => {
-    const selectedSortDirection = e.target.value as 'asc' | 'desc' | '';
-
-    if (selectedSortDirection === '') {
-      // If "All" is selected, update events based on the current month
-      const currentMonth = new Date().getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
-      const currentMonthEvents = getViewEvents().filter(event => {
-        const eventMonth = new Date(event.start_date).getMonth() + 1;
-        return eventMonth === currentMonth;
-      });
-
-      console.log({ currentMonthEvents });
-      setUnfilteredEvents(currentMonthEvents);
-    } else {
-      // If other sorting options are selected, update the sort direction
-      setUnfilteredEvents([...unfilteredEvents].sort((a, b) => {
-        const sortFactor = selectedSortDirection === 'asc' ? 1 : -1;
-        const assignedToA = a.assigned_user_name?.toLowerCase() || '';
-        const assignedToB = b.assigned_user_name?.toLowerCase() || '';
-        return assignedToA.localeCompare(assignedToB) * sortFactor;
-      }));
-    }
-
-    setSortDirection(selectedSortDirection);
-  };
-
-
 
   const [initialData, setInitialData] = useState({
     task_complete: selectedDetails?.task_complete,
@@ -254,8 +199,12 @@ const CIndex = (props: Props) => {
   // const taskComplete = selectedDetails?.task_complete;
   console.log({ selectedDetails });
 
-  const [isTaskComplete, setIsTaskComplete] = useState<boolean>();
+  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(
+    selectedDetails?.task_complete! ?? false
+  );
   console.log({ isTaskComplete });
+  
+
 
   React.useEffect(() => {
     if (selectedDetails) {
@@ -264,24 +213,24 @@ const CIndex = (props: Props) => {
       setIsTaskComplete(initialIsTaskComplete);
     }
   }, [selectedDetails]);
-
   const handleTickButtonClick = async () => {
     try {
       if (selectedDetails) {
         const updatedTask = {
           ...selectedDetails,
-          task_complete: (!isTaskComplete),
+          task_complete: !selectedDetails.task_complete,
         };
-
+  
         const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
-
+  
         if (res.status === 200) {
           const updatedTaskData = res.data;
-
-          // Check if updatedTaskData is not null before accessing its properties
+  
           if (updatedTaskData) {
             setInitialData({ task_complete: updatedTaskData.task_complete });
+            setIsTaskComplete(!selectedDetails.task_complete); // Update the local state directly
             toast.success('Task updated successfully...!');
+            props.fetchSuccess();
           } else {
             toast.error('Updated task data is null.');
           }
@@ -294,58 +243,38 @@ const CIndex = (props: Props) => {
       toast.error('Oops... Something went wrong!');
     }
   };
-
-
-
-
-  // React.useEffect(() => {
-  //   setIsTaskComplete(initialData.task_complete === 'true');
-  // }, [initialData.task_complete]);
-
+  
+  
   // const handleTickButtonClick = async () => {
-  //   console.log("ChECKED");
-
-  //   if (selectedDetails) {
-  //     const updatedEvent = {
-  //       ...selectedDetails,
-  //       task_complete: !isTaskComplete,
-  //     };
-
-  //     // Assuming your updateTaskLogsAction returns a Promise
-  //     try {
-  //       // Dispatch the updateTaskLogsAction with the updated event
-  //       await props.updateTaskLogsAction(updatedEvent.id, updatedEvent);
-
-  //       // Update local state to reflect the new task completion status
-  //       setSelectedDetails({
+  //   try {
+  //     if (selectedDetails) {
+  //       const updatedTask = {
   //         ...selectedDetails,
-  //         task_complete: !isTaskComplete,
-  //       });
-  //       setIsTaskComplete(!isTaskComplete);
+  //         task_complete: (!isTaskComplete),
+  //       };
 
-  //       toast.success('Task updated successfully...!');
-  //     } catch (error) {
-  //       toast.error('Oops...Something is Wrong!');
+  //       const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
+
+  //       if (res.status === 200) {
+  //         const updatedTaskData = res.data;
+
+  //         // Check if updatedTaskData is not null before accessing its properties
+  //         if (updatedTaskData) {
+  //           setInitialData({ task_complete: updatedTaskData.task_complete });
+  //           toast.success('Task updated successfully...!');
+  //           props.fetchSuccess();
+  //         } else {
+  //           toast.error('Updated task data is null.');
+  //         }
+  //       } else {
+  //         toast.error('Oops... Something is Wrong!');
+  //       }
   //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error('Oops... Something went wrong!');
   //   }
   // };
-
-
-  // const {
-  //   values,
-  //   errors,
-  //   touched,
-  //   handleSubmit,
-  //   handleChange,
-  //   handleBlur,
-  // } = useFormik({
-  //   initialValues: initialData,
-  //   validationSchema: validationSchema,
-  //   onSubmit: async (submitValue, { resetForm }) => {
-  //     // Your existing code for submitting the form
-  //   },
-  // });
-
 
   React.useEffect(() => {
     setUnfilteredEvents(events);

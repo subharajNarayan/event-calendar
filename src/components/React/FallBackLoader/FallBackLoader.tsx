@@ -1,7 +1,5 @@
-// import Loader from "../../UI/Loader/index";
 import React from "react";
-import logo from "../../../assets/images/fav.png";
-
+import { HashLoader } from 'react-spinners';
 
 interface FallbackProps {
   h?: number;
@@ -12,19 +10,17 @@ export default function FallbackLoader({ h, styles }: FallbackProps) {
   return (
     <div
       className="blinking"
-      style={{ position: "relative", width: "100%", height: (h ? h : 100) + "vh", ...styles }}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+        width: "100%",
+        height: (h ? h : 100) + "vh",
+        ...styles
+      }}
     >
-      <img
-        src={logo}
-        alt="Loader"
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: " translate(-50%, -50%)",
-          width: 150, 
-        }}
-      />
+      <HashLoader color="#36d7b7" size={80} />
     </div>
   );
 }
