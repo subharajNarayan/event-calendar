@@ -48,7 +48,7 @@ const Form = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/comments/') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/comments/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
@@ -63,7 +63,7 @@ const Form = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/taskeditlogs/') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/taskeditlogs/') // Replace with API endpoint
       .then((response) => {
         setCombinedData(response.data);
       })

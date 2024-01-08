@@ -10,7 +10,7 @@ const List = () => {
   const [Data, isSetData] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/register')
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/register')
       .then((response) => {
         isSetData(response.data)
       })
@@ -22,9 +22,9 @@ const List = () => {
 
   const handleDelete = async (_id: number) => {
     try {
-      await axios.delete(`https://kyush.pythonanywhere.com/accounts/api/register/${_id}`);
+      await axios.delete(`https://event.finliftconsulting.com.np/accounts/api/register/${_id}`);
       toast.success('Data Deleted Successful')
-      const response = await axios.get('https://kyush.pythonanywhere.com/accounts/api/register');
+      const response = await axios.get('https://event.finliftconsulting.com.np/accounts/api/register');
       const deleteData = response.data;
       isSetData(deleteData)
       console.log({deleteData});

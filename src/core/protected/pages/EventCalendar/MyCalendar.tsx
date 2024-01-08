@@ -150,14 +150,14 @@ const TeamCalIndex = (props: CalendarProps) => {
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/tasks') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         let initialEvents = response.data.map((event: any) => ({
           ...event,
-          // start_date: moment(event.start_date).toDate(),
-          // end_date: moment(event.end_date).toDate()
-          start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
-          end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
+          start_date: moment(event.start_date).toDate(),
+          end_date: moment(event.end_date).toDate()
+          // start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
+          // end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
 
         }));
 

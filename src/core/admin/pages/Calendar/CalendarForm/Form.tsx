@@ -3,7 +3,7 @@ import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { taskInitialValues, taskValidationSchema } from './schema';
 import { useFormik } from 'formik';
-import { getTeamMemberLogsAction } from '../../../../../store/modules/TeamMember/getTeamMemberLogs';
+// import { getTeamMemberLogsAction } from '../../../../../store/modules/TeamMember/getTeamMemberLogs';
 import { postTaskLogsAction } from '../../../../../store/modules/Tasks/postTaskLogs';
 import { updateTaskLogsAction } from '../../../../../store/modules/Tasks/updateTaskLogs';
 import toast from '../../../../../components/Notifier/Notifier';
@@ -11,6 +11,7 @@ import Button from '../../../../../components/UI/Forms/Buttons';
 import { RootState } from '../../../../../store/root-reducer';
 import moment from 'moment';
 import TokenService from '../../../../../services/jwt-token/jwt-token';
+import { getMemberLogsAction } from '../../../../../store/modules/TeamMember/getMemberLogs';
 
 interface Props extends PropsFromRedux {
   editData: any,
@@ -26,8 +27,10 @@ const CalendarForm = (props: Props) => {
 
   console.log(initialData, "Task ADD")
 
-  const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data);
+  const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getMemberLogs.data);
 
+  console.log(TeamDetails, "Team Details");
+  
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -36,7 +39,8 @@ const CalendarForm = (props: Props) => {
         ...props.editData,
       })
     }
-    dispatch(getTeamMemberLogsAction())
+    // dispatch(getTeamMemberLogsAction())
+    dispatch(getMemberLogsAction())
   }, [props.editData]);
 
 
@@ -49,7 +53,6 @@ const CalendarForm = (props: Props) => {
     handleSubmit,
     handleChange,
     handleBlur,
-    setFieldValue
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
@@ -112,7 +115,7 @@ const CalendarForm = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/team_member') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
@@ -223,9 +226,10 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
-  getTeamMemberLogsAction,
+  // getTeamMemberLogsAction,
   postTaskLogsAction,
-  updateTaskLogsAction
+  updateTaskLogsAction,
+  getMemberLogsAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

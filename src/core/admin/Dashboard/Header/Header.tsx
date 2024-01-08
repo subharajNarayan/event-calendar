@@ -6,6 +6,7 @@ import { Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap
 import { toast } from 'react-toastify';
 import TokenService from '../../../../services/jwt-token/jwt-token';
 import useAuthentication from '../../../../services/authentication/AuthService';
+import Dynasel_logo from '../../../../assets/images/Dynasel_logo.jpg';
 
 interface Props {
   sidebarToggle: boolean;
@@ -42,15 +43,11 @@ const AppHeader = (props: Props) => {
     <>
       <header className='header'>
         <div className='d-flex justify-content-between align-items-center w-100'>
-          {/* <div className="d-flex align-items-center">
-            <span className="toggler" onClick={togglesidebar}>
-              <img src={hamburger} alt="hamburger" width="17" />
-            </span>
-          </div> */}
-          <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
+          <div className="pt-0" style={{ paddingBottom: "0.3rem" }}>
             <div className='header-top align-vertical px-3 mt-2'>
               <div>
-                <h6 className='text text-start text-uppercase font-bold'>DYNASEl USA - TASK MANAGER</h6>
+                {/* <h6 className='text text-start text-uppercase font-bold'>DYNASEl USA - TASK MANAGER</h6> */}
+                <img src={Dynasel_logo} alt="DYNASEL USA - TASK MANAGER" width={172}/>
               </div>
             </div>
           </div>

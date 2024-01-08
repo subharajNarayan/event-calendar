@@ -64,7 +64,7 @@ const ModalForm = (props:Props) => {
     onSubmit: async(values, { resetForm }) => {
       setIsLoader(true);
       try {
-        await axios.post('https://kyush.pythonanywhere.com/accounts/api/register', values)
+        await axios.post('https://event.finliftconsulting.com.np/accounts/api/register', values)
         .then((response) => {
           setInitialState(response.data)
           toast.success("Hooray... Data posted Successful")

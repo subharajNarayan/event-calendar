@@ -20,7 +20,7 @@ export default function FallbackLoader({ h, styles }: FallbackProps) {
         ...styles
       }}
     >
-      <HashLoader color="#36d7b7" size={80} />
+      <HashLoader color="#e80027" size={80} />
     </div>
   );
 }

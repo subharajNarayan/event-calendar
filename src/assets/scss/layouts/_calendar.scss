@@ -84,50 +84,23 @@
     }
   }
 
-  // .calendar-list {
-  //   position: absolute;
-  //   margin-top: -3.67rem;
-  //   right: 22rem;
-  // }
+  tbody{
+    tr{
+      cursor: pointer;
+    }
+  }
+}
 
-  // .rbc-calendar {
-  //   .rbc-toolbar {
-  //     .rbc-btn-group {
-  //       margin-top: -7.2rem;
-  //     }
 
-  //     .rbc-btn-group:first-child {
-  //       margin-top: 0;
+.rbc-day-bg{
+  cursor: pointer !important;
+}
 
-  //       button {
-  //         &:first-child {
-  //           display: none;
-  //         }
-
-  //         &:nth-child(2) {
-  //           position: absolute;
-  //           margin-top: -18px;
-  //         }
-
-  //         &:nth-child(3) {
-  //           position: absolute;
-  //           right: 50px;
-  //           margin-top: -18px;
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   .rbc-month-view {
-  //     .rbc-row {
-  //       .rbc-row-segment {
-  //         .rbc-event {
-  //           padding: 0px 5px !important;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+.rbc-date-cell {
+  cursor: pointer;
+}
+.rbc-row{
+  cursor: pointer;
 }
 
 .user{

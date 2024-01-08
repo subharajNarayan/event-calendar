@@ -50,9 +50,9 @@ function Login(props: Props): ReactElement {
 
           if (loginres?.status === 401) {
             // Display a more user-friendly message for failed authentication
-            toast.error("Authentication Failed");
+            toast.error("password doesn't match");
           } else if(loginres?.status === 404) {
-            toast.error ("Username doesn't Match")
+            toast.error ("username doesn't match")
           }else{
             // Display other error messages or a generic server error
             toast.error(loginres?.data?.message || "Server Error");

@@ -18,19 +18,32 @@ interface Props extends PropsFromRedux {
   success: () => void;
 }
 
-const predefinedColors = [
-  '#208ca2', 
-];
+// const predefinedColors = [
+//   '#208ca2', 
+// ];
 
 const TeamMembForm = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);
 
+  const [isColor, setIsColor] = React.useState("")
+
+  const generateColor = () => {
+    const newColor = '#' + Math.random().toString(16).substr(-6);
+    setIsColor(newColor);
+
+    // Use the setFieldValue from useFormik to update the form's color field
+    setFieldValue('color', newColor);
+  }; 
+  
+    // const generateColor = () => {
+    //     setIsColor(Math.random().toString(16).substr(-6));
+    // };
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
     ...TeamInitialValues, ...(props.editData || {}),
   });
-  // console.log(initialData, "INITIAL DATA");
+  console.log(initialData, "INITIAL DATA");
 
   const dispatch = useDispatch();
 
@@ -39,6 +52,8 @@ const TeamMembForm = (props: Props) => {
       ...props.editData,
     });
     dispatch(getTeamMemberLogsAction())
+    // Set a default color when the component mounts
+    generateColor();
   }, [props.editData?.username]);
 
   const {
@@ -48,6 +63,7 @@ const TeamMembForm = (props: Props) => {
     handleSubmit,
     handleChange,
     handleBlur,
+    setFieldValue,
   } = useFormik({
     enableReinitialize: true,
     initialValues: initialData,
@@ -58,14 +74,23 @@ const TeamMembForm = (props: Props) => {
 
       try {
 
+        // Generate a new color before submitting the form
+        generateColor();
+
+        // Log to console to check if the color is being set properly
+        console.log('Color before submission:', values.color);
+        const colorDetails = {
+          ...submitValue,
+          color: values.color, // Include color value in the submission
+        }
+
+        // Log to console to check if colorDetails includes the color field
+        console.log('Color Details:', colorDetails);
+
         if (props.editData && props.editData.id) {
-          res = await props.updateTeamMemberLogsAction(props.editData.id, {
-            ...submitValue,
-          });
+          res = await props.updateTeamMemberLogsAction(props.editData.id, colorDetails);
         } else {
-          res = await props.postTeamMemberLogsAction({
-            ...submitValue,
-          });
+          res = await props.postTeamMemberLogsAction(colorDetails);
         }
 
         if (res.status === 201 || res.status === 200) {
@@ -81,17 +106,13 @@ const TeamMembForm = (props: Props) => {
             toast.success("Data Posted Successful...!")
             resetForm()
             props.success();
+            props.toggleModal()
             setIsLoader(false);
           }
         } else {
           // Failed login attempt
           if (res?.status === 400) {
             console.error("loginres", res?.message); // Log the message to the console
-
-            // Convert the object to a string for display in the toast
-            // const errorMessage = res?.message ? JSON.stringify(res.message) : '';             
-            // // toast.error(`Oops... Something is Wrong! ${errorMessage}`);
-            // toast.error(errorMessage)
 
             // Convert the object to a string for display in the toast
             const errorMessage = res?.message ? JSON.stringify(res.message) : '';
@@ -113,6 +134,11 @@ const TeamMembForm = (props: Props) => {
       }
     }
   })
+
+  // Use useEffect to ensure that the color is set before submitting the form
+  React.useEffect(() => {
+    setFieldValue('color', isColor);
+  }, [isColor]);
 
 
   return (
@@ -168,11 +194,13 @@ const TeamMembForm = (props: Props) => {
           <div className='form-group colors-name d-flex'>
             <label htmlFor="">Color </label>
             <div className="color-input-container">
-              <input
-                type="color"
-                name="color"
-                value={values.color || predefinedColors[0]}
-                onChange={handleChange}
+            <input
+                type='color'
+                name='color'
+                value={isColor}
+                onChange={(e) => {
+                  setIsColor(e.target.value);
+                }}
                 onBlur={handleBlur}
               />
             </div>

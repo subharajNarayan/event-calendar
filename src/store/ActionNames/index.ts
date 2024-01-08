@@ -92,6 +92,12 @@ export enum RequestMethod {
         requestMethod: RequestMethod.DELETE,
         requestBodyType: RequestBodyType.AUTH
       },
+      getMemberLogs: {
+        controllerName: "/api/team-members/",
+        actionName: "GET_MEMBER",
+        requestMethod: RequestMethod.GET,
+        requestBodyType: RequestBodyType.AUTH
+      },
     },
     TaskLog: {
       postTaskLogs: {

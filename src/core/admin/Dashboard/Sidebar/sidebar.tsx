@@ -49,7 +49,7 @@ const AppSidebar = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://kyush.pythonanywhere.com/accounts/api/team-members/') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setTeamData(response.data);
       })
