@@ -12,6 +12,7 @@ import { RootState } from '../../../../../store/root-reducer';
 import moment from 'moment';
 import TokenService from '../../../../../services/jwt-token/jwt-token';
 import * as Yup from 'yup';
+import { getMemberLogsAction } from '../../../../../store/modules/TeamMember/getMemberLogs';
 
 
 export const taskValidationSchema = Yup.object().shape({
@@ -31,19 +32,21 @@ const UserEditForm = (props: Props) => {
 
   console.log(props.editData, "Task ADD")
 
-  const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getTeamMemberLogs.data);
+  const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getMemberLogs.data);
 
+  console.log(TeamDetails, "TeamDetails");
+  
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
-        start_date: moment(props.editData.start_date).format('YYYY-MM-DD HH:mm'),
-        end_date: moment(props.editData.end_date).format('YYYY-MM-DD HH:mm'),
+        start_date: moment.utc(props.editData.start_date).format('YYYY-MM-DD HH:mm'),
+        end_date: moment.utc(props.editData.end_date).format('YYYY-MM-DD HH:mm'),
       })
     }
-    dispatch(getTeamMemberLogsAction())
+    dispatch(getMemberLogsAction())
   }, [props.editData]);
 
 
@@ -111,7 +114,7 @@ const UserEditForm = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://event.finliftconsulting.com.np/accounts/api/team_member') // Replace with API endpoint
+    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
@@ -225,7 +228,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   getTeamMemberLogsAction,
   postTaskLogsAction,
-  updateTaskLogsAction
+  updateTaskLogsAction,
+  getMemberLogsAction,
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

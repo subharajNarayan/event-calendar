@@ -18,10 +18,6 @@ interface Props extends PropsFromRedux {
   success: () => void;
 }
 
-// const predefinedColors = [
-//   '#208ca2', 
-// ];
-
 const TeamMembForm = (props: Props) => {
 
   const [isLoader, setIsLoader] = React.useState(false);

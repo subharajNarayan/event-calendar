@@ -39,7 +39,6 @@ const CalendarForm = (props: Props) => {
         ...props.editData,
       })
     }
-    // dispatch(getTeamMemberLogsAction())
     dispatch(getMemberLogsAction())
   }, [props.editData]);
 

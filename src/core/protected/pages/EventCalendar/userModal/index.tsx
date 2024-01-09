@@ -24,7 +24,7 @@ const validationSchema = Yup.object({});
 const TeamIndex = (props: Props) => {
 
   console.log(props.selectedEvent, "selectedEvent");
-  
+
   const [initialData, setInitialData] = useState({
     task_complete: props.selectedEvent.task_complete.toString(),
   });
@@ -97,7 +97,11 @@ const TeamIndex = (props: Props) => {
         <ModalBody>
           <div className="event-body">
             <div className="description">
-              <p style={{ fontSize: '12px' }}>{moment(props.selectedEvent.start_date).format('DD MMM YYYY hh:mm A')}</p>
+                <p style={{ fontSize: '12px', marginBottom: '0.5rem' }}>
+                  {moment.utc(props.selectedEvent.start_date).format('DD MMM YYYY hh:mm A')}
+                  <strong style={{ fontSize: '14px' }}> TO </strong>
+                  {moment.utc(props.selectedEvent.end_date).format('DD MMM YYYY hh:mm A')}
+                </p>
               <text>{props.selectedEvent.description}</text>
             </div>
             <hr />

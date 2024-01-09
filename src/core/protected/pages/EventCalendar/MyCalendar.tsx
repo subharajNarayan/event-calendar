@@ -20,7 +20,7 @@ interface Event {
   end_date: string;
   description: string;
   assigned_user_name: string;
-  assigned_colour: string;
+  assigned_user_colour: string;
   status: string;
   task_complete: boolean;
 }
@@ -229,12 +229,14 @@ const TeamCalIndex = (props: CalendarProps) => {
   const eventStyleGetter = (event: Event) => {
     return {
       style: {
-        backgroundColor: event.assigned_colour,
+        backgroundColor: event.assigned_user_colour,
         color: 'white',
       },
     };
   };
 
+  console.log({ eventStyleGetter });
+  
   // const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
   //   toggleModal();
   // };

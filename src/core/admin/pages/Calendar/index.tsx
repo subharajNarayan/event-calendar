@@ -203,7 +203,7 @@ const CIndex = (props: Props) => {
     selectedDetails?.task_complete! ?? false
   );
   console.log({ isTaskComplete });
-  
+
 
 
   React.useEffect(() => {
@@ -220,12 +220,12 @@ const CIndex = (props: Props) => {
           ...selectedDetails,
           task_complete: !selectedDetails.task_complete,
         };
-  
+
         const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
-  
+
         if (res.status === 200) {
           const updatedTaskData = res.data;
-  
+
           if (updatedTaskData) {
             setInitialData({ task_complete: updatedTaskData.task_complete });
             setIsTaskComplete(!selectedDetails.task_complete); // Update the local state directly
@@ -243,8 +243,8 @@ const CIndex = (props: Props) => {
       toast.error('Oops... Something went wrong!');
     }
   };
-  
-  
+
+
   // const handleTickButtonClick = async () => {
   //   try {
   //     if (selectedDetails) {
@@ -321,11 +321,10 @@ const CIndex = (props: Props) => {
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedDate(slotInfo.start);
     const event: DBEvent = {
-      start_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
       id: 0,
       title: '',
       description: '',
-      // end_date: '',
+      start_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
       end_date: moment(slotInfo.end).format('YYYY-MM-DD HH:mm:ss'),
       assigned_user_name: '',
       assigned_user_colour: '',
@@ -426,17 +425,6 @@ const CIndex = (props: Props) => {
     }
   }, [currentMonth, taskStatus, listCurrentView, currentView]);
 
-  // React.useEffect(() => {
-
-  //   if(currentView == 'calendar') {
-  //     setUnfilteredEvents(getViewEvents());
-  //   }
-  //   if(currentView == 'list') {
-  //     setUnfilteredEvents(getViewEvents(listCurrentView));
-  //   }
-
-  // }, []);
-
   const getViewEvents = (currentViewOverride: string = '') => {
 
     // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
@@ -520,31 +508,6 @@ const CIndex = (props: Props) => {
     }
     return ' ↑↓'; // Both arrows initially displayed
   };
-
-  // const [sortColumn, setSortColumn] = useState<keyof Event>('title');
-  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
-  // const handleSort = (column: keyof Event) => {
-  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
-
-  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-  //     if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
-  //     if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
-  //     return 0;
-  //   });
-
-  //   setSortColumn(column);
-  //   setSortOrder(newSortOrder);
-  //   // Update the data
-  //   setUnfilteredEvents(sortedEvents);
-  // };
-
-  // const renderArrow = (column: keyof Event) => {
-  //   if (sortColumn === column) {
-  //     return sortOrder === 'asc' ? '↑' : '↓';
-  //   }
-  //   return null;
-  // };
 
   return (
     <div>
@@ -646,14 +609,6 @@ const CIndex = (props: Props) => {
             </div>
           </div> */}
           <Table>
-            {/* <thead>
-              <tr>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Assigned To</th>
-              </tr>
-            </thead> */}
             <thead>
               <tr>
                 <th onClick={() => handleSort('title')}>
@@ -678,8 +633,8 @@ const CIndex = (props: Props) => {
               {unfilteredEvents.map((item: any) => (
                 <tr key={item.id} onClick={() => handleDetailEvent(item)}>
                   <td>{item.title}</td>
-                  <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
-                  <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                  <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                  <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
                   <td>{item.assigned_user_name}</td>
                 </tr>
               ))}
@@ -688,7 +643,6 @@ const CIndex = (props: Props) => {
         </div>
       )}
       {selectedDetails &&
-        // <AdminIndex isOpen={detailsModal} toggleModal={toggleDetailsModal} />
         <Modal isOpen={detailsModal} toggle={toggleDetailsModal}>
           <ModalHeader toggle={toggleDetailsModal}>
             {selectedDetails ? selectedDetails.title : ''}
@@ -718,14 +672,17 @@ const CIndex = (props: Props) => {
           <ModalBody>
             <div className="event-body">
               <div className="description">
-                <p style={{ fontSize: '12px' }}>{moment(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')}</p>
+                <p style={{ fontSize: '12px', marginBottom: '0.5rem' }}>
+                  {moment.utc(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')}
+                  <strong style={{ fontSize: '14px' }}> TO </strong>
+                  {moment.utc(selectedDetails.end_date).format('DD MMM YYYY hh:mm A')}
+                </p>
                 <text>{selectedDetails.description}</text>
               </div>
               <hr />
               <div className="date-time">
                 <p className='d-flex align-items-center '>Assignee: {selectedDetails.assignee}</p>
               </div>
-              {/* <Form selectedEvent={props.selectedEvent} toggleModal={props.toggleModal} /> */}
               <Form selectedEvent={selectedDetails} toogleModal={toggleDetailsModal} />
             </div>
           </ModalBody>
@@ -735,10 +692,6 @@ const CIndex = (props: Props) => {
       {selectedDate && <CalendarIndex isOpen={isOpen} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess} />}
       {selectedEvent && !isFormOpen && <CalendarIndex isOpen={isOpen} data={selectedEvent} toggleModal={toggleModal} fetchSuccess={props.fetchSuccess} />}
       {isFormOpen && <CalendarIndex isOpen={!isOpen} data={selectedEvent} toggleModal={toggleForm} fetchSuccess={props.fetchSuccess} />}
-
-      {/* <ConfirmationModal open={modal}
-        handleModal={() => toggleModal()}
-        handleConfirmClick={() =>handleDeleteClick( )} /> */}
     </div>
   );
 };

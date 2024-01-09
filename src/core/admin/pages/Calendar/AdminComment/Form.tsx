@@ -168,7 +168,7 @@ const Form = (props: Props) => {
               toggleTab("1")
             }}
           >
-            Comment
+            Comments
           </NavLink>
         </NavItem>
         <NavItem>
@@ -178,7 +178,7 @@ const Form = (props: Props) => {
               toggleTab("2")
             }}
           >
-            Edited Tasks
+            Edits
           </NavLink>
         </NavItem>
       </Nav>
