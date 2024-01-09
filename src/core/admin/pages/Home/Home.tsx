@@ -10,7 +10,7 @@ import moment from 'moment';
 import useAuthentication from '../../../../services/authentication/AuthService';
 
 interface Props extends PropsFromRedux {
-success: () => void;
+
 }
 
 const Home = (props: Props) => {
@@ -58,13 +58,15 @@ const Home = (props: Props) => {
         let initialEvents = response.data.map((event: any) =>
         ({
           ...event,
-          start_date: moment(event.start_date).toDate(), 
-          end_date: moment(event.end_date).toDate()
-          // start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
-          // end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
+          start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(), 
+          end_date: moment(moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
+          // start_date22: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
+          // end_date22: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
         }));
 
         setEvents(initialEvents);
+        console.log(initialEvents, "INITIAL EVENTS");
+        
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -87,21 +89,30 @@ const Home = (props: Props) => {
     return selectedUsers.includes(item.assigned_user_name);
   })
 
-
   const handleUserToggle = (userName: string[]) => {
     setSelectedUsers(userName);
   };
 
+  // const [sidebarData, setSidebarData] = React.useState<any>();
+  const [fetchEventsData, setFetchEventsData] = React.useState<number>(0);
+
+
+const sidebarData = () => {
+  setFetchEventsData(fetchEventsData + 1);
+};
+console.log(sidebarData, "SIDEBAR DATA");
+
+  
   return (
     <>
       <div className='admin-body d-flex'>
 
-        <AppSidebar users={users} onFilterChange={handleUserToggle} />
+        <AppSidebar users={users} onFilterChange={handleUserToggle} sidebarData={sidebarData}/>
 
         <div className="main-content">
           <div className="main-content-home">
             <div className="body-calendar">
-              <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} success={props.success}/>
+              <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} />
             </div>
           </div>
         </div>

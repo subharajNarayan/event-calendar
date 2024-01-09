@@ -15,67 +15,63 @@ interface Props extends PropsFromRedux {
   users: { id: number; username: string; color: string }[];
   onFilterChange: (user: string[]) => void;
   setEditData: (data: any) => void;
+  sidebarData: any;
 }
 
 const AppSidebar = (props: Props) => {
-
   const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(false);
   const { modal, editId, toggleModal, handleDeleteClick, resetDeleteData } = useDeleteConfirmation();
   const [teamData, setTeamData] = React.useState<{ id: number; username: string; color: string }[]>([]);
   const [fetchNewMember, setFetchNewMember] = React.useState<number>(0);
-  // console.log({ teamData });
   const toggleTeamModal = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   React.useEffect(() => {
     if (!isOpen) {
       setTeamEditData({});
     }
   }, [isOpen]);
-  // console.log(teamData, "TEAM MEMBER");
 
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(getTeamMemberLogsAction())
-    dispatch(getTaskLogsAction())
-  }, [])
+    dispatch(getTeamMemberLogsAction());
+    dispatch(getTaskLogsAction());
+  }, []);
 
-  // Not using anywhere but it just to view/Fetch data
+  const fetchTeamData = async () => {
+    try {
+      const response = await axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/');
+      setTeamData(response.data);
+      setTeamEditData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch data using Axios when the component mounts
-    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
-      .then((response) => {
-        setTeamData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+    fetchTeamData();
   }, [fetchNewMember]);
 
   function selectAllRows(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.checked) {
       const allRows = teamData.map((rowData, index) => index);
       setSelectedRows(allRows);
-      // Call onFilterChange for each selected user
-      // props.onFilterChange(teamData.map(({ username }, index) => username))
     } else {
       setSelectedRows([]);
-      props.onFilterChange([])
+      props.onFilterChange([]);
     }
   }
 
   function selectRow(event: React.ChangeEvent<HTMLInputElement>) {
     const rowIndex = Number(event.target.value);
     if (event.target.checked) {
-      setSelectedRows(prevSelectedRows => [...prevSelectedRows, rowIndex]);
+      setSelectedRows((prevSelectedRows) => [...prevSelectedRows, rowIndex]);
     } else {
-      setSelectedRows(prevSelectedRows => prevSelectedRows.filter(index => index !== rowIndex));
+      setSelectedRows((prevSelectedRows) => prevSelectedRows.filter((index) => index !== rowIndex));
     }
-
   }
 
   React.useEffect(() => {
@@ -83,48 +79,48 @@ const AppSidebar = (props: Props) => {
       const allRows = teamData.map((rowData, index) => index);
       setSelectedRows(allRows);
     }
-  }, [teamData.length])
+  }, [teamData.length]);
 
   React.useEffect(() => {
-    props.onFilterChange(selectedRows.map(index => teamData[index].username));
+    props.onFilterChange(selectedRows.map((index) => teamData[index].username));
   }, [selectedRows.length]);
 
   const handleTeamMemberAction = async () => {
     const res = await props.deleteTeamMemberLogsAction(editId);
 
     if (res.status === 200 || res.status === 201 || res.status === 204) {
-      toast.success("Data Deleted Successful...!")
+      toast.success('Data Deleted Successful...!');
       resetDeleteData();
       setFetchNewMember(fetchNewMember + 1);
-
     } else {
-      toast.error("Server Error")
+      toast.error('Server Error');
     }
-  }
+  };
 
-  const [TeamData, setTeamEditData] = React.useState<any>();
-
-  console.log(TeamData, "sidebarTeam");
+  const [TeamDatas, setTeamEditData] = React.useState<any>();
 
   const handleEditClick = (data: any) => {
     setTeamEditData(data);
     toggleTeamModal();
-  }
-
-  const handleTeamMemberAdd = () => {
-    setFetchNewMember(fetchNewMember + 1);
+    props.sidebarData(data);
   };
 
+  const handleTeamMemberAdd = () => {
+    fetchTeamData();
+    setFetchNewMember(fetchNewMember + 1);
+  };
+  
 
   return (
     <>
-      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamData={TeamData} success={handleTeamMemberAdd} />
+      <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamDatas={TeamDatas} success={handleTeamMemberAdd} />
       <aside className="sidebar">
-        <div className="pt-3" style={{ paddingBottom: "0.8rem" }}>
+        <div className="pt-3" style={{ paddingBottom: '0.8rem' }}>
           <div className='sidebar-header-top align-vertical px-3 mt-2'>
             <div className='d-flex'>
-              <h6 className='sidebar-text text-center text-uppercase font-bold'>Team Members
-                <span className="p-2" onClick={() => toggleTeamModal()} style={{ cursor: "pointer" }}>
+              <h6 className='sidebar-text text-center text-uppercase font-bold'>
+                Team Members
+                <span className="p-2" onClick={() => toggleTeamModal()} style={{ cursor: 'pointer' }}>
                   +
                 </span>
               </h6>
@@ -141,8 +137,9 @@ const AppSidebar = (props: Props) => {
                     type="checkbox"
                     name="selectAll"
                     id="selectAll"
-                    checked={teamData.length == selectedRows.length}
-                    onChange={selectAllRows} />
+                    checked={teamData.length === selectedRows.length}
+                    onChange={selectAllRows}
+                  />
                 </th>
                 <th className='text-black'>Select All</th>
                 <th></th>
@@ -150,58 +147,63 @@ const AppSidebar = (props: Props) => {
               </tr>
             </thead>
             <tbody>
-              {teamData.map((item, index) => {
-                return (
-                  <tr key={index}>
-                    <td >
-                      <input
-                        style={{ color: item.color }}
-                        value={index}
-                        type="checkbox"
-                        id="checked-data"
-                        checked={selectedRows.includes(index)}
-                        onChange={selectRow} />
-                    </td>
-                    <td>{item.username}</td>
-                    <td> <span style={{ backgroundColor: item.color, padding: "0.6rem", display: "inline-block", position: "relative", borderRadius: "50%" }}></span> </td>
-                    <td className='action d-flex align-item-center'>
-                      <div role='button' className="mr-0" onClick={() => {
-                        handleEditClick(item)
-                      }}>
-                        <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
-                      </div>
-                      <div role='button' className="mr-0" onClick={() => {
-                        handleDeleteClick(item.id)
-                      }}>
-                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
-                      </div>
-                    </td>
-                  </tr>
-                )
-              })}
+              {teamData.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      style={{ color: item.color }}
+                      value={index}
+                      type="checkbox"
+                      id="checked-data"
+                      checked={selectedRows.includes(index)}
+                      onChange={selectRow}
+                    />
+                  </td>
+                  <td>{item.username}</td>
+                  <td>
+                    {' '}
+                    <span
+                      style={{
+                        backgroundColor: item.color,
+                        padding: '0.6rem',
+                        display: 'inline-block',
+                        position: 'relative',
+                        borderRadius: '50%',
+                      }}
+                    ></span>{' '}
+                  </td>
+                  <td className='action d-flex align-item-center'>
+                    <div role='button' className="mr-0" onClick={() => handleEditClick(item)}>
+                      <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
+                    </div>
+                    <div role='button' className="mr-0" onClick={() => handleDeleteClick(item.id)}>
+                      <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </Table>
         </div>
       </aside>
-      <ConfirmationModal open={modal}
+      <ConfirmationModal
+        open={modal}
         handleModal={() => toggleModal()}
         handleConfirmClick={() => handleTeamMemberAction()} />
     </>
-  )
-}
+  );
+};
 
-const mapStateToProps = () => ({
-
-})
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = {
   getTeamMemberLogsAction,
   getTaskLogsAction,
   deleteTeamMemberLogsAction,
-}
+};
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
-type PropsFromRedux = ConnectedProps<typeof connector>
+type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default connector(AppSidebar);

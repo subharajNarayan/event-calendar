@@ -178,8 +178,6 @@ const CIndex = (props: Props) => {
   console.log({ unfilteredEvents });
   console.log({ events });
 
-
-
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
 
@@ -280,7 +278,7 @@ const CIndex = (props: Props) => {
   React.useEffect(() => {
     setUnfilteredEvents(events);
 
-  }, [events.length, props.fetchSuccess, props.success]);
+  }, [events.length, props.fetchSuccess]);
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -322,6 +320,13 @@ const CIndex = (props: Props) => {
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     const selectedStartDate = moment(slotInfo.start);
     const selectedEndDate = moment(slotInfo.start).add(1, 'hours');
+
+    const currentHour = moment().hour();
+    const currentMinute = moment().minute();
+
+    // Set the selected date's hours and minutes to the current time
+    selectedStartDate.set({ hour: currentHour, minute: currentMinute });
+    selectedEndDate.set({ hour: currentHour + 1, minute: currentMinute });
 
     setSelectedDate(slotInfo.start);
     const event: DBEvent = {
@@ -685,9 +690,10 @@ const CIndex = (props: Props) => {
             <div className="event-body">
               <div className="description">
                 <p style={{ fontSize: '12px', marginBottom: '0.5rem' }}>
-                  {moment.utc(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')}
+                  {/* {moment.utc(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')} */}
+                  {moment(selectedDetails.start_date).format('DD MMM YYYY hh:mm A')}
                   <strong style={{ fontSize: '14px' }}> TO </strong>
-                  {moment.utc(selectedDetails.end_date).format('DD MMM YYYY hh:mm A')}
+                  {moment(selectedDetails.end_date).format('DD MMM YYYY hh:mm A')}
                 </p>
                 <text>{selectedDetails.description}</text>
               </div>

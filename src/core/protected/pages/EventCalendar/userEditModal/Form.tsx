@@ -42,8 +42,8 @@ const UserEditForm = (props: Props) => {
     if (props.editData) {
       setInitialData({
         ...props.editData,
-        start_date: moment.utc(props.editData.start_date).format('YYYY-MM-DD HH:mm'),
-        end_date: moment.utc(props.editData.end_date).format('YYYY-MM-DD HH:mm'),
+        start_date: moment(props.editData.start_date).format('YYYY-MM-DD HH:mm'),
+        end_date: moment(props.editData.end_date).format('YYYY-MM-DD HH:mm'),
       })
     }
     dispatch(getMemberLogsAction())

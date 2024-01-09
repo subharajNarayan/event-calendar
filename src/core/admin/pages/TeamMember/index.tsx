@@ -6,21 +6,20 @@ import Form from './Form';
 interface Props  {
   isOpen: boolean;
   toggleModal: () => void;
-  TeamData: any;
+  TeamDatas: any;
   success: () => void;
 }
 
 const TeamIndex = (props: Props) => {
 
-  const { isOpen, toggleModal, TeamData} = props;
+  const { isOpen, toggleModal, TeamDatas} = props;
 
-  const [editData, setEditData] = React.useState<any>(TeamData)
+  const [editData, setEditData] = React.useState<any>(TeamDatas)
 
   React.useEffect(() => {
-    setEditData(TeamData);
-  }, [TeamData]);
+    setEditData(TeamDatas);
+  }, [TeamDatas]);
   console.log({editData})
-  
 
   return (
     <div>

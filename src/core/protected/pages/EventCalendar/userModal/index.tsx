@@ -98,9 +98,9 @@ const TeamIndex = (props: Props) => {
           <div className="event-body">
             <div className="description">
                 <p style={{ fontSize: '12px', marginBottom: '0.5rem' }}>
-                  {moment.utc(props.selectedEvent.start_date).format('DD MMM YYYY hh:mm A')}
+                  {moment(props.selectedEvent.start_date).format('DD MMM YYYY hh:mm A')}
                   <strong style={{ fontSize: '14px' }}> TO </strong>
-                  {moment.utc(props.selectedEvent.end_date).format('DD MMM YYYY hh:mm A')}
+                  {moment(props.selectedEvent.end_date).format('DD MMM YYYY hh:mm A')}
                 </p>
               <text>{props.selectedEvent.description}</text>
             </div>

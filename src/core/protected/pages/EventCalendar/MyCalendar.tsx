@@ -154,8 +154,8 @@ const TeamCalIndex = (props: CalendarProps) => {
       .then((response) => {
         let initialEvents = response.data.map((event: any) => ({
           ...event,
-          start_date: moment(event.start_date).toDate(),
-          end_date: moment(event.end_date).toDate()
+          start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(), 
+          end_date: moment(moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           // start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
           // end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
 
