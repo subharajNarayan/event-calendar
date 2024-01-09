@@ -4,13 +4,13 @@ import Calendar from '../Calendar';
 import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
 import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
-import { RootState, logoutAction } from '../../../../store/root-reducer';
+import { logoutAction } from '../../../../store/root-reducer';
 import axios from 'axios';
 import moment from 'moment';
 import useAuthentication from '../../../../services/authentication/AuthService';
 
 interface Props extends PropsFromRedux {
-
+success: () => void;
 }
 
 const Home = (props: Props) => {
@@ -38,12 +38,6 @@ const Home = (props: Props) => {
     }
   }, [user?.role]);
 
-
-  // const toggleModal = () => {
-  //   setIsOpen(!isOpen)
-  // }
-
-  // const dispatch = useDispatch();
 
   React.useEffect(() => {
     dispatch(getTaskLogsAction());
@@ -107,7 +101,7 @@ const Home = (props: Props) => {
         <div className="main-content">
           <div className="main-content-home">
             <div className="body-calendar">
-              <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} />
+              <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} success={props.success}/>
             </div>
           </div>
         </div>

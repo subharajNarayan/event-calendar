@@ -39,7 +39,7 @@ const TeamMembForm = (props: Props) => {
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
     ...TeamInitialValues, ...(props.editData || {}),
   });
-  console.log(initialData, "INITIAL DATA");
+  // console.log(initialData, "INITIAL DATA");
 
   const dispatch = useDispatch();
 

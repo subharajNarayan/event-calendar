@@ -57,6 +57,7 @@ interface Props extends PropsFromRedux {
   events: Event[];
   allEvents: Event[];
   fetchSuccess: () => void;
+  success: () => void;
 }
 
 const CustomToolbar: React.FC<{
@@ -190,19 +191,19 @@ const CIndex = (props: Props) => {
     task_complete: selectedDetails?.task_complete,
   });
 
-  console.log({ initialData });
+  // console.log({ initialData });
 
 
   // const taskComplete = events.map((item) => item.task_complete);
 
   // Make sure this code is executed before any usage of isTaskComplete
   // const taskComplete = selectedDetails?.task_complete;
-  console.log({ selectedDetails });
+  // console.log({ selectedDetails });
 
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>(
     selectedDetails?.task_complete! ?? false
   );
-  console.log({ isTaskComplete });
+  // console.log({ isTaskComplete });
 
 
 
@@ -279,7 +280,7 @@ const CIndex = (props: Props) => {
   React.useEffect(() => {
     setUnfilteredEvents(events);
 
-  }, [events.length, props.fetchSuccess]);
+  }, [events.length, props.fetchSuccess, props.success]);
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
@@ -319,13 +320,18 @@ const CIndex = (props: Props) => {
   };
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    const selectedStartDate = moment(slotInfo.start);
+    const selectedEndDate = moment(slotInfo.start).add(1, 'hours');
+
     setSelectedDate(slotInfo.start);
     const event: DBEvent = {
       id: 0,
       title: '',
       description: '',
-      start_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
-      end_date: moment(slotInfo.end).format('YYYY-MM-DD HH:mm:ss'),
+      // start_date: moment(slotInfo.start).format('YYYY-MM-DD HH:mm:ss'),
+      // end_date: moment(slotInfo.end).format('YYYY-MM-DD HH:mm:ss'),
+      start_date: selectedStartDate.format('YYYY-MM-DD HH:mm:ss'),
+      end_date: selectedEndDate.format('YYYY-MM-DD HH:mm:ss'),
       assigned_user_name: '',
       assigned_user_colour: '',
       task_complete: false,
@@ -430,6 +436,8 @@ const CIndex = (props: Props) => {
     // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
     let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
 
+    console.log({currentMonth});
+    
     switch (currentViewOverride) {
       case 'month': {
         return events.filter(event => {
@@ -441,18 +449,22 @@ const CIndex = (props: Props) => {
       }
       case 'week': {
         return events.filter(event => {
-          return moment(event.start_date).isBetween(
-            date.startOf('week').format('YYYY-MM-DD'),
-            date.endOf('week').format('YYYY-MM-DD')
-          );
+          date = moment(); // Set the date to the current date
+          return moment(event.start_date).isSame(date, 'week');
+          // return moment(event.start_date).isBetween(
+          //   date.startOf('week').format('YYYY-MM-DD'),
+          //   date.endOf('week').format('YYYY-MM-DD')
+          // );
         })
       }
       case 'day': {
+        date = moment(); // Set the date to the current date
         return events.filter(event => {
-          return moment(event.start_date).isBetween(
-            date.startOf('day').format('YYYY-MM-DD 00:00:00'),
-            date.endOf('day').format('YYYY-MM-DD 23:59:59')
-          );
+          return moment(event.start_date).isSame(date, 'day');
+          // return moment(event.start_date).isBetween(
+          //   date.startOf('day').format('YYYY-MM-DD 00:00:00'),
+          //   date.endOf('day').format('YYYY-MM-DD 23:59:59')
+          // );
         })
       }
       default: {

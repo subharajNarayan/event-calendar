@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { Table } from 'reactstrap';
 import TeamIndex from '../../pages/TeamMember';
-import { ConnectedProps, connect, useDispatch, useSelector } from 'react-redux';
+import { ConnectedProps, connect, useDispatch } from 'react-redux';
 import { getTeamMemberLogsAction } from '../../../../store/modules/TeamMember/getTeamMemberLogs';
 import axios from 'axios';
-import { RootState } from '../../../../store/root-reducer';
 import { getTaskLogsAction } from '../../../../store/modules/Tasks/getTaskLogs';
 import { DeleteIcon, EditIconDark } from '../../../../assets/images/xd';
 import toast from '../../../../components/Notifier/Notifier';
@@ -15,7 +14,6 @@ import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
 interface Props extends PropsFromRedux {
   users: { id: number; username: string; color: string }[];
   onFilterChange: (user: string[]) => void;
-  // setEditData: any;
   setEditData: (data: any) => void;
 }
 
@@ -106,7 +104,7 @@ const AppSidebar = (props: Props) => {
 
   const [TeamData, setTeamEditData] = React.useState<any>();
 
-  // console.log(TeamData, "sidebarTeam");
+  console.log(TeamData, "sidebarTeam");
 
   const handleEditClick = (data: any) => {
     setTeamEditData(data);
@@ -168,7 +166,6 @@ const AppSidebar = (props: Props) => {
                     <td> <span style={{ backgroundColor: item.color, padding: "0.6rem", display: "inline-block", position: "relative", borderRadius: "50%" }}></span> </td>
                     <td className='action d-flex align-item-center'>
                       <div role='button' className="mr-0" onClick={() => {
-                        // props.setEditData(item);
                         handleEditClick(item)
                       }}>
                         <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />

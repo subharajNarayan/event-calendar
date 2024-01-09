@@ -322,18 +322,22 @@ const TeamCalIndex = (props: CalendarProps) => {
       }
       case 'week': {
         return events.filter(event => {
-          return moment(event.start_date).isBetween(
-            date.startOf('week').format('YYYY-MM-DD'),
-            date.endOf('week').format('YYYY-MM-DD')
-          );
+          date = moment(); // Set the date to the current date
+          return moment(event.start_date).isSame(date, 'week');
+          // return moment(event.start_date).isBetween(
+          //   date.startOf('week').format('YYYY-MM-DD'),
+          //   date.endOf('week').format('YYYY-MM-DD')
+          // );
         })
       }
       case 'day': {
         return events.filter(event => {
-          return moment(event.start_date).isBetween(
-            date.startOf('day').format('YYYY-MM-DD 00:00:00'),
-            date.endOf('day').format('YYYY-MM-DD 23:59:59')
-          );
+          date = moment(); // Set the date to the current date
+          return moment(event.start_date).isSame(date, 'day');
+          // return moment(event.start_date).isBetween(
+          //   date.startOf('day').format('YYYY-MM-DD 00:00:00'),
+          //   date.endOf('day').format('YYYY-MM-DD 23:59:59')
+          // );
         })
       }
       default: {

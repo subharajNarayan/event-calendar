@@ -27,7 +27,7 @@ const AppHeader = (props: Props) => {
 
 
   const userDetails = TokenService.getAccessToken();
-  console.log({userDetails})
+  // console.log({userDetails})
 
 
   // const togglesidebar = () => setsidebarToggle(!sidebarToggle);

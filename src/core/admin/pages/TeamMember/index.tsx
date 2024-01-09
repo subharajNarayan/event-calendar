@@ -16,11 +16,10 @@ const TeamIndex = (props: Props) => {
 
   const [editData, setEditData] = React.useState<any>(TeamData)
 
-  // console.log({ editData });
-
   React.useEffect(() => {
     setEditData(TeamData);
   }, [TeamData]);
+  console.log({editData})
   
 
   return (
