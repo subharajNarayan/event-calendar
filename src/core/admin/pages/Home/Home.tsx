@@ -45,7 +45,7 @@ const Home = (props: Props) => {
   const [users, setUsers] = React.useState([]);
   const [events, setEvents] = React.useState<any>([]);
 
-  console.log(events, "AAYO EVENT");
+  // console.log(events, "AAYO EVENT");
 
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
@@ -68,13 +68,13 @@ const Home = (props: Props) => {
         console.error('Error fetching data:', error);
       });
     // Fetch data using Axios when the component mounts
-    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
-      .then((response) => {
-        setUsers(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+    // axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
+    //   .then((response) => {
+    //     setUsers(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error fetching data:', error);
+    //   });
   }, [fetchEvents]);
 
   const handleEventAdd = () => {
@@ -88,12 +88,12 @@ const Home = (props: Props) => {
   const handleUserToggle = (userName: string[]) => {
     setSelectedUsers(userName);
   };
-  
+
   return (
     <>
       <div className='admin-body d-flex'>
 
-        <AppSidebar users={users} onFilterChange={handleUserToggle}/>
+        <AppSidebar users={users} onFilterChange={handleUserToggle} onUpdate={handleEventAdd}/>
 
         <div className="main-content">
           <div className="main-content-home">

@@ -15,6 +15,7 @@ interface Props extends PropsFromRedux {
   users: { id: number; username: string; color: string }[];
   onFilterChange: (user: string[]) => void;
   setEditData: (data: any) => void;
+  onUpdate: () => void;
 }
 
 const AppSidebar = (props: Props) => {
@@ -97,7 +98,7 @@ const AppSidebar = (props: Props) => {
   };
 
   const [TeamDatas, setTeamEditData] = React.useState<any>();
-console.log(TeamDatas, "TEAM DATA");
+  console.log(TeamDatas, "TEAM DATA");
 
   const handleEditClick = (data: any) => {
     setTeamEditData(data);
@@ -105,7 +106,8 @@ console.log(TeamDatas, "TEAM DATA");
   };
 
   const handleTeamMemberAdd = () => {
-    fetchTeamData();
+    // fetchTeamData();
+    props.onUpdate();
     setFetchNewMember(fetchNewMember + 1);
   };
   
@@ -113,6 +115,7 @@ console.log(TeamDatas, "TEAM DATA");
   return (
     <>
       <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamDatas={TeamDatas} success={handleTeamMemberAdd} />
+      
       <aside className="sidebar">
         <div className="pt-3" style={{ paddingBottom: '0.8rem' }}>
           <div className='sidebar-header-top align-vertical px-3 mt-2'>
