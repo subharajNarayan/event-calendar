@@ -10,6 +10,7 @@ import { RootState } from '../../../../../store/root-reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLongArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import moment from 'moment';
 
 const validationSchema = Yup.object({
 });
@@ -194,7 +195,7 @@ const Form = (props: Props) => {
                   {props.selectedEvent?.id === item.task_id && (
                     <>
                       <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
-                      <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
+                      <span style={{ fontSize: '12px' }}>{moment(item.created_at).format('YYYY-MM-DD HH:mm a')} &nbsp; {item.username}</span>
                       <hr />
                     </>
                   )}

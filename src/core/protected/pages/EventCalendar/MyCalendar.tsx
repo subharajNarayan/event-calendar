@@ -487,7 +487,7 @@ const TeamCalIndex = (props: CalendarProps) => {
                 {unfilteredEvents && unfilteredEvents.map((item: any) => (
                   <tr key={item.id} onClick={() => handleEventsSelect(item)}>
                     <td>{item.title}</td>
-                    <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
+                    <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
                     <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
                   </tr>
                 ))}
