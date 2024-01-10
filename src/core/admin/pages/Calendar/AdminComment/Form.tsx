@@ -127,7 +127,7 @@ const Form = (props: Props) => {
             handleSubmit(e)
           }} autoComplete='off'>
           <div className="row">
-            <div className="col-lg-10">
+            <div className="col-lg-10 col-10">
 
               <div className='form-group'>
                 <textarea name="comment"
@@ -142,7 +142,7 @@ const Form = (props: Props) => {
                 </textarea>
               </div>
             </div>
-            <div className="col-lg-2">
+            <div className="col-lg-2 col-2">
 
               <div className="button">
                 <Button
@@ -223,29 +223,6 @@ const Form = (props: Props) => {
           </div>
         </TabPane>
       </TabContent>
-
-      {/* <div  >
-        {data?.map((item) => {
-          console.log('Selected Event ID:', props.selectedEvent.id);
-          console.log('Comment Task ID:', item.task_id);
-
-          // Log the entire item object
-          console.log('Item:', item);
-
-          return (
-            <div className="" key={item.id}>
-              {props.selectedEvent?.id === item.task_id && (
-                <>
-                  <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
-                  <span style={{ fontSize: '12px' }}>{item.created_at} &nbsp; {item.username}</span>
-                  <hr />
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div> */}
-
     </div>
   )
 }

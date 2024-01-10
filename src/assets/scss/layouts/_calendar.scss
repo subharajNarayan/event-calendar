@@ -62,63 +62,71 @@
       }
     }
   }
-  .sorting{
-    &-data{
+
+  .sorting {
+    &-data {
       position: absolute;
       bottom: 8px;
-      select{
-        &:focus{
+
+      select {
+        &:focus {
           box-shadow: none;
         }
       }
     }
   }
 
-  .list-table{
-    thead{
-      tr{
-        th{
+  .list-table {
+    thead {
+      tr {
+        th {
           border-top: none;
         }
       }
     }
   }
 
-  tbody{
-    tr{
+  tbody {
+    tr {
       cursor: pointer;
     }
   }
 }
 
 
-.rbc-day-bg{
+.rbc-day-bg {
   cursor: pointer !important;
 }
 
 .rbc-date-cell {
   cursor: pointer;
 }
-.rbc-row{
+
+.rbc-row {
   cursor: pointer;
 }
 
-.user{
-  &-comments{
-    .nav{
-      .nav-item{
-        a{
+.user {
+  &-comments {
+    .nav {
+      .nav-item {
+        a {
           padding: 6.5px 16px 6.5px 1px !important;
         }
-        .active{
+
+        .active {
           color: #000 !important;
-          &::after{
-            content: '';
+
+          &::after {
+            content: "";
             height: 2px;
-            width: auto;
+            width: 100%;
             background-color: #000;
             display: block;
             margin-top: 5px;
+            transition: transform 0.5s; /* Add transform property to enable the left-to-right effect */
+            transform-origin: left; /* Set the transform origin to the left side */
+            transform: scaleX(1); /* Set initial scaleX to 1 for the line to be visible */
           }
         }
       }
@@ -187,15 +195,30 @@ th:hover .arrow {
 // }
 
 
-@media only screen and (max-width: 767px){
-  .body-calendar{ 
+@media only screen and (max-width: 767px) {
+  .body-calendar {
     .calendar-view {
       .toolbar-heading {
         display: inline-block !important;
-        &-top{
+
+        &-top {
           text-align: center;
         }
       }
     }
-  } 
+  }
+
+  .select-status {
+    margin-bottom: 1rem;
+  }
+
+  .user {
+    &-body {
+      .row {
+        .col-2 {
+          padding-left: 0;
+        }
+      }
+    }
+  }
 }

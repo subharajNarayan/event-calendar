@@ -63,9 +63,9 @@ const CustomToolbar: React.FC<{
             <h4>Task Calendar</h4>
           </div>
           <div className="toolbar-select ">
-            <div className="form-group d-flex align-items-baseline p-1">
+            <div className="select-status form-group d-flex align-items-baseline">
               <label htmlFor="">Select</label>
-              <select name="" id="" className='form-control mx-2' onChange={handleTaskStatusChange}>
+              <select name="" id="" className='form-select mx-2' onChange={handleTaskStatusChange}>
                 <option value="" selected={taskStatus === ''}>All</option>
                 <option value="done" selected={taskStatus === "done"}>Done</option>
                 <option value="overdue" selected={taskStatus === "overdue"}>OverDue</option>
@@ -154,7 +154,7 @@ const TeamCalIndex = (props: CalendarProps) => {
       .then((response) => {
         let initialEvents = response.data.map((event: any) => ({
           ...event,
-          start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(), 
+          start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           end_date: moment(moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           // start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
           // end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
@@ -236,7 +236,7 @@ const TeamCalIndex = (props: CalendarProps) => {
   };
 
   console.log({ eventStyleGetter });
-  
+
   // const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
   //   toggleModal();
   // };
@@ -449,50 +449,37 @@ const TeamCalIndex = (props: CalendarProps) => {
                 setTaskStatus(e.target.value);
               }}
             />
-            <Table className='list-table'>
-              <thead>
-                <tr>
-                  <th onClick={() => handleSort('title')}>
-                    Title
-                    <span className="arrow">{renderArrow('title')}</span>
-                  </th>
-                  <th onClick={() => handleSort('start_date')}>
-                    Start Date
-                    <span className="arrow">{renderArrow('start_date')}</span>
-                  </th>
-                  <th onClick={() => handleSort('end_date')}>
-                    End Date
-                    <span className="arrow">{renderArrow('end_date')}</span>
-                  </th>
-                </tr>
-              </thead>
-              {/* <tbody>
-              {unfilteredEvents
-                .sort((a, b) => {
-                  const sortFactor = sortDirection === 'asc' ? 1 : -1;
-                  const assignedToA = a.assigned_user_name?.toLowerCase() || '';
-                  const assignedToB = b.assigned_user_name?.toLowerCase() || '';
-                  return assignedToA.localeCompare(assignedToB) * sortFactor;
-                })
-                .map((item: any) => (
-                  <tr key={item.id} onClick={() => handleEventsSelect(item)}>
-                    <td>{item.title}</td>
-                    <td>{moment(item.start_date).format('MMM D, YYYY')}</td>
-                    <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                    <td>{item.assigned_user_name}</td>
-                  </tr>
-                ))}
-            </tbody> */}
-              <tbody>
-                {unfilteredEvents && unfilteredEvents.map((item: any) => (
-                  <tr key={item.id} onClick={() => handleEventsSelect(item)}>
-                    <td>{item.title}</td>
-                    <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
-                    <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <div className='container-fluid'>
+              <div className='table-responsive'>
+                <Table className='list-table'>
+                  <thead>
+                    <tr>
+                      <th onClick={() => handleSort('title')}>
+                        Title
+                        <span className="arrow">{renderArrow('title')}</span>
+                      </th>
+                      <th onClick={() => handleSort('start_date')}>
+                        Start Date
+                        <span className="arrow">{renderArrow('start_date')}</span>
+                      </th>
+                      <th onClick={() => handleSort('end_date')}>
+                        End Date
+                        <span className="arrow">{renderArrow('end_date')}</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {unfilteredEvents && unfilteredEvents.map((item: any) => (
+                      <tr key={item.id} onClick={() => handleEventsSelect(item)}>
+                        <td>{item.title}</td>
+                        <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                        <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
           </div>
           {/* <ReactPaginate
             previousLabel={"Previous"}

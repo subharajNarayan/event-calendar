@@ -12,6 +12,7 @@ import { RootState } from '../../../../../store/root-reducer';
 import moment from 'moment';
 import TokenService from '../../../../../services/jwt-token/jwt-token';
 import { getMemberLogsAction } from '../../../../../store/modules/TeamMember/getMemberLogs';
+import FormikValidationError from '../../../../../components/React/FormikValidationError/FormikValidationError';
 
 interface Props extends PropsFromRedux {
   editData: any,
@@ -99,7 +100,6 @@ const CalendarForm = (props: Props) => {
           props.fetchSuccess();
           props.toggleModal();
         }
-        // window.location.reload()
       } else {
         toast.error("SERVER ERROR")
         setLoader(false)
@@ -128,6 +128,7 @@ const CalendarForm = (props: Props) => {
       <div className='team-form-body'>
         <form action="form"
           onSubmit={(e) => {
+            e.preventDefault();
             handleSubmit(e)
           }} autoComplete='off'>
           <div className='form-group'>
@@ -139,6 +140,7 @@ const CalendarForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
+            <FormikValidationError name='title' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
             <label htmlFor="">Description</label>
@@ -151,6 +153,7 @@ const CalendarForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             ></textarea>
+            <FormikValidationError name='description' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
             <label htmlFor="">Location</label>
@@ -161,6 +164,7 @@ const CalendarForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
+            <FormikValidationError name='location' errors={errors} touched={touched} />
           </div>
           <div className='form-group'>
             <label htmlFor="">Start Date</label>
@@ -187,7 +191,7 @@ const CalendarForm = (props: Props) => {
           <div className='form-group'>
             <label htmlFor="">Team Member</label>
             <select
-              className='form-control'
+              className='form-select'
               name="assigned_user_name"
               value={values.assigned_user_name}
               onChange={handleChange}

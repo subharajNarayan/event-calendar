@@ -97,7 +97,7 @@ const CustomToolbar: React.FC<{
           </div>
           <div className="select-status d-flex align-items-center">
             <label htmlFor="" className='mt-1'>Status</label>
-            <select onChange={handleTaskStatusChange} className='form-control mx-2'>
+            <select onChange={handleTaskStatusChange} className='form-select mx-2'>
               <option value="" selected={taskStatus === ''}>All</option>
               <option value="done" selected={taskStatus === "done"}>Done</option>
               <option value="overdue" selected={taskStatus === "overdue"}>Overdue</option>
@@ -282,14 +282,26 @@ const CIndex = (props: Props) => {
 
   const toggleForm = () => {
     setIsFormOpen(!isFormOpen);
+
     // Set initial data for the form
     const currentDate = selectedDate || moment(); // Use selectedDate if available, or use the current date
+    
+    const selectedStartDate = moment(currentDate);
+    const selectedEndDate = moment(currentDate).add(1, 'hours');
+
+    const currentHour = moment().hour();
+    const currentMinute = moment().minute();
+
+    // Set the selected date's hours and minutes to the current time
+    selectedStartDate.set({ hour: currentHour, minute: currentMinute });
+    selectedEndDate.set({ hour: currentHour + 1, minute: currentMinute });
+
     const event: DBEvent = {
       id: 0,
       title: '',
       description: '',
-      start_date: moment(currentDate).format('YYYY-MM-DD HH:mm:ss'),
-      end_date: moment(currentDate).format('YYYY-MM-DD HH:mm:ss'),
+      start_date: moment(selectedStartDate).format('YYYY-MM-DD HH:mm'),
+      end_date: moment(selectedEndDate).format('YYYY-MM-DD HH:mm'),
       assigned_user_name: '',
       assigned_user_colour: '',
       task_complete: false,
@@ -441,8 +453,8 @@ const CIndex = (props: Props) => {
     // console.log({currentDate, currentMonth}, ',,,,,,,,,,,,,,,');
     let date = moment(currentMonth, 'MMMM YYYY'); // January 2023
 
-    console.log({currentMonth});
-    
+    console.log({ currentMonth });
+
     switch (currentViewOverride) {
       case 'month': {
         return events.filter(event => {
@@ -605,58 +617,42 @@ const CIndex = (props: Props) => {
             showYearDate={false}
             toggleForm={toggleForm}
           />
-          {/* <div className="row sorting">
-            <div className="col-lg-2">
-              <div className="sorting-data mt-3 d-flex align-items-baseline">
-                <label htmlFor="" style={{whiteSpace: 'nowrap'}}>
-                  Sort By:
-                </label>
-                <select
-                  name=""
-                  id=""
-                  className='form-select outline-none box-shadow-none mx-2'
-                  onChange={handleSortChange}
-                  value={sortDirection}
-                >
-                  <option value="">All</option>
-                  <option value="asc">A-Z</option>
-                  <option value="desc">Z-A</option>
-                </select>
-              </div>
+          <div className='container-fluid'>
+            <div className='table-responsive'>
+              <Table>
+                <thead>
+                  <tr>
+                    <th onClick={() => handleSort('title')}>
+                      Title
+                      <span className="arrow">{renderArrow('title')}</span>
+                    </th>
+                    <th onClick={() => handleSort('start_date')}>
+                      Start Date
+                      <span className="arrow">{renderArrow('start_date')}</span>
+                    </th>
+                    <th onClick={() => handleSort('end_date')}>
+                      End Date
+                      <span className="arrow">{renderArrow('end_date')}</span>
+                    </th>
+                    <th onClick={() => handleSort('assigned_user_name')}>
+                      Assigned To
+                      <span className="arrow">{renderArrow('assigned_user_name')}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {unfilteredEvents.map((item: any) => (
+                    <tr key={item.id} onClick={() => handleDetailEvent(item)}>
+                      <td>{item.title}</td>
+                      <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                      <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                      <td>{item.assigned_user_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </div>
-          </div> */}
-          <Table>
-            <thead>
-              <tr>
-                <th onClick={() => handleSort('title')}>
-                  Title
-                  <span className="arrow">{renderArrow('title')}</span>
-                </th>
-                <th onClick={() => handleSort('start_date')}>
-                  Start Date
-                  <span className="arrow">{renderArrow('start_date')}</span>
-                </th>
-                <th onClick={() => handleSort('end_date')}>
-                  End Date
-                  <span className="arrow">{renderArrow('end_date')}</span>
-                </th>
-                <th onClick={() => handleSort('assigned_user_name')}>
-                  Assigned To
-                  <span className="arrow">{renderArrow('assigned_user_name')}</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {unfilteredEvents.map((item: any) => (
-                <tr key={item.id} onClick={() => handleDetailEvent(item)}>
-                  <td>{item.title}</td>
-                  <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
-                  <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                  <td>{item.assigned_user_name}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
+          </div>
         </div>
       )}
       {selectedDetails &&

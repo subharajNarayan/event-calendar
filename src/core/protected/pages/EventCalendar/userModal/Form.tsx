@@ -126,7 +126,7 @@ const Form = (props: Props) => {
             handleSubmit(e)
           }} autoComplete='off'>
           <div className="row">
-            <div className="col-lg-10">
+            <div className="col-lg-10 col-10">
 
               <div className='form-group'>
                 <textarea name="comment"
@@ -141,7 +141,7 @@ const Form = (props: Props) => {
                 </textarea>
               </div>
             </div>
-            <div className="col-lg-2">
+            <div className="col-lg-2 col-2">
 
               <div className="button">
                 <Button

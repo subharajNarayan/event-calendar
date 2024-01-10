@@ -16,7 +16,6 @@ interface Props extends PropsFromRedux {
 const Home = (props: Props) => {
 
   const [selectedUsers, setSelectedUsers] = React.useState<string[]>([]);
-  // const [isOpen, setIsOpen] = React.useState(false)
   const [fetchEvents, setFetchEvents] = React.useState<number>(0);
 
 
@@ -27,7 +26,6 @@ const Home = (props: Props) => {
   const dispatch = useDispatch();
   const LogOutAction = () => {
     dispatch(logoutAction())
-    // window.location.reload();
   }
 
 
@@ -60,8 +58,6 @@ const Home = (props: Props) => {
           ...event,
           start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(), 
           end_date: moment(moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-          // start_date22: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
-          // end_date22: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
         }));
 
         setEvents(initialEvents);
@@ -92,22 +88,12 @@ const Home = (props: Props) => {
   const handleUserToggle = (userName: string[]) => {
     setSelectedUsers(userName);
   };
-
-  // const [sidebarData, setSidebarData] = React.useState<any>();
-  const [fetchEventsData, setFetchEventsData] = React.useState<number>(0);
-
-
-const sidebarData = () => {
-  setFetchEventsData(fetchEventsData + 1);
-};
-console.log(sidebarData, "SIDEBAR DATA");
-
   
   return (
     <>
       <div className='admin-body d-flex'>
 
-        <AppSidebar users={users} onFilterChange={handleUserToggle} sidebarData={sidebarData}/>
+        <AppSidebar users={users} onFilterChange={handleUserToggle}/>
 
         <div className="main-content">
           <div className="main-content-home">

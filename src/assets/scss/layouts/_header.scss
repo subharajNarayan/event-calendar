@@ -69,3 +69,14 @@ $header-bg: #FFFFFF;
     color: #000 !important;
     margin-left: 20px;
 }
+
+@media only screen and (max-width: 767px){
+    main.stickyHeader {
+        .header {
+          position: relative !important;
+        }
+      }
+    .header-username .dropdown-menu.show{
+        padding: 0px;
+    }
+}

@@ -187,7 +187,7 @@ const UserEditForm = (props: Props) => {
           <div className='form-group'>
             <label htmlFor="">Team Member</label>
             <select
-              className='form-control'
+              className='form-select'
               name="assigned_user_name"
               value={values.assigned_user_name}
               onChange={handleChange}
