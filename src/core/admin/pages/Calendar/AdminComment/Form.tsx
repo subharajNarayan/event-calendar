@@ -39,7 +39,8 @@ const Form = (props: Props) => {
   const [initialData, setInitialData] = React.useState({
     task_id: props.selectedEvent?.id,
     title: props.selectedEvent?.title,
-    username: props.selectedEvent?.assigned_user_name,
+    username: props.selectedEvent?.assignee,
+    // assignee: props.selectedEvent?.assignee,
     comment: "",
   });
 
@@ -207,19 +208,21 @@ const Form = (props: Props) => {
         <TabPane tabId="2">
           <div className="comment-view" style={commentViewStyle}>
             {combinedData && combinedData.length === 0 ? (
-              <span>Edited Task Data Not Yet</span>
+              <span>No Edits Yet</span>
             ) : (
               combinedData.slice(0).reverse().map((item) => (
                 <div className="" key={item.id}>
                   {props.selectedEvent?.id === item.task_id && (
                     <>
-                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.message} </p>
+                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                        <span style={{ fontSize: '14px' }}><strong>{item.assignee_name}</strong> changed <strong> {item.field_name}</strong> from <strong>{item.old_value}</strong> to <strong>{item.new_value}</strong> on {item.formatted_timestamp}</span>
                       <hr />
                     </>
                   )}
                 </div>
               ))
-            )}
+            )
+            }
           </div>
         </TabPane>
       </TabContent>

@@ -31,10 +31,6 @@ const TeamMembForm = (props: Props) => {
     // Use the setFieldValue from useFormik to update the form's color field
     setFieldValue('color', newColor);
   }; 
-  
-    // const generateColor = () => {
-    //     setIsColor(Math.random().toString(16).substr(-6));
-    // };
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
     ...TeamInitialValues, ...(props.editData || {}),

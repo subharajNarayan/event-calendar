@@ -695,7 +695,7 @@ const CIndex = (props: Props) => {
               </div>
               <hr />
               <div className="date-time">
-                <p className='d-flex align-items-center '>Assignee: {selectedDetails.assignee}</p>
+                <p className='d-flex align-items-center '>Assigned To: {selectedDetails.assigned_user_name}</p>
               </div>
               <Form selectedEvent={selectedDetails} toogleModal={toggleDetailsModal} />
             </div>

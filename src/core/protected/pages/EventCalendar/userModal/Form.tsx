@@ -211,7 +211,8 @@ const Form = (props: Props) => {
                 <div className="" key={item.id}>
                   {props.selectedEvent?.id === item.task_id && (
                     <>
-                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.message} </p>
+                      <p style={{ fontSize: '16px' }} className='mb-0'> {item.comment} </p>
+                      <span style={{ fontSize: '14px' }}><strong>{item.assignee_name}</strong> changed <strong> {item.field_name}</strong> from <strong>{item.old_value}</strong> to <strong>{item.new_value}</strong> on {item.formatted_timestamp}</span>
                       <hr />
                     </>
                   )}
