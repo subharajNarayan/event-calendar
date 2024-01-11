@@ -23,6 +23,7 @@ const TeamMembForm = (props: Props) => {
   const [isLoader, setIsLoader] = React.useState(false);
 
   const [isColor, setIsColor] = React.useState("")
+  console.log(isColor, "IS COLOR");
 
   const generateColor = () => {
     const newColor = '#' + Math.random().toString(16).substr(-6);
@@ -30,23 +31,44 @@ const TeamMembForm = (props: Props) => {
 
     // Use the setFieldValue from useFormik to update the form's color field
     setFieldValue('color', newColor);
-  }; 
+  };
 
   const [initialData, setInitialData] = React.useState<typeof TeamInitialValues>({
     ...TeamInitialValues, ...(props.editData || {}),
   });
-  // console.log(initialData, "INITIAL DATA");
+  console.log(initialData, "INITIAL DATA");
 
   const dispatch = useDispatch();
 
+  console.log(props.editData, "EDIT DATA");
+
   React.useEffect(() => {
-    setInitialData({
-      ...props.editData,
-    });
-    dispatch(getTeamMemberLogsAction())
-    // Set a default color when the component mounts
-    generateColor();
+    if (props.editData) {
+      setInitialData({
+        ...props.editData,
+      });
+      setIsColor(props.editData?.color || '');
+    }
+    dispatch(getTeamMemberLogsAction());
   }, [props.editData?.username]);
+
+
+  React.useEffect(() => {
+    // Set a default color only when creating a new user
+    generateColor();
+  }, []);
+  // React.useEffect(() => {
+  //   if (props.editData) {
+  //     setInitialData({
+  //       ...props.editData,
+  //       // color: props.editData?.color || '',
+  //     });
+  //     setIsColor(props.editData?.color || '');
+  //   }
+  //   // Set a default color when the component mounts
+  //   // generateColor();
+  //   dispatch(getTeamMemberLogsAction())
+  // }, [props.editData?.username]);
 
   const {
     values,
@@ -65,10 +87,6 @@ const TeamMembForm = (props: Props) => {
       setIsLoader(true);
 
       try {
-
-        // Generate a new color before submitting the form
-        generateColor();
-
         // Log to console to check if the color is being set properly
         console.log('Color before submission:', values.color);
         const colorDetails = {
@@ -82,6 +100,8 @@ const TeamMembForm = (props: Props) => {
         if (props.editData && props.editData.id) {
           res = await props.updateTeamMemberLogsAction(props.editData.id, colorDetails);
         } else {
+          // For new user (post operation), generate a new color
+          // generateColor();
           res = await props.postTeamMemberLogsAction(colorDetails);
         }
 
@@ -186,7 +206,7 @@ const TeamMembForm = (props: Props) => {
           <div className='form-group colors-name d-flex'>
             <label htmlFor="">Color </label>
             <div className="color-input-container">
-            <input
+              <input
                 type='color'
                 name='color'
                 value={isColor}
