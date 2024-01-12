@@ -5,17 +5,11 @@ import useAuthentication from '../../../services/authentication/AuthService';
 import { RootState } from '../../../store/root-reducer';
 
 import AppHeader from './Header/Header'
-import Sidebar from './Sidebar/sidebar'
 import AppFooter from './Footer/footer'
 import "../../../assets/dashboard/scss/style.scss"
 import FallbackLoader from '../../../components/React/FallBackLoader/FallBackLoader'
-import Home from '../../public/Home/Home'
 import { useNavigate } from 'react-router-dom';
-// import Form from '../pages/form/Form';
-import List from '../pages/list/List';
-import Pagination from '../pages/pagination/Pagination';
 import appRoutes from "../../../routes/routes";
-import AppSidebar from './Sidebar/sidebar';
 
 interface Props extends PropsFromRedux {
   children: any;
@@ -51,7 +45,7 @@ function AdminDashboard(props: Props): ReactElement {
           redirectPath={[{ from: "*", to: isAuthenticated() ? "/admin/home" : "home" }]}
         />
           </div>
-          {/* <AppFooter /> */}
+          <AppFooter />
         </main>
       </div>
     </Suspense>

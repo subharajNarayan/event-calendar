@@ -14,7 +14,7 @@ const AppFooter = () => {
           </NavItem> */}
           <NavItem className="d-flex align-items-baseline">
             <span className="me-1"> &copy; Copyright-2023</span>
-            <NavLink href='#' target='_blank' rel="noopener noreferrer">
+            <NavLink href='https://smarttech.com.np/' target='_blank' rel="noopener noreferrer">
               SmartTech Solution Pvt.Ltd.
             </NavLink>
           </NavItem>
