@@ -81,7 +81,7 @@ const UserEditForm = (props: Props) => {
 
       const updatedSubmitValue = {
         ...submitValue,
-        username: userDetails.username,
+        assignee: userDetails.username,
         // Add other user details if needed
       };
 
