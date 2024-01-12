@@ -404,6 +404,10 @@ const TeamCalIndex = (props: CalendarProps) => {
           onSelectEvent={handleEventsSelect}
           views={['month', 'week', 'day']}
           onNavigate={handleNavigate}
+          // onSelectSlot={(slotInfo) => {
+          //   // Directly call the functions to update the view and set the list view
+          //   setListView('day');
+          // }}
           components={{
             toolbar: (toolbarProps: any) => (
               <CustomToolbar

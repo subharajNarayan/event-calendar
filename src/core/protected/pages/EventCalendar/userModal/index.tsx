@@ -39,7 +39,11 @@ const TeamIndex = (props: Props) => {
     const res = await props.updateTaskLogsAction(props.selectedEvent.id, {
       ...props.selectedEvent,
       task_complete: (!isTaskComplete).toString(),
+      start_date: moment(props.selectedEvent.start_date).format('YYYY-MM-DD HH:mm:ss'),
+      end_date: moment(props.selectedEvent.end_date).format('YYYY-MM-DD HH:mm:ss'),
     });
+    console.log(res, "res");
+    
 
     if (res.status === 200) {
       setInitialData({ task_complete: (!isTaskComplete).toString() });

@@ -218,9 +218,14 @@ const CIndex = (props: Props) => {
         const updatedTask = {
           ...selectedDetails,
           task_complete: !selectedDetails.task_complete,
+          start_date: moment(selectedDetails.start_date).format('YYYY-MM-DD HH:mm:ss'),
+          end_date: moment(selectedDetails.end_date).format('YYYY-MM-DD HH:mm:ss'),
         };
 
         const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
+
+        console.log({ res });
+        
 
         if (res.status === 200) {
           const updatedTaskData = res.data;
