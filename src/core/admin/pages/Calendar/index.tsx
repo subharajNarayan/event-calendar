@@ -285,7 +285,7 @@ const CIndex = (props: Props) => {
 
     // Set initial data for the form
     const currentDate = selectedDate || moment(); // Use selectedDate if available, or use the current date
-    
+
     const selectedStartDate = moment(currentDate);
     const selectedEndDate = moment(currentDate).add(1, 'hours');
 
@@ -513,32 +513,94 @@ const CIndex = (props: Props) => {
 
 
 
+  // const [sortColumn, setSortColumn] = useState<keyof Event>('title');
+  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // const handleSort = (column: keyof Event) => {
+  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+
+  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+  //     if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
+  //     if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+  //     return 0;
+  //   });
+  //   // const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+  //   //   const aValue = a.assigned_user_name?.toLowerCase();
+  //   //   const bValue = b.assigned_user_name?.toLowerCase();
+
+  //   //   if (aValue < bValue) return newSortOrder === 'asc' ? -1 : 1;
+  //   //   if (aValue > bValue) return newSortOrder === 'asc' ? 1 : -1;
+  //   //   return 0;
+  //   // });
+
+
+  //   setSortColumn(column);
+  //   setSortOrder(newSortOrder);
+  //   // Update the data
+  //   setUnfilteredEvents(sortedEvents);
+  // };
   const [sortColumn, setSortColumn] = useState<keyof Event>('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // const handleSort = (column: keyof Event) => {
+  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+
+  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+  //     if (typeof a[column] === 'string' && typeof b[column] === 'string') {
+  //       // String comparison for 'assigned_user_name' and 'title'
+  //       return newSortOrder === 'asc'
+  //         ? a[column].localeCompare(b[column])
+  //         : b[column].localeCompare(a[column]);
+  //     } else if (typeof a[column] === 'number' && typeof b[column] === 'number') {
+  //       // Numeric comparison for other columns
+  //       return newSortOrder === 'asc'
+  //         ? a[column] - b[column]
+  //         : b[column] - a[column];
+  //     } else {
+  //       // Fallback for other types (e.g., boolean)
+  //       return 0;
+  //     }
+  //   });
+
+  //   setSortColumn(column);
+  //   setSortOrder(newSortOrder);
+  //   // Update the data
+  //   setUnfilteredEvents(sortedEvents);
+  // };
+
 
   const handleSort = (column: keyof Event) => {
     const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
 
-    // const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-    //   if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
-    //   if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
-    //   return 0;
-    // });
     const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-      const aValue = a.assigned_user_name?.toLowerCase();
-      const bValue = b.assigned_user_name?.toLowerCase();
-    
-      if (aValue < bValue) return newSortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return newSortOrder === 'asc' ? 1 : -1;
-      return 0;
+      if (column === 'assigned_user_name' || column === 'title') {
+        // Special case for 'assigned_user_name' column
+        return newSortOrder === 'asc'
+          ? a[column].localeCompare(b[column])
+          : b[column].localeCompare(a[column]);
+      } else {
+        // Default case for numeric or other types
+        return newSortOrder === 'asc'
+          ? a[column] > b[column]
+            ? 1
+            : a[column] < b[column]
+              ? -1
+              : 0
+          : b[column] > a[column]
+            ? 1
+            : b[column] < a[column]
+              ? -1
+              : 0;
+      }
     });
-    
 
     setSortColumn(column);
     setSortOrder(newSortOrder);
     // Update the data
     setUnfilteredEvents(sortedEvents);
   };
+
+
 
   const renderArrow = (column: keyof Event) => {
     if (sortColumn === column) {

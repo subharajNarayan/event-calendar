@@ -352,18 +352,26 @@ const TeamCalIndex = (props: CalendarProps) => {
   const handleSort = (column: keyof Event) => {
     const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
 
-    // const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-    //   if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
-    //   if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
-    //   return 0;
-    // });
     const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-      const aValue = a.assigned_user_name?.toLowerCase();
-      const bValue = b.assigned_user_name?.toLowerCase();
-
-      if (aValue < bValue) return newSortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return newSortOrder === 'asc' ? 1 : -1;
-      return 0;
+      if (column === 'assigned_user_name' || column === 'title') {
+        // Special case for 'assigned_user_name' column
+        return newSortOrder === 'asc'
+          ? a[column].localeCompare(b[column])
+          : b[column].localeCompare(a[column]);
+      } else {
+        // Default case for numeric or other types
+        return newSortOrder === 'asc'
+          ? a[column] > b[column]
+            ? 1
+            : a[column] < b[column]
+              ? -1
+              : 0
+          : b[column] > a[column]
+            ? 1
+            : b[column] < a[column]
+              ? -1
+              : 0;
+      }
     });
 
     setSortColumn(column);
