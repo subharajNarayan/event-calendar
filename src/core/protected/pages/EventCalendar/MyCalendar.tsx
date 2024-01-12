@@ -352,9 +352,17 @@ const TeamCalIndex = (props: CalendarProps) => {
   const handleSort = (column: keyof Event) => {
     const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
 
+    // const sortedEvents = [...unfilteredEvents].sort((a, b) => {
+    //   if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
+    //   if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+    //   return 0;
+    // });
     const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-      if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
-      if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
+      const aValue = a.assigned_user_name?.toLowerCase();
+      const bValue = b.assigned_user_name?.toLowerCase();
+
+      if (aValue < bValue) return newSortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return newSortOrder === 'asc' ? 1 : -1;
       return 0;
     });
 
