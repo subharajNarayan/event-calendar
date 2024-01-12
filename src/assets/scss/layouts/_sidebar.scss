@@ -15,6 +15,12 @@
     filter: drop-shadow(0px 5px 25px #52575d21);
     margin-top: 1rem;
     border-radius: 10px;
+    &-header{
+        padding-top: 1rem;
+    }
+    &-heading{
+        padding-top: 1rem;
+    }
 
     &-filter-data {
         .table {
@@ -55,7 +61,8 @@
     }
 
     &-header-top {
-        justify-content: center;
+        // justify-content: center;
+        margin-top: 0.5rem;
 
         @include media-breakpoint-down(sm) {
             justify-content: space-between;
@@ -286,6 +293,62 @@
 
             @include media-breakpoint-down(md) {
                 display: block;
+            }
+        }
+    }
+
+    &-mobile-view-ham {
+        .hamburger-react {
+            color: #808080;
+            display: none;
+        }
+    }
+
+    &-filter-data {
+        .mobile-view {
+            display: none;
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .sidebar {
+        &-header {
+            &-top {
+                margin-top: 0px!important;
+            }
+            &-team {
+                justify-content: space-between;
+                align-items: center;
+                h6{
+                    margin-bottom: 0 !important;
+                }
+            }
+        }
+        &-heading{
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
+        &-mobile-view-ham {
+            .hamburger-react {
+                display: block;
+                width: 40px !important;
+
+                div {
+                    height: 2px !important;
+                    width: 24px !important;
+                }
+            }
+        }
+
+        &-filter-data {
+            .web-view {
+                display: none;
+            }
+
+            .mobile-view {
+                display: inline-table;
             }
         }
     }

@@ -542,33 +542,6 @@ const CIndex = (props: Props) => {
   const [sortColumn, setSortColumn] = useState<keyof Event>('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // const handleSort = (column: keyof Event) => {
-  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
-
-  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-  //     if (typeof a[column] === 'string' && typeof b[column] === 'string') {
-  //       // String comparison for 'assigned_user_name' and 'title'
-  //       return newSortOrder === 'asc'
-  //         ? a[column].localeCompare(b[column])
-  //         : b[column].localeCompare(a[column]);
-  //     } else if (typeof a[column] === 'number' && typeof b[column] === 'number') {
-  //       // Numeric comparison for other columns
-  //       return newSortOrder === 'asc'
-  //         ? a[column] - b[column]
-  //         : b[column] - a[column];
-  //     } else {
-  //       // Fallback for other types (e.g., boolean)
-  //       return 0;
-  //     }
-  //   });
-
-  //   setSortColumn(column);
-  //   setSortOrder(newSortOrder);
-  //   // Update the data
-  //   setUnfilteredEvents(sortedEvents);
-  // };
-
-
   const handleSort = (column: keyof Event) => {
     const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
 

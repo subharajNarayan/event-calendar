@@ -10,6 +10,7 @@ import toast from '../../../../components/Notifier/Notifier';
 import { deleteTeamMemberLogsAction } from '../../../../store/modules/TeamMember/deleteTeamMemberLogs';
 import ConfirmationModal from '../../../../components/UI/ConfirmationModal';
 import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
+import Hamburger from 'hamburger-react';
 
 interface Props extends PropsFromRedux {
   users: { id: number; username: string; color: string }[];
@@ -27,7 +28,7 @@ const AppSidebar = (props: Props) => {
   const toggleTeamModal = () => {
     setIsOpen(!isOpen);
   };
-  
+
   React.useEffect(() => {
     if (!isOpen) {
       setTeamEditData({});
@@ -110,82 +111,143 @@ const AppSidebar = (props: Props) => {
     props.onUpdate();
     setFetchNewMember(fetchNewMember + 1);
   };
-  
+
+  const [isActive, setIsActive] = React.useState(false);
 
   return (
     <>
       <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamDatas={TeamDatas} success={handleTeamMemberAdd} />
-      
+
       <aside className="sidebar">
-        <div className="pt-3" style={{ paddingBottom: '0.8rem' }}>
-          <div className='sidebar-header-top align-vertical px-3 mt-2'>
-            <div className='d-flex'>
+        <div className="sidebar-heading" style={{ paddingBottom: '0.8rem' }}>
+          <div className='sidebar-header-top px-3'>
+            <div className='d-flex sidebar-header-team'>
               <h6 className='sidebar-text text-center text-uppercase font-bold'>
                 Team Members
                 <span className="p-2" onClick={() => toggleTeamModal()} style={{ cursor: 'pointer' }}>
                   +
                 </span>
               </h6>
+              <div className="sidebar-mobile-view-ham" title="Team Members Hamburger">
+                <Hamburger toggled={isActive} toggle={setIsActive} />
+              </div>
             </div>
-            <hr />
           </div>
         </div>
         <div className="sidebar-filter-data">
-          <Table>
-            <thead>
-              <tr>
-                <th>
-                  <input
-                    type="checkbox"
-                    name="selectAll"
-                    id="selectAll"
-                    checked={teamData.length === selectedRows.length}
-                    onChange={selectAllRows}
-                  />
-                </th>
-                <th className='text-black'>Select All</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {teamData.map((item, index) => (
-                <tr key={index}>
-                  <td>
+          {isActive === true ? (
+            <Table className='mobile-view'>
+              <thead>
+                <tr>
+                  <th>
                     <input
-                      style={{ color: item.color }}
-                      value={index}
                       type="checkbox"
-                      id="checked-data"
-                      checked={selectedRows.includes(index)}
-                      onChange={selectRow}
+                      name="selectAll"
+                      id="selectAll"
+                      checked={teamData.length === selectedRows.length}
+                      onChange={selectAllRows}
                     />
-                  </td>
-                  <td>{item.username}</td>
-                  <td>
-                    {' '}
-                    <span
-                      style={{
-                        backgroundColor: item.color,
-                        padding: '0.6rem',
-                        display: 'inline-block',
-                        position: 'relative',
-                        borderRadius: '50%',
-                      }}
-                    ></span>{' '}
-                  </td>
-                  <td className='action d-flex align-item-center'>
-                    <div role='button' className="mr-0" onClick={() => handleEditClick(item)}>
-                      <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
-                    </div>
-                    <div role='button' className="mr-0" onClick={() => handleDeleteClick(item.id)}>
-                      <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
-                    </div>
-                  </td>
+                  </th>
+                  <th className='text-black'>Select All</th>
+                  <th></th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {teamData.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        style={{ color: item.color }}
+                        value={index}
+                        type="checkbox"
+                        id="checked-data"
+                        checked={selectedRows.includes(index)}
+                        onChange={selectRow}
+                      />
+                    </td>
+                    <td>{item.username}</td>
+                    <td>
+                      {' '}
+                      <span
+                        style={{
+                          backgroundColor: item.color,
+                          padding: '0.6rem',
+                          display: 'inline-block',
+                          position: 'relative',
+                          borderRadius: '50%',
+                        }}
+                      ></span>{' '}
+                    </td>
+                    <td className='action d-flex align-item-center'>
+                      <div role='button' className="mr-0" onClick={() => handleEditClick(item)}>
+                        <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
+                      </div>
+                      <div role='button' className="mr-0" onClick={() => handleDeleteClick(item.id)}>
+                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <Table className='web-view'>
+              <thead>
+                <tr>
+                  <th>
+                    <input
+                      type="checkbox"
+                      name="selectAll"
+                      id="selectAll"
+                      checked={teamData.length === selectedRows.length}
+                      onChange={selectAllRows}
+                    />
+                  </th>
+                  <th className='text-black'>Select All</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {teamData.map((item, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        style={{ color: item.color }}
+                        value={index}
+                        type="checkbox"
+                        id="checked-data"
+                        checked={selectedRows.includes(index)}
+                        onChange={selectRow}
+                      />
+                    </td>
+                    <td>{item.username}</td>
+                    <td>
+                      {' '}
+                      <span
+                        style={{
+                          backgroundColor: item.color,
+                          padding: '0.6rem',
+                          display: 'inline-block',
+                          position: 'relative',
+                          borderRadius: '50%',
+                        }}
+                      ></span>{' '}
+                    </td>
+                    <td className='action d-flex align-item-center'>
+                      <div role='button' className="mr-0" onClick={() => handleEditClick(item)}>
+                        <img src={EditIconDark} alt="edit" width="10px" className='mx-2' />
+                      </div>
+                      <div role='button' className="mr-0" onClick={() => handleDeleteClick(item.id)}>
+                        <img src={DeleteIcon} alt="delete" width="10px" className='mx-2' />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
         </div>
       </aside>
       <ConfirmationModal

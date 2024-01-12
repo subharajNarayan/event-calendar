@@ -216,3 +216,20 @@ th {
     }
   }
 }
+
+@media only screen and (max-width: 1080px){
+  .body-calendar {
+    .calendar-view {
+      .toolbar-heading{
+        display: block !important;
+        text-align: center;
+        .select-status {
+          margin-bottom: 0.68rem;
+        }
+      }
+      .toolbar-view-right{
+        justify-content: center;
+      }
+    }
+  }
+}

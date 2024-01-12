@@ -1,6 +1,7 @@
 .main-content {
   padding: 1rem;
   width: 100%;
+  // width: 65%;
 
   &-home {
     padding: 1rem;
@@ -19,6 +20,25 @@
     }
     .main-content {
       padding: 1rem 0rem;
+    }
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  .body {
+    .main-content {
+      width: 65%;
+      .body-calendar{
+        .container-fluid{
+          .table-responsive{
+            // max-width: 75%;
+          }
+        }
+      }
+      // width: auto;
+      // &-home {
+      //   width: 75%;
+      // }
     }
   }
 }
