@@ -23,7 +23,7 @@ const dispatch = useDispatch()
   },[])
 
   return (
-    <div className="main-content">
+    <div className="main-content" style={{width: '100%'}}>
         <div className="main-content-home">
           <div className="body-calendar">
             <MyCalendar events={[]} />
