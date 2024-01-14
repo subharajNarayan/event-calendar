@@ -26,11 +26,11 @@ const CalendarForm = (props: Props) => {
     ...taskInitialValues, ...(props.editData || {})
   });
 
-  console.log(initialData, "Task ADD")
+  // console.log(initialData, "Task ADD")
 
   const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getMemberLogs.data);
 
-  console.log(TeamDetails, "Team Details");
+  // console.log(TeamDetails, "Team Details");
   
   const dispatch = useDispatch();
 
@@ -72,10 +72,11 @@ const CalendarForm = (props: Props) => {
 
       const userDetails = TokenService.getAccessToken();
 
+      console.log(userDetails, "USER DETAILS");
+      
       const updatedSubmitValue = {
         ...submitValue,
         assignee: userDetails.username,
-        // Add other user details if needed
       };
 
       if (props.editData && props.editData.id) {
