@@ -189,21 +189,10 @@ const CIndex = (props: Props) => {
     task_complete: selectedDetails?.task_complete,
   });
 
-  // console.log({ initialData });
-
-
-  // const taskComplete = events.map((item) => item.task_complete);
-
-  // Make sure this code is executed before any usage of isTaskComplete
-  // const taskComplete = selectedDetails?.task_complete;
-  // console.log({ selectedDetails });
-
   const [isTaskComplete, setIsTaskComplete] = useState<boolean>(
     selectedDetails?.task_complete! ?? false
   );
   // console.log({ isTaskComplete });
-
-
 
   React.useEffect(() => {
     if (selectedDetails) {
@@ -233,7 +222,7 @@ const CIndex = (props: Props) => {
           if (updatedTaskData) {
             setInitialData({ task_complete: updatedTaskData.task_complete });
             setIsTaskComplete(!selectedDetails.task_complete); // Update the local state directly
-            toast.success('Task updated successfully...!');
+            toast.success('Task status updated successfully...!');
             props.fetchSuccess();
           } else {
             toast.error('Updated task data is null.');
@@ -473,20 +462,12 @@ const CIndex = (props: Props) => {
         return events.filter(event => {
           date = moment(); // Set the date to the current date
           return moment(event.start_date).isSame(date, 'week');
-          // return moment(event.start_date).isBetween(
-          //   date.startOf('week').format('YYYY-MM-DD'),
-          //   date.endOf('week').format('YYYY-MM-DD')
-          // );
         })
       }
       case 'day': {
         date = moment(); // Set the date to the current date
         return events.filter(event => {
           return moment(event.start_date).isSame(date, 'day');
-          // return moment(event.start_date).isBetween(
-          //   date.startOf('day').format('YYYY-MM-DD 00:00:00'),
-          //   date.endOf('day').format('YYYY-MM-DD 23:59:59')
-          // );
         })
       }
       default: {
@@ -494,9 +475,6 @@ const CIndex = (props: Props) => {
       }
     }
   }
-
-
-
   const handleDeleteClick = async (id: number) => {
     // Assuming your deleteTaskLogsAction returns a Promise
     try {
@@ -516,34 +494,6 @@ const CIndex = (props: Props) => {
     }
   };
 
-
-
-  // const [sortColumn, setSortColumn] = useState<keyof Event>('title');
-  // const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-
-  // const handleSort = (column: keyof Event) => {
-  //   const newSortOrder = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
-
-  //   const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-  //     if (a[column] < b[column]) return newSortOrder === 'asc' ? -1 : 1;
-  //     if (a[column] > b[column]) return newSortOrder === 'asc' ? 1 : -1;
-  //     return 0;
-  //   });
-  //   // const sortedEvents = [...unfilteredEvents].sort((a, b) => {
-  //   //   const aValue = a.assigned_user_name?.toLowerCase();
-  //   //   const bValue = b.assigned_user_name?.toLowerCase();
-
-  //   //   if (aValue < bValue) return newSortOrder === 'asc' ? -1 : 1;
-  //   //   if (aValue > bValue) return newSortOrder === 'asc' ? 1 : -1;
-  //   //   return 0;
-  //   // });
-
-
-  //   setSortColumn(column);
-  //   setSortOrder(newSortOrder);
-  //   // Update the data
-  //   setUnfilteredEvents(sortedEvents);
-  // };
   const [sortColumn, setSortColumn] = useState<keyof Event>('title');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 

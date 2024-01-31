@@ -71,7 +71,6 @@ function Login(props: Props): ReactElement {
     <div className="app bg-white">
       <div className="container">
         <div className="auth-wrapper">
-          {/* <LoginForm handleLogin={handleLogin} authorizing={loginData.isFetching} /> */}
           <LoginForm handleLogin={handleLogin} authorizing={isLoader} />
         </div>
       </div>
@@ -85,7 +84,6 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = {
   loginUser: loginUser,
-  // switchI18nLanguage: switchI18nLanguage,
   addUserDetails: addUserDetails,
 };
 

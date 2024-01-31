@@ -30,11 +30,11 @@ const UserEditForm = (props: Props) => {
     ...(props.editData || {})
   });
 
-  console.log(props.editData, "Task ADD")
+  // console.log(props.editData, "Task ADD")
 
   const TeamDetails = useSelector((state: RootState) => state.teamMemberData.getMemberLogs.data);
 
-  console.log(TeamDetails, "TeamDetails");
+  // console.log(TeamDetails, "TeamDetails");
   
   const dispatch = useDispatch();
 

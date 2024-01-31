@@ -64,8 +64,8 @@ const CustomToolbar: React.FC<{
           </div>
           <div className="toolbar-select ">
             <div className="select-status form-group d-flex align-items-baseline">
-              <label htmlFor="">Select</label>
-              <select name="" id="" className='form-select mx-2' onChange={handleTaskStatusChange}>
+              <label htmlFor="">Status</label>
+              <select className='form-select mx-2' onChange={handleTaskStatusChange}>
                 <option value="" selected={taskStatus === ''}>All</option>
                 <option value="done" selected={taskStatus === "done"}>Done</option>
                 <option value="overdue" selected={taskStatus === "overdue"}>OverDue</option>

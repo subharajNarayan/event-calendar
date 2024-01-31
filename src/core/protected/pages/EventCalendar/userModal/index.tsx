@@ -17,37 +17,50 @@ interface Props extends PropsFromRedux {
   toggleModal: () => void;
   selectedEvent: any;
   success: () => void;
+  // taskStatus: any;
 }
 
 const validationSchema = Yup.object({});
 
 const TeamIndex = (props: Props) => {
 
-  console.log(props.selectedEvent, "selectedEvent");
+  // console.log(props.selectedEvent, "selectedEvent");
+  // console.log(props.taskStatus, "taskStatus");
+  
 
   const [initialData, setInitialData] = useState({
     task_complete: props.selectedEvent.task_complete.toString(),
   });
 
-  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(props.selectedEvent.task_complete);
+  const [isTaskComplete, setIsTaskComplete] = useState<boolean>(props.selectedEvent?.task_complete! ?? false);
 
-  useEffect(() => {
-    setIsTaskComplete(initialData.task_complete === 'true');
-  }, [initialData.task_complete]);
+  console.log(isTaskComplete, "isTaskComplete");
+  
+  // useEffect(() => {
+  //   setIsTaskComplete(initialData.task_complete === 'true');
+  // }, [initialData.task_complete]);
+
+  React.useEffect(() => {
+    if (props.selectedEvent) {
+      const taskComplete = props.selectedEvent.task_complete;
+      const initialIsTaskComplete = taskComplete;
+      setIsTaskComplete(initialIsTaskComplete);
+    }
+  }, [props.selectedEvent]);
 
   const handleTickButtonClick = async () => {
     const res = await props.updateTaskLogsAction(props.selectedEvent.id, {
       ...props.selectedEvent,
-      task_complete: (!isTaskComplete).toString(),
+      // task_complete: (!isTaskComplete).toString(),
+      task_complete: !props.selectedEvent.task_complete,
       start_date: moment(props.selectedEvent.start_date).format('YYYY-MM-DD HH:mm:ss'),
       end_date: moment(props.selectedEvent.end_date).format('YYYY-MM-DD HH:mm:ss'),
     });
-    console.log(res, "res");
-    
-
     if (res.status === 200) {
-      setInitialData({ task_complete: (!isTaskComplete).toString() });
-      toast.success('Task updated successfully...!');
+      // setInitialData({ task_complete: (!isTaskComplete).toString() });
+      setIsTaskComplete(!isTaskComplete);
+      toast.success('Task status updated successfully...!');
+      props.success();
     } else {
       toast.error('Oops...Something is Wrong!');
     }

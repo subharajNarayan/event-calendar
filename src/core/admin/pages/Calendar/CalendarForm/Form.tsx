@@ -72,7 +72,7 @@ const CalendarForm = (props: Props) => {
 
       const userDetails = TokenService.getAccessToken();
 
-      console.log(userDetails, "USER DETAILS");
+      // console.log(userDetails, "USER DETAILS");
       
       const updatedSubmitValue = {
         ...submitValue,
