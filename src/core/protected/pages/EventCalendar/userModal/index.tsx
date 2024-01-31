@@ -17,16 +17,12 @@ interface Props extends PropsFromRedux {
   toggleModal: () => void;
   selectedEvent: any;
   success: () => void;
-  // taskStatus: any;
+  setTaskStatus: (value: string) => void;
 }
 
 const validationSchema = Yup.object({});
 
-const TeamIndex = (props: Props) => {
-
-  // console.log(props.selectedEvent, "selectedEvent");
-  // console.log(props.taskStatus, "taskStatus");
-  
+const TeamIndex = (props: Props) => {  
 
   const [initialData, setInitialData] = useState({
     task_complete: props.selectedEvent.task_complete.toString(),
@@ -61,6 +57,8 @@ const TeamIndex = (props: Props) => {
       setIsTaskComplete(!isTaskComplete);
       toast.success('Task status updated successfully...!');
       props.success();
+      // Update the taskStatus state to an empty string
+      props.setTaskStatus('');
     } else {
       toast.error('Oops...Something is Wrong!');
     }

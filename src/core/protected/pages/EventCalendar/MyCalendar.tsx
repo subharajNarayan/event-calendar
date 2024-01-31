@@ -65,7 +65,7 @@ const CustomToolbar: React.FC<{
           <div className="toolbar-select ">
             <div className="select-status form-group d-flex align-items-baseline">
               <label htmlFor="">Status</label>
-              <select className='form-select mx-2' onChange={handleTaskStatusChange}>
+              <select className='form-select mx-2' value={taskStatus} onChange={handleTaskStatusChange}>
                 <option value="" selected={taskStatus === ''}>All</option>
                 <option value="done" selected={taskStatus === "done"}>Done</option>
                 <option value="overdue" selected={taskStatus === "overdue"}>OverDue</option>
@@ -440,7 +440,7 @@ const TeamCalIndex = (props: CalendarProps) => {
         />
       )}
       {selectedEvent && (
-        <TeamIndex isOpen={isOpen} toggleModal={toggleModal} selectedEvent={selectedEvent} success={handleTasksAdd} />
+        <TeamIndex isOpen={isOpen} toggleModal={toggleModal} selectedEvent={selectedEvent} success={handleTasksAdd} setTaskStatus={setTaskStatus} />
       )}
 
       {currentView === 'list' && (

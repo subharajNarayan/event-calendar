@@ -224,6 +224,8 @@ const CIndex = (props: Props) => {
             setIsTaskComplete(!selectedDetails.task_complete); // Update the local state directly
             toast.success('Task status updated successfully...!');
             props.fetchSuccess();
+            // Update the taskStatus state to an empty string
+            setTaskStatus('');
           } else {
             toast.error('Updated task data is null.');
           }
