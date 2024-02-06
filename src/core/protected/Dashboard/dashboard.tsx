@@ -41,13 +41,13 @@ function Dashboard(props: Props): ReactElement {
           <AppHeader sidebarToggle={sidebarToggle} setsidebarToggle={setsidebarToggle} />
           <div className="body flex-grow-1 px-3">
 
-          <PrivateRoute
+          {/* <PrivateRoute
           appRoutes={appRoutes.filter((route) => route.type !== "login")}
-        />
-        {/* <PrivateRoute
-          appRoutes={appRoutes.filter((route) => route.type !== "login")}
-          redirectPath={[{ from: "*", to: isAuthenticated() ? "/admin/home" : "home" }]}
         /> */}
+        <PrivateRoute
+          appRoutes={appRoutes.filter((route) => route.type !== "login")}
+          redirectPath={[{ from: "*", to: isAuthenticated() ? "/auth/home" : "home" }]}
+        />
           </div>
           <AppFooter />
         </main>

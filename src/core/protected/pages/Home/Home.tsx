@@ -27,7 +27,6 @@ const dispatch = useDispatch()
         <div className="main-content-home">
           <div className="body-calendar">
             <MyCalendar events={[]} />
-            {/* <MyCalendar /> */}
           </div>
         </div>
       </div>

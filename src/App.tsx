@@ -95,16 +95,15 @@ function App() {
       <ToastContainer />
       {isAuthenticated() ? (
         roleDashboard(isRole)
-        // {callRoute}
       )
       :
-      SignupCheck()?(
-        <PrivateRoute
-          appRoutes={appRoutes.filter((route) => route.type !== "login")}
-          redirectPath={[{ from: "/login", to: "/signup" }]}
-        />
-      )
-      :
+      // SignupCheck()?(
+      //   <PrivateRoute
+      //     appRoutes={appRoutes.filter((route) => route.type !== "login")}
+      //     redirectPath={[{ from: "/login", to: "/signup" }]}
+      //   />
+      // )
+      // :
       (
         <PrivateRoute
           appRoutes={appRoutes.filter((route) => {
