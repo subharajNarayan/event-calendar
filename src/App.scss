@@ -82,3 +82,9 @@ body {
   top: 24px;
   right: 16px;
 }
+
+@media only screen and (max-width: 767px){
+  .modal-title{
+    width: 60%;
+  }
+}
