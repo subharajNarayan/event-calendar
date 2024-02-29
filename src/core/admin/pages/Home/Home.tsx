@@ -95,7 +95,7 @@ const Home = (props: Props) => {
 
         <AppSidebar users={users} onFilterChange={handleUserToggle} onUpdate={handleEventAdd}/>
 
-        <div className="main-content">
+        <div className="main-content" style={{minWidth: '80%'}}>
           <div className="main-content-home">
             <div className="body-calendar">
               <Calendar events={filteredEvents} allEvents={events} fetchSuccess={handleEventAdd} />
