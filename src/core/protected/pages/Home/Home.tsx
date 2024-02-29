@@ -3,7 +3,7 @@ import MyCalendar from '../EventCalendar/MyCalendar';
 import { useDispatch } from 'react-redux';
 import { logoutAction } from '../../../../store/root-reducer';
 import useAuthentication from '../../../../services/authentication/AuthService';
-// import MyCalendar from '../EventCalendar/testCalendar';
+
 const Home = () => {
 
   const {getAuthUser} = useAuthentication();
