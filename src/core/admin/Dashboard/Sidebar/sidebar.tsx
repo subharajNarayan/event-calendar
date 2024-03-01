@@ -114,6 +114,14 @@ const AppSidebar = (props: Props) => {
 
   const [isActive, setIsActive] = React.useState(false);
 
+  const handleSelectUser = (userName: string) => {
+    const index = teamData.findIndex((item) => item.username === userName);
+    if (index !== -1) {
+      setSelectedRows([index]);
+      props.onFilterChange([userName]);
+    }
+  };
+  
   return (
     <>
       <TeamIndex isOpen={isOpen} toggleModal={toggleTeamModal} TeamDatas={TeamDatas} success={handleTeamMemberAdd} />
@@ -166,7 +174,7 @@ const AppSidebar = (props: Props) => {
                         onChange={selectRow}
                       />
                     </td>
-                    <td>{item.username}</td>
+                    <td onClick={() => handleSelectUser(item.username)} style={{ cursor: 'pointer' }}>{item.username}</td>
                     <td>
                       {' '}
                       <span
@@ -222,7 +230,7 @@ const AppSidebar = (props: Props) => {
                         onChange={selectRow}
                       />
                     </td>
-                    <td>{item.username}</td>
+                    <td onClick={() => handleSelectUser(item.username)} style={{ cursor: 'pointer' }}>{item.username}</td>
                     <td>
                       {' '}
                       <span

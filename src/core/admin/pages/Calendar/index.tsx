@@ -173,7 +173,7 @@ const CIndex = (props: Props) => {
   const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
-  const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('month');
+  const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('day');
 
   console.log({ unfilteredEvents });
   console.log({ events });
@@ -214,7 +214,7 @@ const CIndex = (props: Props) => {
         const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
 
         console.log({ res });
-        
+
 
         if (res.status === 200) {
           const updatedTaskData = res.data;
@@ -388,7 +388,7 @@ const CIndex = (props: Props) => {
 
   const switchToCalendarView = () => {
     setCurrentView('calendar');
-    setListCurrentView('month');
+    setListCurrentView('day');
 
     // setUnfilteredEvents(getViewEvents('month'));
   };
@@ -397,7 +397,7 @@ const CIndex = (props: Props) => {
     console.log('clicked');
 
     setCurrentView('list');
-    setListCurrentView('month');
+    setListCurrentView('day');
     // setUnfilteredEvents(getViewEvents('month'));
   };
 
@@ -692,6 +692,12 @@ const CIndex = (props: Props) => {
                   <strong style={{ fontSize: '14px' }}> TO </strong>
                   {moment(selectedDetails.end_date).format('DD MMM YYYY hh:mm A')}
                 </p>
+                <p>
+                  <strong> Location: </strong>
+                  <br />
+                  {selectedDetails.location}
+                </p>
+                <hr />
                 <text>{selectedDetails.description}</text>
               </div>
               <hr />
