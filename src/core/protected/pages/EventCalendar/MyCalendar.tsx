@@ -528,7 +528,7 @@ const TeamCalIndex = (props: CalendarProps) => {
                         </tr>
                       ))
                     ) : (
-                      <div className="no-data" style={{ whiteSpace: 'nowrap' }}>
+                      <div className="no-data mt-3" style={{ whiteSpace: 'nowrap' }}>
                         <span >No Data Available</span>
                       </div>
                     )}

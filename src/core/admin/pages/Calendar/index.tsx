@@ -466,7 +466,7 @@ const CIndex = (props: Props) => {
         toggleDetailsModal(); // Close the details modal
         toggleModal(); // Open the confirmation modal
         props.fetchSuccess();
-
+        toggleDetailsModal();
       } else {
         toast.error("Server Error");
       }
@@ -648,7 +648,7 @@ const CIndex = (props: Props) => {
                       </tr>
                     ))
                   ) : (
-                    <div className="no-data" style={{whiteSpace: 'nowrap'}}>
+                    <div className="no-data mt-3" style={{ whiteSpace: 'nowrap' }}>
                       <span >No Data Available</span>
                     </div>
                   )}
