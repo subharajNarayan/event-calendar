@@ -240,37 +240,6 @@ const CIndex = (props: Props) => {
   };
 
 
-  // const handleTickButtonClick = async () => {
-  //   try {
-  //     if (selectedDetails) {
-  //       const updatedTask = {
-  //         ...selectedDetails,
-  //         task_complete: (!isTaskComplete),
-  //       };
-
-  //       const res = await props.updateTaskLogsAction(selectedDetails.id, updatedTask);
-
-  //       if (res.status === 200) {
-  //         const updatedTaskData = res.data;
-
-  //         // Check if updatedTaskData is not null before accessing its properties
-  //         if (updatedTaskData) {
-  //           setInitialData({ task_complete: updatedTaskData.task_complete });
-  //           toast.success('Task updated successfully...!');
-  //           props.fetchSuccess();
-  //         } else {
-  //           toast.error('Updated task data is null.');
-  //         }
-  //       } else {
-  //         toast.error('Oops... Something is Wrong!');
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error('Oops... Something went wrong!');
-  //   }
-  // };
-
   React.useEffect(() => {
     setUnfilteredEvents(events);
 
@@ -497,6 +466,7 @@ const CIndex = (props: Props) => {
         toggleDetailsModal(); // Close the details modal
         toggleModal(); // Open the confirmation modal
         props.fetchSuccess();
+
       } else {
         toast.error("Server Error");
       }
