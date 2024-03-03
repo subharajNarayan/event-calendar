@@ -140,9 +140,6 @@ const CustomToolbar: React.FC<{
         <hr />
         {showAllButton && (
           <div className="list-view mb-3">
-            {/* <div className="toolbar-all px-3">
-              <p></p>
-            </div> */}
             <div className="toolbar-add text-right">
               <button onClick={toggleForm}> + </button> &nbsp; Add Task
             </div>
@@ -170,13 +167,16 @@ const CIndex = (props: Props) => {
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM YYYY'));
   const [currentView, setCurrentView] = useState<'calendar' | 'list'>('calendar');
   // const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day'>('calendar');
-  const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
+  // const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
   const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('day');
 
-  console.log({ unfilteredEvents });
-  console.log({ events });
+  const [isDate, setIsDate] = useState<string>(moment().format('dddd, MMM DD'));
+  const [isWeek, setIsWeek] = useState<any>();
+
+  // console.log({ unfilteredEvents });
+  // console.log({ events });
 
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);
@@ -384,7 +384,16 @@ const CIndex = (props: Props) => {
 
   const handleNavigate = (date: Date) => {
     setCurrentMonth(moment(date).format('MMMM YYYY'));
+    setIsDate(moment().format('dddd, MMM DD'));
   };
+
+  React.useEffect(() => {
+    const startOfWeek = moment().startOf('week').format('MMM DD');
+    const endOfWeek = moment().endOf('week').format('DD');
+
+    setIsWeek(startOfWeek + ' – ' + endOfWeek);
+    console.log({ startOfWeek, endOfWeek });
+  }, []);
 
   const switchToCalendarView = () => {
     setCurrentView('calendar');
@@ -555,6 +564,7 @@ const CIndex = (props: Props) => {
           // onSelectEvent={handleSelectEvent}
           onSelectEvent={handleDetailEvent}
           views={['month', 'week', 'day']}
+          defaultView='day'
           // onView={(view:any) => setCurrentView(view)}
           onNavigate={handleNavigate}
           components={{
@@ -618,6 +628,22 @@ const CIndex = (props: Props) => {
             showYearDate={false}
             toggleForm={toggleForm}
           />
+          <div className="selected-date">
+            <h2>
+              {listCurrentView === 'day' ? (
+                <span>{isDate}</span>
+              ) : listCurrentView === 'week' ? (
+                <span>{isWeek}</span>
+              ) : (
+                <> </>
+              )}
+              {listCurrentView === 'month' ? (
+                <span>{currentMonth}</span>
+              ) : (
+                <></>
+              )}
+            </h2>
+          </div>
           <div className='container-fluid'>
             <div className='table-responsive'>
               <Table>
@@ -642,14 +668,20 @@ const CIndex = (props: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {unfilteredEvents.map((item: any) => (
-                    <tr key={item.id} onClick={() => handleDetailEvent(item)}>
-                      <td>{item.title}</td>
-                      <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
-                      <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                      <td>{item.assigned_user_name}</td>
-                    </tr>
-                  ))}
+                  {unfilteredEvents && unfilteredEvents.length > 0 ? (
+                    unfilteredEvents.map((item: any) => (
+                      <tr key={item.id} onClick={() => handleDetailEvent(item)}>
+                        <td>{item.title}</td>
+                        <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                        <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                        <td>{item.assigned_user_name}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <div className="no-data" style={{whiteSpace: 'nowrap'}}>
+                      <span >No Data Available</span>
+                    </div>
+                  )}
                 </tbody>
               </Table>
             </div>

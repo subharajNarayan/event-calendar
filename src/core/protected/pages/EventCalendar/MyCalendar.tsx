@@ -129,7 +129,10 @@ const TeamCalIndex = (props: CalendarProps) => {
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM YYYY'));
   const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
   const [currentView, setCurrentView] = useState<'calendar' | 'list'>('calendar');
-  const [listView, setListView] = useState<'month' | 'week' | 'day'>('month');
+  const [listView, setListView] = useState<'month' | 'week' | 'day'>('day');
+
+  const [isDate, setIsDate] = useState<string>(moment().format('dddd, MMM DD'));
+  const [isWeek, setIsWeek] = useState<any>();
   // const [isFormOpen, setIsFormOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -138,6 +141,9 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   const { isAuthenticated, getAuthUser } = useAuthentication();
   const user = getAuthUser();
+  console.log({ user });
+  console.log({ unfilteredEvents })
+
 
   const [events, setEvents] = useState<Event[]>([]);
   const [fetchTasks, setFetchTasks] = React.useState<number>(0);
@@ -156,8 +162,6 @@ const TeamCalIndex = (props: CalendarProps) => {
           ...event,
           start_date: moment(moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           end_date: moment(moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-          // start_date: moment.utc(event.start_date).format('YYYY-MM-DD HH:mm:ss'),
-          // end_date: moment.utc(event.end_date).format('YYYY-MM-DD HH:mm:ss'),
 
         }));
 
@@ -176,6 +180,7 @@ const TeamCalIndex = (props: CalendarProps) => {
         console.error('Error fetching data:', error);
       });
   }, [fetchTasks]);
+
 
   const handleTasksAdd = () => {
     setFetchTasks(fetchTasks + 1);
@@ -256,14 +261,22 @@ const TeamCalIndex = (props: CalendarProps) => {
     setCurrentDate(moment(date).format('YYYY-MM-DD'))
   };
 
+  React.useEffect(() => {
+    const startOfWeek = moment().startOf('week').format('MMM DD');
+    const endOfWeek = moment().endOf('week').format('DD');
+
+    setIsWeek(startOfWeek + ' – ' + endOfWeek);
+    console.log({ startOfWeek, endOfWeek });
+  }, []);
+
   const switchToCalendarView = () => {
     setCurrentView('calendar');
-    setListView('month');
+    setListView('day');
   };
 
   const switchToListView = () => {
     setCurrentView('list');
-    setListView('month');
+    setListView('day');
   };
 
   React.useEffect(() => {
@@ -404,6 +417,7 @@ const TeamCalIndex = (props: CalendarProps) => {
           onSelectEvent={handleEventsSelect}
           views={['month', 'week', 'day']}
           onNavigate={handleNavigate}
+          defaultView='day'
           // onSelectSlot={(slotInfo) => {
           //   // Directly call the functions to update the view and set the list view
           //   setListView('day');
@@ -469,6 +483,22 @@ const TeamCalIndex = (props: CalendarProps) => {
                 setTaskStatus(e.target.value);
               }}
             />
+            <div className="selected-date-user text-center">
+              <h2>
+                {listView === 'day' ? (
+                  <span>{isDate}</span>
+                ) : listView === 'week' ? (
+                  <span>{isWeek}</span>
+                ) : (
+                  <> </>
+                )}
+                {listView === 'month' ? (
+                  <span>{currentMonth}</span>
+                ) : (
+                  <></>
+                )}
+              </h2>
+            </div>
             <div className='container-fluid'>
               <div className='table-responsive'>
                 <Table className='list-table'>
@@ -489,14 +519,21 @@ const TeamCalIndex = (props: CalendarProps) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {unfilteredEvents && unfilteredEvents.map((item: any) => (
-                      <tr key={item.id} onClick={() => handleEventsSelect(item)}>
-                        <td>{item.title}</td>
-                        <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
-                        <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
-                      </tr>
-                    ))}
+                    {unfilteredEvents && unfilteredEvents.length > 0 ? (
+                      unfilteredEvents.map((item: any) => (
+                        <tr key={item.id} onClick={() => handleEventsSelect(item)}>
+                          <td>{item.title}</td>
+                          <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                          <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <div className="no-data" style={{ whiteSpace: 'nowrap' }}>
+                        <span >No Data Available</span>
+                      </div>
+                    )}
                   </tbody>
+
                 </Table>
               </div>
             </div>

@@ -61,30 +61,47 @@
 *,
 *::before,
 *::after {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
   background-color: #ffffff !important;
   font-size: 15px !important;
-  font-family: Source Sans Pro,sans-serif!important;
+  font-family: Source Sans Pro, sans-serif !important;
   color: #252627;
 }
 
-.modal-title{
+.modal-title {
   width: 335px;
 }
 
-.btn-close{
+.btn-close {
   position: absolute;
   top: 24px;
   right: 16px;
 }
 
-@media only screen and (max-width: 767px){
-  .modal-title{
+.selected-date {
+  position: relative;
+  margin-top: -50px;
+  text-align: center;
+  width: 90%;
+}
+
+@media only screen and (max-width: 767px) {
+  .modal-title {
     width: 60%;
+  }
+
+  .selected-date {
+    width: 65%;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .selected-date {
+    width: 80%;
   }
 }

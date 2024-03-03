@@ -28,7 +28,7 @@
 @media only screen and (max-width: 1080px) {
   .body {
     .main-content {
-      width: 65%;
+      min-width: 67% !important;
       .body-calendar{
         .container-fluid{
           .table-responsive{
