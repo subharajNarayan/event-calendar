@@ -15,13 +15,11 @@ import { RootState } from '../../../../store/root-reducer';
 import { ConnectedProps, connect } from 'react-redux';
 import { updateTaskLogsAction } from '../../../../store/modules/Tasks/updateTaskLogs';
 import toast from '../../../../components/Notifier/Notifier';
-import * as Yup from 'yup';
 import useDeleteConfirmation from '../../../../hooks/useDeleteConfirmation';
 import { deleteTaskLogsAction } from '../../../../store/modules/Tasks/deleteTaskLogs';
 
 const localizer = momentLocalizer(moment);
 
-const validationSchema = Yup.object({});
 
 interface Event {
   id: number;
@@ -531,11 +529,9 @@ const CIndex = (props: Props) => {
           eventPropGetter={eventStyleGetter}
           selectable={true}
           onSelectSlot={handleSelectSlot}
-          // onSelectEvent={handleSelectEvent}
           onSelectEvent={handleDetailEvent}
           views={['month', 'week', 'day']}
           defaultView='day'
-          // onView={(view:any) => setCurrentView(view)}
           onNavigate={handleNavigate}
           components={{
             toolbar: (toolbarProps: any) => (
@@ -577,15 +573,12 @@ const CIndex = (props: Props) => {
             currentView={listCurrentView}
             view={currentView}
             goToMonthView={() => {
-              // setUnfilteredEvents(getViewEvents('month'));
               setListCurrentView('month');
             }}
             goToWeekView={() => {
-              // setUnfilteredEvents(getViewEvents('week'));
               setListCurrentView('week');
             }}
             goToDayView={() => {
-              // setUnfilteredEvents(getViewEvents('day'));
               setListCurrentView('day');
             }}
             taskStatus={taskStatus}
@@ -642,8 +635,8 @@ const CIndex = (props: Props) => {
                     unfilteredEvents.map((item: any) => (
                       <tr key={item.id} onClick={() => handleDetailEvent(item)}>
                         <td>{item.title}</td>
-                        <td>{moment.utc(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
-                        <td>{moment.utc(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
+                        <td>{moment(item.start_date).format('MMM D, YYYY hh:mm a')}</td>
+                        <td>{moment(item.end_date).format('MMM D, YYYY hh:mm a')}</td>
                         <td>{item.assigned_user_name}</td>
                       </tr>
                     ))

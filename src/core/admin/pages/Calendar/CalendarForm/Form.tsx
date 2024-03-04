@@ -110,7 +110,6 @@ const CalendarForm = (props: Props) => {
 
 
   const [data, setData] = React.useState([]);
-  console.log({ data });
 
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {

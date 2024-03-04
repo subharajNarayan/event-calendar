@@ -133,13 +133,11 @@ const TeamCalIndex = (props: CalendarProps) => {
 
   const [isDate, setIsDate] = useState<string>(moment().format('dddd, MMM DD'));
   const [isWeek, setIsWeek] = useState<any>();
-  // const [isFormOpen, setIsFormOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
 
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
   const [taskStatus, setTaskStatus] = useState<string>('');
 
-  const { isAuthenticated, getAuthUser } = useAuthentication();
+  const { getAuthUser } = useAuthentication();
   const user = getAuthUser();
   console.log({ user });
   console.log({ unfilteredEvents })
@@ -148,11 +146,11 @@ const TeamCalIndex = (props: CalendarProps) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [fetchTasks, setFetchTasks] = React.useState<number>(0);
 
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); //For sorting AssigneTo column
+  // const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc'); //For sorting AssigneTo column
 
-  const handleSortChange = (e: any) => {
-    setSortDirection(e.target.value as 'asc' | 'desc');
-  };
+  // const handleSortChange = (e: any) => {
+  //   setSortDirection(e.target.value as 'asc' | 'desc');
+  // };
   //    // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
@@ -167,10 +165,10 @@ const TeamCalIndex = (props: CalendarProps) => {
 
         initialEvents = initialEvents.filter((event: any) => {
           // console.log(event.assigned_user_name, user.username);
-          return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
+          return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase() ||
+          event.assigned_user_id === user.id;
         });
         console.log(initialEvents, "DATA INITIAL");
-
 
         setEvents(initialEvents);
         setUnfilteredEvents(initialEvents);
@@ -186,47 +184,6 @@ const TeamCalIndex = (props: CalendarProps) => {
     setFetchTasks(fetchTasks + 1);
   };
 
-  //   // auth id
-  //   // /server/getallEvents/{username}
-  //   // dispatch event fetch request
-  //   if (user && user.role == 'Team_Member') {
-  //     let initialEvents = events.filter(event => {
-  //       console.log(event.assigned_user_name, user.username);
-
-  //       return event.assigned_user_name?.toLowerCase() == user.username.toLowerCase();
-  //     });
-  //     setEvents(initialEvents);
-  //     setUnfilteredEvents(initialEvents);
-  //   } else if (user && user.role == 'Admin') {
-  //     setUnfilteredEvents(events);
-  //   }
-
-  //   // setUnfilteredEvents(events);
-  // }, []);
-
-  // State to track the tick button status
-  // const [isTickButtonGreen, setIsTickButtonGreen] = useState(false);
-
-  // STATE TO PAGINATE THE MULTIPLE DATA
-  const itemsPerPage = 5;
-  const pageCount = Math.ceil(events.length / itemsPerPage);
-
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setCurrentPage(selected);
-  };
-
-  const currentItems = events.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
-
-  // Function to handle tick button click
-  // const handleTickButtonClick = () => {
-  //   setIsTickButtonGreen(!isTickButtonGreen);
-  //   console.log(isTickButtonGreen);
-  // };
-
-
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
@@ -239,12 +196,6 @@ const TeamCalIndex = (props: CalendarProps) => {
       },
     };
   };
-
-  console.log({ eventStyleGetter });
-
-  // const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
-  //   toggleModal();
-  // };
 
   // State to track the selected event
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -538,25 +489,7 @@ const TeamCalIndex = (props: CalendarProps) => {
               </div>
             </div>
           </div>
-          {/* <ReactPaginate
-            previousLabel={"Previous"}
-            nextLabel={"Next"}
-            breakLabel={"..."}
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageChange}
-            containerClassName={"pagination justify-content-center"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link"}
-            breakClassName={"page-item"}
-            breakLinkClassName={"page-link"}
-            activeClassName={"active"}
-          /> */}
+
         </section>
       )}
     </div>
