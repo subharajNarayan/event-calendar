@@ -28,7 +28,6 @@ interface Event {
   end_date: string;
   description: string; // Include this line
   assigned_user_name: string;
-  // assigned_colour: string;
   assigned_user_colour: string;
   task_complete: boolean;
   status: string;
@@ -164,17 +163,12 @@ const CIndex = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState<string>(moment().format('MMMM YYYY'));
   const [currentView, setCurrentView] = useState<'calendar' | 'list'>('calendar');
-  // const [currentView, setCurrentView] = useState<'calendar' | 'list' | 'month' | 'week' | 'day'>('calendar');
-  // const [currentDate, setCurrentDate] = useState<string>(moment().format('YYYY-MM-DD'));
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [unfilteredEvents, setUnfilteredEvents] = useState<Event[]>([]);
   const [listCurrentView, setListCurrentView] = useState<'month' | 'week' | 'day'>('day');
 
   const [isDate, setIsDate] = useState<string>(moment().format('dddd, MMM DD'));
   const [isWeek, setIsWeek] = useState<any>();
-
-  // console.log({ unfilteredEvents });
-  // console.log({ events });
 
   const [detailsModal, setDetailsModal] = useState(false);
   const [selectedDetails, setSelectedDetails] = useState<Event | null>(null);

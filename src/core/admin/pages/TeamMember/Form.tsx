@@ -189,7 +189,7 @@ const TeamMembForm = (props: Props) => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormikValidationError name='email' errors={errors} touched={touched} />
+            {/* <FormikValidationError name='email' errors={errors} touched={touched} /> */}
           </div>
           <div className='form-group'>
             <label htmlFor="">Password  <span className="text-danger">*</span></label>
