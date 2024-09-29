@@ -44,8 +44,8 @@ const AppHeader = (props: Props) => {
           <div className="pt-0" style={{ paddingBottom: "0.3rem" }}>
             <div className='header-top align-vertical px-3 mt-2'>
               <div>
-                {/* <h6 className='text text-start text-uppercase font-bold'>DYNASEl USA - TASK MANAGER</h6> */}
-                <img src={Dynasel_logo} alt="DYNASEL USA - TASK MANAGER" width={172}/>
+              <h6 className='text text-start text-uppercase font-bold mb-0' style={{fontSize: '1.4rem'}}><span style={{fontSize: '2rem'}}>G</span>O<span style={{fontSize: '2rem'}}>F</span>UEL<span style={{fontSize: '2rem'}}>W</span>ORKS</h6>
+                {/* <img src={Dynasel_logo} alt="GOFUELWORKS - TASK MANAGER" width={172}/> */}
               </div>
             </div>
           </div>
