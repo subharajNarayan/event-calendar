@@ -22,7 +22,7 @@ const Pagination = () => {
 
   useEffect(() => {
     try {
-      axios.get('https://event.finliftconsulting.com.np/accounts/api/register')
+      axios.get('https://eventapp.finliftconsulting.com.np/accounts/api/register')
       .then((response) => {
         setInitialState(response.data)
       })

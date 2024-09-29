@@ -44,7 +44,7 @@ const AppSidebar = (props: Props) => {
 
   const fetchTeamData = async () => {
     try {
-      const response = await axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/');
+      const response = await axios.get('https://eventapp.finliftconsulting.com.np/accounts/api/team-members/');
       setTeamData(response.data);
       setTeamEditData(response.data);
     } catch (error) {

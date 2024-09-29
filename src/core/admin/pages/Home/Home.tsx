@@ -50,7 +50,7 @@ const Home = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://event.finliftconsulting.com.np/accounts/api/tasks/') // Replace with API endpoint
+    axios.get('https://eventapp.finliftconsulting.com.np/accounts/api/tasks/') // Replace with API endpoint
       .then((response) => {
         // get js Date Object from momentjs
         let initialEvents = response.data.map((event: any) =>
@@ -68,7 +68,7 @@ const Home = (props: Props) => {
         console.error('Error fetching data:', error);
       });
     // Fetch data using Axios when the component mounts
-    // axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
+    // axios.get('https://eventapp.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
     //   .then((response) => {
     //     setUsers(response.data);
     //   })

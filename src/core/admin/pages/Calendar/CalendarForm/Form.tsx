@@ -114,7 +114,7 @@ const CalendarForm = (props: Props) => {
   // Not using anywhere but it just to view/Fetch data
   React.useEffect(() => {
     // Fetch data using Axios when the component mounts
-    axios.get('https://event.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
+    axios.get('https://eventapp.finliftconsulting.com.np/accounts/api/team-members/') // Replace with API endpoint
       .then((response) => {
         setData(response.data);
       })
